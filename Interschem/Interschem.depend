@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1607796167 source:e:\uni\ip\project\interschem\main.cpp
+1607810733 source:e:\uni\ip\project\interschem\main.cpp
 	<iostream>
 	<graphics.h>
 	<winbgim.h>
 	<cmath>
 	"blocks.h"
 
-1607796528 e:\uni\ip\project\interschem\blocks.h
+1607812276 e:\uni\ip\project\interschem\blocks.h
 

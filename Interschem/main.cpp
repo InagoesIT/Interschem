@@ -2,11 +2,17 @@
 #include <graphics.h>
 #include <winbgim.h>
 #include <cmath>
+#include "blocks.h"
 
 int main()
 {
   initwindow(800,600);
-  circle(100, 50, 40);
+  createStart();
+  createStop();
+  createIn();
+  createOut();
+  createAssign();
+  createDecision();
   getch();
   closegraph();
   return 0;
