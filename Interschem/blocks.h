@@ -1,16 +1,12 @@
-#include "list.h"
 #ifndef BLOCKS_H_INCLUDED
 #define BLOCKS_H_INCLUDED
+
+#include "list.h"
 
 #define AUX_COLOR YELLOW
 #define BLOCK_COLOR GREEN
 #define LINE_COLOR WHITE
-
-#define START_WIDTH 150
-#define START_HEIGHT 70
-#define DECISION_BASE 150
-#define IN_BIG_BASE 120
-#define IN_SMALL_BASE 30
+#define IN_SMALL_BASE_DIFF 30
 
 void setColors(bool isColored)
 {
@@ -104,7 +100,7 @@ void createStop(int x, int y, bool isColored)
 
     int textWidth = textwidth("Stop");
     int textHeight = textheight("Stop");
-    outtextxy(x + (width-textWidth)/2, y + (height-textHeight)/2, "Stop");
+    outtextxy(x + (STOP_WIDTH - textWidth)/2, y + (STOP_HEIGHT - textHeight)/2, "Stop");
 }
 
 void createIn(int x, int y, bool isColored)
@@ -114,9 +110,9 @@ void createIn(int x, int y, bool isColored)
     setColors(isColored);
 
 	line(x, y, x + IN_BIG_BASE, y);
-	line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART);
-	line(x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART, x + IN_SMALL_BASE, y + LATERAL_PART);
-	line(x + IN_SMALL_BASE, y + LATERAL_PART, x, y);
+	line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+	line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+	line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
 
 	if (isColored)
 	{
@@ -124,9 +120,9 @@ void createIn(int x, int y, bool isColored)
 	    setcolor(LINE_COLOR);
 
 	    line(x, y, x + IN_BIG_BASE, y);
-        line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART);
-        line(x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART, x + IN_SMALL_BASE, y + LATERAL_PART);
-        line(x + IN_SMALL_BASE, y + LATERAL_PART, x, y);
+        line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+        line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+        line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
 
         int textWidth = textwidth("<var>");
         int textHeight = textheight("<var>");
@@ -144,20 +140,20 @@ void createOut(int x, int y, bool isColored)
 
     setColors(isColored);
 
-	line(x + IN_SMALL_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y);
-	line(x + IN_BIG_BASE - IN_SMALL_BASE, y, x + IN_BIG_BASE, y + LATERAL_PART);
+	line(x + IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y);
+	line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE, y + LATERAL_PART);
 	line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
-	line(x, y + LATERAL_PART, x + IN_SMALL_BASE, y);
+	line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
 
     if (isColored)
     {
-        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART/2, AUX_COLOR);
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
 
         setcolor(WHITE);
-        line(x + IN_SMALL_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y);
-        line(x + IN_BIG_BASE - IN_SMALL_BASE, y, x + IN_BIG_BASE, y + LATERAL_PART);
+        line(x + IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y);
+        line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE, y + LATERAL_PART);
         line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
-        line(x, y + LATERAL_PART, x + IN_SMALL_BASE, y);
+        line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
 
         int textWidth = textwidth("<var>");
         int textHeight = textheight("<var>");
@@ -173,21 +169,21 @@ void createAssign(int x, int y, bool isColored)
 {
     setColors(isColored);
 
-    rectangle(x, y, x + START_WIDTH, y + START_HEIGHT);
+    rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
 
     if (isColored)
     {
-        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, AUX_COLOR);
+        floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
-        rectangle(x, y, x + START_WIDTH, y + START_HEIGHT);
+        rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
 
         int textWidth = textwidth("<var> <- exp");
         int textHeight = textheight("<var> <- exp");
-        outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2, "<var> <- exp");
+        outtextxy(x + (ASSIGN_WIDTH - textWidth) / 2, y + (ASSIGN_HEIGHT - textHeight) / 2, "<var> <- exp");
     }
     else
     {
-        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, BLACK);
+        floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, BLACK);
     }
 }
 

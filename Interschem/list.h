@@ -1,15 +1,16 @@
 #include <iostream>
+
 #define START_HEIGHT 70
+#define START_WIDTH 150
+#define STOP_HEIGHT 70
+#define STOP_WIDTH 150
 #define IN_HEIGHT 50
 #define IN_BIG_BASE 120
+#define IN_SMALL_BASE 60
+#define ASSIGN_HEIGHT 60
+#define ASSIGN_WIDTH 200
 #define DECISION_BASE 150
 #define DECISION_HEIGHT 80
-#define ASSIGN_WIDTH 200
-#define STOP_WIDTH 150
-#define START_WIDTH 150
-#define ASSIGN_HEIGHT 60
-#define STOP_HEIGHT 70
-#define IN_SMALL_BASE 60
 
 using namespace std;
 
@@ -25,7 +26,7 @@ struct node
     int timePriority;
     int location; //0 for main scheme, 1 for free node, 2 for rest node
 };
-//de definit structura oentru rests
+//de definit structura pentru rests
 struct freeNodesStruct
 {
     node * n[10];
@@ -278,7 +279,7 @@ void writeNode(node * n)
         cout<<'\n';
     }
     else
-        cout<<"Tere is no selected node";
+        cout<<"There is no selected node";
 }
 
 

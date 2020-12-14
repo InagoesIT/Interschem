@@ -4,18 +4,17 @@
 #include <cmath>
 #include "blocks.h"
 
-
 int main()
 {
     initwindow(800,600);
-    createStart();
-    createStop();
-    createIn();
-    createOut();
-    createAssign();
-    createDecision();
+    createStart(30, 30, true);
+    createStop(30, 130, true);
+    createIn(30, 230, true);
+    createOut(30, 310, true);
+    createAssign(30, 390, true);
+    createDecision(30, 480, true);
 
-    //testing
+    //testing//
 
 //    int xx, yy;
 //    while (!ismouseclick(WM_LBUTTONDOWN))
