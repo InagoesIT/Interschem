@@ -8,3 +8,15 @@
 
 1607812276 e:\uni\ip\project\interschem\blocks.h
 
+1607897154 source:e:\ip\final project\interschem\interschem\main.cpp
+	<iostream>
+	<graphics.h>
+	<winbgim.h>
+	<cmath>
+	"blocks.h"
+
+1607897064 e:\ip\final project\interschem\interschem\blocks.h
+	"list.h"
+
+1607897943 e:\ip\final project\interschem\interschem\list.h
+

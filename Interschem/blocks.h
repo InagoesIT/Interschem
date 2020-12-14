@@ -1,3 +1,4 @@
+#include "list.h"
 #ifndef BLOCKS_H_INCLUDED
 #define BLOCKS_H_INCLUDED
 
@@ -60,6 +61,9 @@ void createStart()
     int textHeight = textheight("Start");
     outtextxy(x+(width-textWidth)/2, y+(height-textHeight)/2 - 5, "Start");
     circle(x+width/2, y+height-CIRCLE_RADIUS, CIRCLE_RADIUS);
+
+
+    createNode("START", 0);
 }
 
 void createStop()
@@ -71,6 +75,8 @@ void createStop()
     int textWidth = textwidth("Stop");
     int textHeight = textheight("Stop");
     outtextxy(x + (width-textWidth)/2, y + (height-textHeight)/2, "Stop");
+
+    createNode("STOP", 0);
 }
 void createIn()
 {
@@ -89,6 +95,8 @@ void createIn()
     int textHeight = textheight("<var>");
     outtextxy(x + (bigPart-textWidth)/2, y + (lateralPart-textHeight)/2, "<var>");
     circle(x+bigPart/2, y+lateralPart-CIRCLE_RADIUS, CIRCLE_RADIUS);
+
+    createNode("IN", 0);
 }
 
 void createOut()
@@ -108,6 +116,8 @@ void createOut()
     int textHeight = textheight("<var>");
     outtextxy(x + (bigPart-textWidth)/2, y + (lateralPart-textHeight)/2, "<var>");
     circle(x+bigPart/2, y+lateralPart-CIRCLE_RADIUS, CIRCLE_RADIUS);
+
+    createNode("OUT", 0);
 }
 
 void createAssign()
@@ -122,6 +132,8 @@ void createAssign()
     int textHeight = textheight("<var> <- exp");
     outtextxy(x + (width-textWidth)/2, y + (height - textHeight)/2, "<var> <- exp");
     circle(x+width/2, y+height-CIRCLE_RADIUS, CIRCLE_RADIUS);
+
+    createNode("ASSIGN", 0);
 }
 
 void createDecision()
@@ -144,6 +156,8 @@ void createDecision()
     outtextxy(X+base+CIRCLE_RADIUS*2+5+FWidth/2, y + equalPart - 10, "F");
     circle(X-CIRCLE_RADIUS, y+equalPart-CIRCLE_RADIUS/2, CIRCLE_RADIUS);
     circle(X+base+CIRCLE_RADIUS, y+equalPart-CIRCLE_RADIUS/2, CIRCLE_RADIUS);
+
+    createNode("IF", 1);
 }
 
 #endif // BLOCKS_H_INCLUDED
