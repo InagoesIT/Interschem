@@ -23,9 +23,13 @@
 		<Unit filename="blocks.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="list.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
+			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

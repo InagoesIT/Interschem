@@ -1,3 +1,4 @@
+#include "list.h"
 #ifndef BLOCKS_H_INCLUDED
 #define BLOCKS_H_INCLUDED
 
@@ -103,7 +104,9 @@ void createStop(int x, int y, bool isColored)
 
     int textWidth = textwidth("Stop");
     int textHeight = textheight("Stop");
-    outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2, "Stop");
+    outtextxy(x + (width-textWidth)/2, y + (height-textHeight)/2, "Stop");
+
+    createNode("STOP", 0, x, y);
 }
 
 void createIn(int x, int y, bool isColored)
