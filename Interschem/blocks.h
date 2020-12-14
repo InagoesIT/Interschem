@@ -7,6 +7,7 @@
 #define CIRCLE_RADIUS 6
 #define COLOR GREEN
 #define x 30
+
 void createRoundedRect(int width, int height, int y)
 {
     setlinestyle(0, 0, 3);
@@ -63,7 +64,7 @@ void createStart()
     circle(x+width/2, y+height-CIRCLE_RADIUS, CIRCLE_RADIUS);
 
 
-    createNode("START", 0);
+    createNode("START", 0, x, y);
 }
 
 void createStop()
@@ -76,7 +77,7 @@ void createStop()
     int textHeight = textheight("Stop");
     outtextxy(x + (width-textWidth)/2, y + (height-textHeight)/2, "Stop");
 
-    createNode("STOP", 0);
+    createNode("STOP", 0, x, y);
 }
 void createIn()
 {
@@ -96,7 +97,7 @@ void createIn()
     outtextxy(x + (bigPart-textWidth)/2, y + (lateralPart-textHeight)/2, "<var>");
     circle(x+bigPart/2, y+lateralPart-CIRCLE_RADIUS, CIRCLE_RADIUS);
 
-    createNode("IN", 0);
+    createNode("IN", 0, x, y);
 }
 
 void createOut()
@@ -117,7 +118,7 @@ void createOut()
     outtextxy(x + (bigPart-textWidth)/2, y + (lateralPart-textHeight)/2, "<var>");
     circle(x+bigPart/2, y+lateralPart-CIRCLE_RADIUS, CIRCLE_RADIUS);
 
-    createNode("OUT", 0);
+    createNode("OUT", 0, x, y);
 }
 
 void createAssign()
@@ -133,7 +134,7 @@ void createAssign()
     outtextxy(x + (width-textWidth)/2, y + (height - textHeight)/2, "<var> <- exp");
     circle(x+width/2, y+height-CIRCLE_RADIUS, CIRCLE_RADIUS);
 
-    createNode("ASSIGN", 0);
+    createNode("ASSIGN", 0, x, y);
 }
 
 void createDecision()
@@ -157,7 +158,7 @@ void createDecision()
     circle(X-CIRCLE_RADIUS, y+equalPart-CIRCLE_RADIUS/2, CIRCLE_RADIUS);
     circle(X+base+CIRCLE_RADIUS, y+equalPart-CIRCLE_RADIUS/2, CIRCLE_RADIUS);
 
-    createNode("IF", 1);
+    createNode("DECISION", 1, x, y);
 }
 
 #endif // BLOCKS_H_INCLUDED
