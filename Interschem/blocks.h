@@ -1,149 +1,227 @@
 #ifndef BLOCKS_H_INCLUDED
 #define BLOCKS_H_INCLUDED
 
-#define POINTS 15
-#define RADIUS 15
-#define CIRCLE_RADIUS 6
-#define COLOR GREEN
-#define x 30
-void createRoundedRect(int width, int height, int y)
+#define AUX_COLOR YELLOW
+#define BLOCK_COLOR GREEN
+#define LINE_COLOR WHITE
+
+#define START_WIDTH 150
+#define START_HEIGHT 70
+#define DECISION_BASE 150
+#define IN_BIG_BASE 120
+#define IN_SMALL_BASE 30
+
+void setColors(bool isColored)
 {
     setlinestyle(0, 0, 3);
-	float X=0,Y=0;
-	int i = 0;
-	float points[2][4*POINTS];
-	for(; i<POINTS; i++)
-	{
-		X += RADIUS/POINTS;
-		Y = sqrt(RADIUS*RADIUS-X*X);
-		points[0][i] = X+x+width-RADIUS;
-		points[1][i] = y-Y+RADIUS;
-	}
-	Y=0;
-	for(; i<POINTS*2; i++)
-	{
-		Y += RADIUS/POINTS;
-		X = sqrt(RADIUS*RADIUS-Y*Y);
-		points[0][i] = x+width+X-RADIUS;
-		points[1][i] = y+height-RADIUS+Y;
-	}
-	X=0;
-	for(; i<POINTS*3; i++)
-	{
-		X += RADIUS/POINTS;
-		Y = sqrt(RADIUS*RADIUS-X*X);
-		points[0][i] = x+RADIUS-X;
-		points[1][i] = y+height-RADIUS+Y;
-	}
-	Y=0;
-	for(; i < POINTS*4; i++)
-	{
-		Y += RADIUS/POINTS;
-		X = sqrt(RADIUS*RADIUS-Y*Y);
-		points[0][i] = x-X+RADIUS;
-		points[1][i] = y+RADIUS-Y;
-	}
-	for (i = 0; i < POINTS*4-1; i++)
-        line(points[0][i], points[1][i], points[0][i+1], points[1][i+1]);
-    line(points[0][POINTS*4-1], points[1][POINTS*4-1], points[0][0], points[1][0]);
-    setfillstyle(SOLID_FILL, COLOR);
-    floodfill(x+width/2, y+height/2, WHITE);
+
+    if (isColored)
+    {
+        setcolor(AUX_COLOR);
+        setfillstyle(SOLID_FILL, BLOCK_COLOR);
+    }
+    else
+    {
+        setcolor(BLACK);
+        setfillstyle(SOLID_FILL, BLACK);
+    }
 }
 
-void createStart()
+void createRoundedRect(int x, int y, bool isColored)
 {
-    const int width = 150;
-    const int height = 70;
-    const int y = 30;
-    createRoundedRect(width, height, y);
+    const int NR_POINTS = 15;
+    const int RADIUS = 15;
+    int i = 0;
+    float X = 0;
+    float Y = 0;
+    float points[2][4 * NR_POINTS];
+
+    setColors(isColored);
+
+    for(; i < NR_POINTS; i++)
+    {
+        X += RADIUS / NR_POINTS;
+        Y = sqrt(RADIUS * RADIUS - X * X);
+        points[0][i] = X + x + START_WIDTH - RADIUS;
+        points[1][i] = y - Y + RADIUS;
+    }
+    Y=0;
+    for(; i < NR_POINTS * 2; i++)
+    {
+        Y += RADIUS/NR_POINTS;
+        X = sqrt(RADIUS * RADIUS - Y * Y);
+        points[0][i] = x + START_WIDTH + X - RADIUS;
+        points[1][i] = y + START_HEIGHT - RADIUS + Y;
+    }
+    X=0;
+    for(; i < NR_POINTS * 3; i++)
+    {
+        X += RADIUS/NR_POINTS;
+        Y = sqrt(RADIUS * RADIUS - X * X);
+        points[0][i] = x + RADIUS - X;
+        points[1][i] = y + START_HEIGHT - RADIUS + Y;
+    }
+    Y=0;
+    for(; i < NR_POINTS * 4; i++)
+    {
+        Y += RADIUS/NR_POINTS;
+        X = sqrt(RADIUS * RADIUS - Y * Y);
+        points[0][i] = x - X + RADIUS;
+        points[1][i] = y + RADIUS - Y;
+    }
+
+    for (i = 0; i < NR_POINTS * 4 - 1; i++)
+        line(points[0][i], points[1][i], points[0][i+1], points[1][i + 1]);
+    line(points[0][NR_POINTS * 4 - 1], points[1][NR_POINTS * 4 - 1], points[0][0], points[1][0]);
+
+    if (isColored)
+    {
+        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, AUX_COLOR);
+        setcolor(LINE_COLOR);
+        for (i = 0; i < NR_POINTS * 4 - 1; i++)
+            line(points[0][i], points[1][i], points[0][i+1], points[1][i + 1]);
+        line(points[0][NR_POINTS * 4 - 1], points[1][NR_POINTS * 4 - 1], points[0][0], points[1][0]);
+    }
+    else
+    {
+        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, BLACK);
+    }
+}
+
+void createStart(int x, int y, bool isColored)
+{
+    createRoundedRect(x, y, isColored);
+
     int textWidth = textwidth("Start");
     int textHeight = textheight("Start");
-    outtextxy(x+(width-textWidth)/2, y+(height-textHeight)/2 - 5, "Start");
-    circle(x+width/2, y+height-CIRCLE_RADIUS, CIRCLE_RADIUS);
+    outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2 - 5, "Start");
 }
 
-void createStop()
+void createStop(int x, int y, bool isColored)
 {
-    const int width = 150;
-    const int height = 70;
-    const int y = 130;
-    createRoundedRect(width, height, y);
+    createRoundedRect(x, y, isColored);
+
     int textWidth = textwidth("Stop");
     int textHeight = textheight("Stop");
-    outtextxy(x + (width-textWidth)/2, y + (height-textHeight)/2, "Stop");
-}
-void createIn()
-{
-    setlinestyle(0, 0, 3);
-    const int y = 230;
-    const int smallPart = 30;
-    const int bigPart = 120;
-    const int lateralPart = 50;
-	line(x, y, x+bigPart, y);
-	line(x+bigPart, y, x+bigPart-smallPart, y+lateralPart);
-	line(x+bigPart-smallPart, y+lateralPart, x+smallPart, y+lateralPart);
-	line(x+smallPart, y+lateralPart, x, y);
-	setfillstyle(SOLID_FILL, COLOR);
-    floodfill(x+bigPart/2, y+lateralPart/2, WHITE);
-    int textWidth = textwidth("<var>");
-    int textHeight = textheight("<var>");
-    outtextxy(x + (bigPart-textWidth)/2, y + (lateralPart-textHeight)/2, "<var>");
-    circle(x+bigPart/2, y+lateralPart-CIRCLE_RADIUS, CIRCLE_RADIUS);
+    outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2, "Stop");
 }
 
-void createOut()
+void createIn(int x, int y, bool isColored)
 {
-    setlinestyle(0, 0, 3);
-    const int y = 310;
-    const int smallPart = 30;
-    const int bigPart = 120;
-    const int lateralPart = 50;
-	line(x+smallPart, y, x+bigPart-smallPart, y);
-	line(x+bigPart-smallPart, y, x+bigPart, y+lateralPart);
-	line(x+bigPart, y+lateralPart, x, y+lateralPart);
-	line(x, y+lateralPart, x+smallPart, y);
-	setfillstyle(SOLID_FILL, COLOR);
-    floodfill(x+bigPart/2, y+lateralPart/2, WHITE);
-    int textWidth = textwidth("<var>");
-    int textHeight = textheight("<var>");
-    outtextxy(x + (bigPart-textWidth)/2, y + (lateralPart-textHeight)/2, "<var>");
-    circle(x+bigPart/2, y+lateralPart-CIRCLE_RADIUS, CIRCLE_RADIUS);
+    const int LATERAL_PART = 50;
+
+    setColors(isColored);
+
+	line(x, y, x + IN_BIG_BASE, y);
+	line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART);
+	line(x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART, x + IN_SMALL_BASE, y + LATERAL_PART);
+	line(x + IN_SMALL_BASE, y + LATERAL_PART, x, y);
+
+	if (isColored)
+	{
+	    floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
+	    setcolor(LINE_COLOR);
+
+	    line(x, y, x + IN_BIG_BASE, y);
+        line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART);
+        line(x + IN_BIG_BASE - IN_SMALL_BASE, y + LATERAL_PART, x + IN_SMALL_BASE, y + LATERAL_PART);
+        line(x + IN_SMALL_BASE, y + LATERAL_PART, x, y);
+
+        int textWidth = textwidth("<var>");
+        int textHeight = textheight("<var>");
+        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, "<var>");
+	}
+    else
+    {
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, BLACK);
+    }
 }
 
-void createAssign()
+void createOut(int x, int y, bool isColored)
 {
-    const int width = 200;
-    const int height = 60;
-    const int y = 390;
-    rectangle(x, y, x+width, y+height);
-    setfillstyle(SOLID_FILL, COLOR);
-    floodfill(x+width/2, y+height/2, WHITE);
-    int textWidth = textwidth("<var> <- exp");
-    int textHeight = textheight("<var> <- exp");
-    outtextxy(x + (width-textWidth)/2, y + (height - textHeight)/2, "<var> <- exp");
-    circle(x+width/2, y+height-CIRCLE_RADIUS, CIRCLE_RADIUS);
+    const int LATERAL_PART = 50;
+
+    setColors(isColored);
+
+	line(x + IN_SMALL_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y);
+	line(x + IN_BIG_BASE - IN_SMALL_BASE, y, x + IN_BIG_BASE, y + LATERAL_PART);
+	line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
+	line(x, y + LATERAL_PART, x + IN_SMALL_BASE, y);
+
+    if (isColored)
+    {
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART/2, AUX_COLOR);
+
+        setcolor(WHITE);
+        line(x + IN_SMALL_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE, y);
+        line(x + IN_BIG_BASE - IN_SMALL_BASE, y, x + IN_BIG_BASE, y + LATERAL_PART);
+        line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
+        line(x, y + LATERAL_PART, x + IN_SMALL_BASE, y);
+
+        int textWidth = textwidth("<var>");
+        int textHeight = textheight("<var>");
+        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, "<var>");
+    }
+    else
+    {
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, BLACK);
+    }
 }
 
-void createDecision()
+void createAssign(int x, int y, bool isColored)
+{
+    setColors(isColored);
+
+    rectangle(x, y, x + START_WIDTH, y + START_HEIGHT);
+
+    if (isColored)
+    {
+        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, AUX_COLOR);
+        setcolor(LINE_COLOR);
+        rectangle(x, y, x + START_WIDTH, y + START_HEIGHT);
+
+        int textWidth = textwidth("<var> <- exp");
+        int textHeight = textheight("<var> <- exp");
+        outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2, "<var> <- exp");
+    }
+    else
+    {
+        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, BLACK);
+    }
+}
+
+void createDecision(int x, int y, bool isColored)
 {
     int TWidth = textwidth("T");
-    const int equalPart = 80;
-    const int base = 150;
-    const int X = x + CIRCLE_RADIUS*2 + TWidth + 15;
-    const int y = 480;
-    line(X+base/2, y, X+base, y+equalPart);
-    line(X+base, y+equalPart, X, y+equalPart);
-    line(X, y+equalPart, X+base/2, y);
-    setfillstyle(SOLID_FILL, COLOR);
-    floodfill(X+base/2, y+equalPart/2, WHITE);
-    int textWidth = textwidth("<var> ? <var>");
-    int textHeight = textheight("<var> ? <var>");
-    int FWidth = textwidth("F");
-    outtextxy(X + (base-textWidth)/2, y + (equalPart - textHeight)/2 + 15, "<var> ? <var>");
-    outtextxy(30+TWidth/2, y + equalPart - 10, "T");
-    outtextxy(X+base+CIRCLE_RADIUS*2+5+FWidth/2, y + equalPart - 10, "F");
-    circle(X-CIRCLE_RADIUS, y+equalPart-CIRCLE_RADIUS/2, CIRCLE_RADIUS);
-    circle(X+base+CIRCLE_RADIUS, y+equalPart-CIRCLE_RADIUS/2, CIRCLE_RADIUS);
+    const int EQUAL_PART = 80;
+    const int X = x + TWidth + 10;
+
+    setColors(isColored);
+
+    line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
+    line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
+    line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
+
+    if (isColored)
+    {
+        floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, AUX_COLOR);
+        setcolor(LINE_COLOR);
+        line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
+        line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
+        line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
+
+        int textWidth = textwidth("<var> ? <var>");
+        int textHeight = textheight("<var> ? <var>");
+        int FWidth = textwidth("F");
+
+        outtextxy(X + (DECISION_BASE - textWidth)/2, y + (EQUAL_PART - textHeight)/2 + 15, "<var> ? <var>");
+        outtextxy(30 + TWidth / 2, y + EQUAL_PART - 10, "T");
+        outtextxy(X + DECISION_BASE + 5 + FWidth / 2, y + EQUAL_PART - 10, "F");
+    }
+    else
+    {
+        floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, BLACK);
+    }
 }
 
 #endif // BLOCKS_H_INCLUDED
