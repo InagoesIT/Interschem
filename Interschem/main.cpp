@@ -20,10 +20,11 @@ int main()
 //    while (!ismouseclick(WM_LBUTTONDOWN))
 //        delay(500);
 //    getmouseclick(WM_LBUTTONDOWN, xx, yy);
-//    node * p = new node;
-//    selectCorrectNode(xx, yy, p);
+//    node * frst = new node;
+//    node * sec = new node;
+//    selectCorrectNode(xx, yy, frst, sec);
 //    cout<<xx<<' '<<yy<<'\n';
-//    writeNode(p);
+//    writeNode(sec);
 
     getch();
     closegraph();

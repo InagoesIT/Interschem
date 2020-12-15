@@ -203,7 +203,7 @@ bool isInsideNode(double x, double y, node * k)
     }
 }
 
-void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & selectedNode, node * & currentNode, bool &selected) //goes through all main scheme nodes to see if selected now
+void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & selectedNode, node * & currentNode, bool &selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all main scheme nodes to see if selected now
 {
     if(currentNode)
     {
@@ -211,20 +211,24 @@ void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & select
         {
             if(maxPriority<currentNode->timePriority)
             {
-                maxPriority<currentNode->timePriority;
+                maxPriority=currentNode->timePriority;
+                if(selected==1)
+                        selectedAtLeastTwice=1;
+                if(selectedAtLeastTwice==1)
+                    underSelectedNode=selectedNode;
                 selectedNode=currentNode;
                 selected=1;
             }
         }
         if(currentNode->next)
-            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->next, selected);
+            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->next, selected, underSelectedNode, selectedAtLeastTwice);
         if(currentNode->nextElse)
-            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->nextElse, selected);
+            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->nextElse, selected, underSelectedNode, selectedAtLeastTwice);
     }
 
 }
 
-void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected) //goes through all free nodes to see if selected now
+void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all free nodes to see if selected now
 {
     for(int i=1; i<=10; ++i)
     {
@@ -235,6 +239,10 @@ void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & se
                 if(maxPriority<FREE_NODES->n[i]->timePriority)
                 {
                     maxPriority=FREE_NODES->n[i]->timePriority;
+                    if(selected==1)
+                        selectedAtLeastTwice=1;
+                    if(selectedAtLeastTwice==1)
+                        underSelectedNode=selectedNode;
                     selectedNode=FREE_NODES->n[i];
                     selected=1;
                 }
@@ -245,19 +253,21 @@ void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & se
 
 //void selectCorrectNodeFromRests()  //de implementat
 
-void selectCorrectNode(int x, int y, node * & selectedNode)  //select the correct node from (x,y)
+void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelectedNode)  //select the correct node from (x,y)
 {
     int maxPriority=0;
-    bool selected=0;
+    bool selected=0, selectedAtLeastTwice=0;
     if(START)
     {
         node * currentNode = new node;
         currentNode=START;
-        selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode, selected);
+        selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode, selected, underSelectedNode, selectedAtLeastTwice);
     }
-    selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected);
+    selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected, underSelectedNode, selectedAtLeastTwice);
     if(!selected)
-        selectedNode=NULL;
+        selectedNode=NULL, underSelectedNode=NULL;
+    if(selected and !selectedAtLeastTwice)
+        underSelectedNode=NULL;
 }
 
 void writeNode(node * n)
