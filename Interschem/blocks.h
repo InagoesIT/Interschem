@@ -93,7 +93,7 @@ void createStart(int x, int y, bool isColored)
     int textHeight = textheight("Start");
     outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2 - 5, "Start");
 
-//    createNode("START", 0, x, y);
+    createNode("START", 0, x, y);
 }
 
 void createStop(int x, int y, bool isColored)
@@ -104,7 +104,7 @@ void createStop(int x, int y, bool isColored)
     int textHeight = textheight("Stop");
     outtextxy(x + (STOP_WIDTH - textWidth)/2, y + (STOP_HEIGHT - textHeight)/2, "Stop");
 
-//    createNode("STOP", 0, x, y);
+    createNode("STOP", 0, x, y);
 }
 
 void createIn(int x, int y, bool isColored)
@@ -136,6 +136,8 @@ void createIn(int x, int y, bool isColored)
     {
         floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, BLACK);
     }
+
+    createNode("IN", 0, x, y);
 }
 
 void createOut(int x, int y, bool isColored)
@@ -167,6 +169,8 @@ void createOut(int x, int y, bool isColored)
     {
         floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, BLACK);
     }
+
+    createNode("OUT", 0, x, y);
 }
 
 void createAssign(int x, int y, bool isColored)
@@ -189,6 +193,8 @@ void createAssign(int x, int y, bool isColored)
     {
         floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, BLACK);
     }
+
+    createNode("ASSIGN", 0, x, y);
 }
 
 void createDecision(int x, int y, bool isColored)
@@ -223,6 +229,8 @@ void createDecision(int x, int y, bool isColored)
     {
         floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, BLACK);
     }
+
+    createNode("DECISION", 1, x, y);
 }
 
 #endif // BLOCKS_H_INCLUDED

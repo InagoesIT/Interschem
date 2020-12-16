@@ -24,16 +24,23 @@ struct node
     double coordX;
     double coordY;
     int timePriority;
-    int location; //0 for main scheme, 1 for free node, 2 for rest node
+    int location; //0 for main scheme, 1 for free node, 2 for rests
 };
-//de definit structura pentru rests
+//define RESTS structure
 struct freeNodesStruct
 {
     node * n[10];
 };
 
+struct restNodesStruct
+{
+    node * n[10];
+};
+
+restNodesStruct * RESTS = new restNodesStruct;
 freeNodesStruct * FREE_NODES = new freeNodesStruct;
 node * START = new node;
+node * LAST_DELETED= new node;
 int PRIORITY=1;
 
 void createNode(char type[20], bool isDecision, int x, int y) //creates free node
@@ -291,7 +298,25 @@ void writeNode(node * n)
     else
         cout<<"There is no selected node";
 }
-
+void deleteNode(node * & node)
+{
+    LAST_DELETED = node;
+    if(node->next)
+        for(int i=1;i<=10;++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=node->next;
+                break;
+            }
+    if(node->nextElse)
+        for(int i=1;i<=10;++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=node->nextElse;
+                break;
+            }
+    delete node;
+}
 
 
 

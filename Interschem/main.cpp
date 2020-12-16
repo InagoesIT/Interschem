@@ -16,15 +16,15 @@ int main()
 
     //testing//
 
-//    int xx, yy;
-//    while (!ismouseclick(WM_LBUTTONDOWN))
-//        delay(500);
-//    getmouseclick(WM_LBUTTONDOWN, xx, yy);
-//    node * frst = new node;
-//    node * sec = new node;
-//    selectCorrectNode(xx, yy, frst, sec);
-//    cout<<xx<<' '<<yy<<'\n';
-//    writeNode(sec);
+    int xx, yy;
+    while (!ismouseclick(WM_LBUTTONDOWN))
+        delay(500);
+    getmouseclick(WM_LBUTTONDOWN, xx, yy);
+    node * frst = new node;
+    node * sec = new node;
+    selectCorrectNode(xx, yy, frst, sec);
+    cout<<xx<<' '<<yy<<'\n';
+    writeNode(frst);
 
     getch();
     closegraph();
