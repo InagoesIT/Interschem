@@ -1,12 +1,13 @@
 # depslib dependency file v1.0
-1607970628 source:e:\uni\ip\project\interschem\main.cpp
+1608230472 source:e:\uni\ip\project\interschem\main.cpp
 	<iostream>
 	<graphics.h>
 	<winbgim.h>
 	<cmath>
 	"blocks.h"
+	"blocksMoveDel.h"
 
-1607970984 e:\uni\ip\project\interschem\blocks.h
+1608139031 e:\uni\ip\project\interschem\blocks.h
 	"list.h"
 
 1607958396 source:e:\ip\final project\interschem\interschem\main.cpp
@@ -22,6 +23,9 @@
 1607960363 e:\ip\final project\interschem\interschem\list.h
 	<iostream>
 
-1607970943 e:\uni\ip\project\interschem\list.h
+1608228444 e:\uni\ip\project\interschem\list.h
 	<iostream>
+
+1608230347 e:\uni\ip\project\interschem\blocksmovedel.h
+	"blocks.h"
 

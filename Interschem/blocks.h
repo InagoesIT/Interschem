@@ -89,18 +89,28 @@ void createStart(int x, int y, bool isColored)
 {
     createRoundedRect(x, y, isColored);
 
-    int textWidth = textwidth("Start");
-    int textHeight = textheight("Start");
-    outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2 - 5, "Start");
+    if (isColored)
+    {
+        int textWidth = textwidth("Start");
+        int textHeight = textheight("Start");
+        setbkcolor(BLOCK_COLOR);
+        outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2 - 5, "Start");
+        setbkcolor(BLACK);
+    }
 }
 
 void createStop(int x, int y, bool isColored)
 {
     createRoundedRect(x, y, isColored);
 
-    int textWidth = textwidth("Stop");
-    int textHeight = textheight("Stop");
-    outtextxy(x + (STOP_WIDTH - textWidth)/2, y + (STOP_HEIGHT - textHeight)/2, "Stop");
+    if (isColored)
+    {
+        int textWidth = textwidth("Stop");
+        int textHeight = textheight("Stop");
+        setbkcolor(BLOCK_COLOR);
+        outtextxy(x + (STOP_WIDTH - textWidth)/2, y + (STOP_HEIGHT - textHeight)/2, "Stop");
+        setbkcolor(BLACK);
+    }
 }
 
 void createIn(int x, int y, bool isColored)
@@ -126,7 +136,9 @@ void createIn(int x, int y, bool isColored)
 
         int textWidth = textwidth("<var>");
         int textHeight = textheight("<var>");
+        setbkcolor(BLOCK_COLOR);
         outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, "<var>");
+        setbkcolor(BLACK);
 	}
     else
     {
@@ -157,7 +169,9 @@ void createOut(int x, int y, bool isColored)
 
         int textWidth = textwidth("<var>");
         int textHeight = textheight("<var>");
+        setbkcolor(BLOCK_COLOR);
         outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, "<var>");
+        setbkcolor(BLACK);
     }
     else
     {
@@ -179,7 +193,9 @@ void createAssign(int x, int y, bool isColored)
 
         int textWidth = textwidth("<var> <- exp");
         int textHeight = textheight("<var> <- exp");
+        setbkcolor(BLOCK_COLOR);
         outtextxy(x + (ASSIGN_WIDTH - textWidth) / 2, y + (ASSIGN_HEIGHT - textHeight) / 2, "<var> <- exp");
+        setbkcolor(BLACK);
     }
     else
     {
@@ -211,7 +227,9 @@ void createDecision(int x, int y, bool isColored)
         int textHeight = textheight("<var> ? <var>");
         int FWidth = textwidth("F");
 
-        outtextxy(X + (DECISION_BASE - textWidth)/2, y + (EQUAL_PART - textHeight)/2 + 15, "<var> ? <var>");
+        setbkcolor(BLOCK_COLOR);
+        outtextxy(X + (DECISION_BASE - textWidth)/2, y + (EQUAL_PART - textHeight)/2 + 20, "<var> ? <var>");
+        setbkcolor(BLACK);
         outtextxy(30 + TWidth / 2, y + EQUAL_PART - 10, "T");
         outtextxy(X + DECISION_BASE + 5 + FWidth / 2, y + EQUAL_PART - 10, "F");
     }
@@ -219,6 +237,22 @@ void createDecision(int x, int y, bool isColored)
     {
         floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, BLACK);
     }
+}
+
+void createBlock(node *p, bool isColored)
+{
+    if (strcmp(p->type, "START") == 0)
+        createStart(p->coordX, p->coordY, isColored);
+    else if (strcmp(p->type, "STOP") == 0)
+        createStop(p->coordX, p->coordY, isColored);
+    else if (strcmp(p->type, "IN") == 0)
+        createIn(p->coordX, p->coordY, isColored);
+    else if (strcmp(p->type, "OUT") == 0)
+        createOut(p->coordX, p->coordY, isColored);
+    else if (strcmp(p->type, "ASSIGN") == 0)
+        createAssign(p->coordX, p->coordY, isColored);
+    else
+        createDecision(p->coordX, p->coordY, isColored);
 }
 
 #endif // BLOCKS_H_INCLUDED

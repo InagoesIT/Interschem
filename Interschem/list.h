@@ -11,6 +11,9 @@
 #define ASSIGN_WIDTH 200
 #define DECISION_BASE 150
 #define DECISION_HEIGHT 80
+#define FREE_NODES_SIZE 10
+#define REST_NODES_SIZE 10
+#define ALL_NODES_TIME_SIZE 100
 
 using namespace std;
 
@@ -23,18 +26,38 @@ struct node
     node * nextElse;
     double coordX;
     double coordY;
-    int timePriority;
+    int timePriority = 0;
     int location; //0 for main scheme, 1 for free node, 2 for rest node
 };
 //de definit structura pentru rests
 struct freeNodesStruct
 {
-    node * n[10];
+    node * n[FREE_NODES_SIZE];
 };
 
+struct allNodesTimeStruct
+{
+    int n[ALL_NODES_TIME_SIZE];
+    int arraySize = 0;
+};
+
+struct restNodesStruct
+{
+    node * n[REST_NODES_SIZE];
+};
+
+restNodesStruct * RESTS = new restNodesStruct;
+allNodesTimeStruct ALL_NODES_TIME;
 freeNodesStruct * FREE_NODES = new freeNodesStruct;
 node * START = new node;
+node * LAST_DELETED= new node;
 int PRIORITY=1;
+
+void updateTimePriority(node *p)
+{
+    p->timePriority = PRIORITY;
+    PRIORITY++;
+}
 
 void createNode(char type[20], bool isDecision, int x, int y) //creates free node
 {
@@ -44,12 +67,11 @@ void createNode(char type[20], bool isDecision, int x, int y) //creates free nod
         START->isDecision=0;
         strcpy(START->type, "START");
         START->next=START->nextElse=NULL;
-        START->timePriority=PRIORITY;
-        ++PRIORITY;
+        updateTimePriority(START);
         START->location=0;
         START->coordX=x;
         START->coordY=y;
-        for(int i=1; i<=10; ++i)
+        for(int i=1; i<=FREE_NODES_SIZE; ++i)
             FREE_NODES->n[i]=NULL;
     }
     else
@@ -58,12 +80,11 @@ void createNode(char type[20], bool isDecision, int x, int y) //creates free nod
         k->isDecision=isDecision;
         strcpy(k->type, type);
         k->next=k->nextElse=NULL;
-        k->timePriority=PRIORITY;
-        ++PRIORITY;
+        updateTimePriority(k);
         k->location=1;
         k->coordX=x;
         k->coordY=y;
-        for(int i=1; i<=10; ++i)
+        for(int i=1; i<=FREE_NODES_SIZE; ++i)
             if(FREE_NODES->n[i]==NULL)
             {
                 FREE_NODES->n[i]=k;
@@ -203,7 +224,7 @@ bool isInsideNode(double x, double y, node * k)
     }
 }
 
-void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & selectedNode, node * & currentNode, bool &selected) //goes through all main scheme nodes to see if selected now
+void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & selectedNode, node * & currentNode, bool &selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all main scheme nodes to see if selected now
 {
     if(currentNode)
     {
@@ -211,22 +232,25 @@ void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & select
         {
             if(maxPriority<currentNode->timePriority)
             {
-                maxPriority<currentNode->timePriority;
+                maxPriority=currentNode->timePriority;
+                if(selected==1)
+                    selectedAtLeastTwice=1;
+                if(selectedAtLeastTwice==1)
+                    underSelectedNode=selectedNode;
                 selectedNode=currentNode;
                 selected=1;
             }
         }
         if(currentNode->next)
-            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->next, selected);
+            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->next, selected, underSelectedNode, selectedAtLeastTwice);
         if(currentNode->nextElse)
-            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->nextElse, selected);
+            selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->nextElse, selected, underSelectedNode, selectedAtLeastTwice);
     }
-
 }
 
-void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected) //goes through all free nodes to see if selected now
+void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all free nodes to see if selected now
 {
-    for(int i=1; i<=10; ++i)
+    for(int i=1; i<=FREE_NODES_SIZE; ++i)
     {
         if(FREE_NODES->n[i])
         {
@@ -235,6 +259,10 @@ void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & se
                 if(maxPriority<FREE_NODES->n[i]->timePriority)
                 {
                     maxPriority=FREE_NODES->n[i]->timePriority;
+                    if(selected==1)
+                        selectedAtLeastTwice=1;
+                    if(selectedAtLeastTwice==1)
+                        underSelectedNode=selectedNode;
                     selectedNode=FREE_NODES->n[i];
                     selected=1;
                 }
@@ -245,19 +273,21 @@ void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & se
 
 //void selectCorrectNodeFromRests()  //de implementat
 
-void selectCorrectNode(int x, int y, node * & selectedNode)  //select the correct node from (x,y)
+void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelectedNode)  //select the correct node from (x,y)
 {
     int maxPriority=0;
-    bool selected=0;
+    bool selected=0, selectedAtLeastTwice=0;
     if(START)
     {
         node * currentNode = new node;
         currentNode=START;
-        selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode, selected);
+        selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode, selected, underSelectedNode, selectedAtLeastTwice);
     }
-    selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected);
+    selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected, underSelectedNode, selectedAtLeastTwice);
     if(!selected)
-        selectedNode=NULL;
+        selectedNode=NULL, underSelectedNode=NULL;
+    if(selected and !selectedAtLeastTwice)
+        underSelectedNode=NULL;
 }
 
 void writeNode(node * n)
@@ -282,6 +312,25 @@ void writeNode(node * n)
         cout<<"There is no selected node";
 }
 
+void deleteNode(node * & node)
+{
+    LAST_DELETED = node;
+    if(node->next)
+        for(int i=1;i<=REST_NODES_SIZE;++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=node->next;
+                break;
+            }
+    if(node->nextElse)
+        for(int i=1;i<=REST_NODES_SIZE;++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=node->nextElse;
+                break;
+            }
+    delete node;
+}
 
 
 
