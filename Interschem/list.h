@@ -26,10 +26,12 @@ struct node
     node * nextElse;
     double coordX;
     double coordY;
-    int timePriority = 0;
-    int location; //0 for main scheme, 1 for free node, 2 for rest node
+    int timePriority;
+    int location; //0 for main scheme, 1 for free node, 2 for rests
+    bool viz;
+    bool wasCreated;
 };
-//de definit structura pentru rests
+
 struct freeNodesStruct
 {
     node * n[FREE_NODES_SIZE];
@@ -71,7 +73,9 @@ void createNode(char type[20], bool isDecision, int x, int y) //creates free nod
         START->location=0;
         START->coordX=x;
         START->coordY=y;
-        for(int i=1; i<=FREE_NODES_SIZE; ++i)
+        START->viz=0;
+        START->wasCreated=1;
+        for(int i=1; i<=10; ++i)
             FREE_NODES->n[i]=NULL;
     }
     else
@@ -84,7 +88,8 @@ void createNode(char type[20], bool isDecision, int x, int y) //creates free nod
         k->location=1;
         k->coordX=x;
         k->coordY=y;
-        for(int i=1; i<=FREE_NODES_SIZE; ++i)
+        k->viz=0;
+        for(int i=1; i<=10; ++i)
             if(FREE_NODES->n[i]==NULL)
             {
                 FREE_NODES->n[i]=k;
@@ -226,6 +231,7 @@ bool isInsideNode(double x, double y, node * k)
 
 void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & selectedNode, node * & currentNode, bool &selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all main scheme nodes to see if selected now
 {
+    currentNode->viz=1;
     if(currentNode)
     {
         if(isInsideNode(x, y, currentNode)==1)
@@ -241,11 +247,36 @@ void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & select
                 selected=1;
             }
         }
-        if(currentNode->next)
+        if(currentNode->next and currentNode->next->viz==0)
             selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->next, selected, underSelectedNode, selectedAtLeastTwice);
-        if(currentNode->nextElse)
+        if(currentNode->nextElse and currentNode->nextElse->viz==0)
             selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode->nextElse, selected, underSelectedNode, selectedAtLeastTwice);
     }
+}
+
+bool isSchemeCorrect(node * k)
+{
+    if(!(START->wasCreated))
+        return 0;
+    k->viz=1;
+    if(!(k->next) and !(k->nextElse) and strcmp(k->type, "STOP")!=0)
+        return 0;
+    if(k->next and k->next->viz==0)
+        isSchemeCorrect(k->next);
+    if(k->nextElse and k->nextElse->viz==0)
+        isSchemeCorrect(k->nextElse);
+    return 1;
+}
+
+void restoreViz(node * k)
+{
+    if(!(START->wasCreated))
+        return;
+    k->viz=0;
+    if(k->next and k->next->viz==1)
+        isSchemeCorrect(k->next);
+    if(k->nextElse and k->nextElse->viz==1)
+        isSchemeCorrect(k->nextElse);
 }
 
 void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all free nodes to see if selected now
@@ -271,19 +302,51 @@ void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & se
     }
 }
 
-//void selectCorrectNodeFromRests()  //de implementat
+void selectCorrectNodeFromRests(int x, int y, node * k, int & maxPriority, bool & selected, bool & selectedAtLeastTwice, node * & selectedNode, node * & underSelectedNode)
+{
+    if(k)
+    {
+        k->viz=1;
+        if(isInsideNode(x, y, k)==1)
+        {
+            if(maxPriority<k->timePriority)
+            {
+                maxPriority=k->timePriority;
+                if(selected==1)
+                    selectedAtLeastTwice=1;
+                if(selectedAtLeastTwice==1)
+                    underSelectedNode=selectedNode;
+                selectedNode=k;
+                selected=1;
+            }
+        }
+        if(k->next and k->next->viz==0)
+            selectCorrectNodeFromRests(x, y, k->next, maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
+        if(k->nextElse and k->next->viz==0)
+            selectCorrectNodeFromRests(x, y, k->nextElse, maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
+    }
+}
 
 void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelectedNode)  //select the correct node from (x,y)
 {
     int maxPriority=0;
     bool selected=0, selectedAtLeastTwice=0;
-    if(START)
+    if(START->wasCreated)
     {
         node * currentNode = new node;
         currentNode=START;
         selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode, selected, underSelectedNode, selectedAtLeastTwice);
     }
+    restoreViz(START);
     selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected, underSelectedNode, selectedAtLeastTwice);
+    for(int i=1; i<=10; ++i)
+    {
+        if(RESTS->n[i]!=NULL)
+        {
+            selectCorrectNodeFromRests(x, y, RESTS->n[i], maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
+            restoreViz(RESTS->n[i]);
+        }
+    }
     if(!selected)
         selectedNode=NULL, underSelectedNode=NULL;
     if(selected and !selectedAtLeastTwice)
@@ -311,6 +374,36 @@ void writeNode(node * n)
     else
         cout<<"There is no selected node";
 }
+void deleteNode(node * & k)
+{
+    LAST_DELETED = k;
+    k->wasCreated=0;
+    if(k->next)
+        for(int i=1; i<=10; ++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=k->next;
+                RESTS->n[i]->wasCreated=1;
+                break;
+            }
+    if(k->nextElse)
+        for(int i=1; i<=10; ++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=k->nextElse;
+                RESTS->n[i]->wasCreated=1;
+                break;
+            }
+    if(!START)
+    {
+        for(int i=1; i<=10; ++i)
+        {
+            if(RESTS->n[i]==k)
+                RESTS->n[i]=NULL;
+        }
+        delete k;
+    }
+}
 
 void deleteNode(node * & node)
 {
@@ -332,9 +425,41 @@ void deleteNode(node * & node)
     delete node;
 }
 
+void makeBindingAB(node * & a, node * & b, bool fromElse)
+{
+    if(fromElse==0)
+        a->next=b;
+    else
+        a->nextElse=b;
+    for(int i=1; i<=10; ++i)
+    {
+        if(FREE_NODES->n[i]==b)
+            FREE_NODES->n[i]=NULL;
+    }
+    for(int i=1; i<=10; ++i)
+    {
+        if(RESTS->n[i]==b)
+            RESTS->n[i]=NULL;
+    }
+    for(int i=1; i<=10; ++i)
+    {
+        if(FREE_NODES->n[i]==a)
+            FREE_NODES->n[i]=NULL;
+        for(int j=1; j<=10; ++j)
+            if(RESTS->n[j]==NULL)
+            {
+                RESTS->n[j]=a;
+                a->location=3;
+            }
+    }
+    b->location=a->location;
+}
 
-
-
+void initialize()
+{
+    for(int i=1; i<=10; ++i)
+        RESTS->n[i]=NULL;
+}
 
 
 

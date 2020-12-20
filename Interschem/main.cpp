@@ -7,6 +7,7 @@
 
 int main()
 {
+    initialize();
     initwindow(800,600);
 
 //    createStart(30, 30, true);
@@ -50,6 +51,19 @@ int main()
 //    selectCorrectNode(xx, yy, p);
 //    cout<<xx<<' '<<yy<<'\n';
 //    writeNode(p);
+    int xx, yy;
+
+    while (!ismouseclick(WM_LBUTTONDOWN))
+        delay(500);
+    getmouseclick(WM_LBUTTONDOWN, xx, yy);
+    node * frst = new node;
+    node * sec = new node;
+    selectCorrectNode(xx, yy, frst, sec);
+    cout<<xx<<' '<<yy<<'\n';
+    writeNode(frst);
+
+//    START->next=FREE_NODES->n[1];
+//    cout<<isSchemeCorrect(START);
 
 
 //    int xx, yy;
