@@ -12,7 +12,6 @@
 #define DECISION_BASE 150
 #define DECISION_HEIGHT 80
 #define FREE_NODES_SIZE 10
-#define REST_NODES_SIZE 10
 #define ALL_NODES_TIME_SIZE 100
 
 using namespace std;
@@ -45,7 +44,7 @@ struct allNodesTimeStruct
 
 struct restNodesStruct
 {
-    node * n[REST_NODES_SIZE];
+    node * n[FREE_NODES_SIZE];
 };
 
 restNodesStruct * RESTS = new restNodesStruct;
@@ -65,7 +64,6 @@ void createNode(char type[20], bool isDecision, int x, int y) //creates free nod
 {
     if(strcmp(type, "START")==0)
     {
-
         START->isDecision=0;
         strcpy(START->type, "START");
         START->next=START->nextElse=NULL;
@@ -75,7 +73,7 @@ void createNode(char type[20], bool isDecision, int x, int y) //creates free nod
         START->coordY=y;
         START->viz=0;
         START->wasCreated=1;
-        for(int i=1; i<=10; ++i)
+        for(int i=0; i<=10; ++i)
             FREE_NODES->n[i]=NULL;
     }
     else
@@ -339,7 +337,7 @@ void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelect
     }
     restoreViz(START);
     selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected, underSelectedNode, selectedAtLeastTwice);
-    for(int i=1; i<=10; ++i)
+    for(int i=1; i<=FREE_NODES_SIZE; ++i)
     {
         if(RESTS->n[i]!=NULL)
         {
@@ -379,7 +377,7 @@ void deleteNode(node * & k)
     LAST_DELETED = k;
     k->wasCreated=0;
     if(k->next)
-        for(int i=1; i<=10; ++i)
+        for(int i=1; i<=FREE_NODES_SIZE; ++i)
             if(RESTS->n[i]==NULL)
             {
                 RESTS->n[i]=k->next;
@@ -387,7 +385,7 @@ void deleteNode(node * & k)
                 break;
             }
     if(k->nextElse)
-        for(int i=1; i<=10; ++i)
+        for(int i=1; i<=FREE_NODES_SIZE; ++i)
             if(RESTS->n[i]==NULL)
             {
                 RESTS->n[i]=k->nextElse;
@@ -396,7 +394,7 @@ void deleteNode(node * & k)
             }
     if(!START)
     {
-        for(int i=1; i<=10; ++i)
+        for(int i=1; i<=FREE_NODES_SIZE; ++i)
         {
             if(RESTS->n[i]==k)
                 RESTS->n[i]=NULL;
@@ -405,43 +403,23 @@ void deleteNode(node * & k)
     }
 }
 
-void deleteNode(node * & node)
-{
-    LAST_DELETED = node;
-    if(node->next)
-        for(int i=1;i<=REST_NODES_SIZE;++i)
-            if(RESTS->n[i]==NULL)
-            {
-                RESTS->n[i]=node->next;
-                break;
-            }
-    if(node->nextElse)
-        for(int i=1;i<=REST_NODES_SIZE;++i)
-            if(RESTS->n[i]==NULL)
-            {
-                RESTS->n[i]=node->nextElse;
-                break;
-            }
-    delete node;
-}
-
 void makeBindingAB(node * & a, node * & b, bool fromElse)
 {
     if(fromElse==0)
         a->next=b;
     else
         a->nextElse=b;
-    for(int i=1; i<=10; ++i)
+    for(int i=1; i<=FREE_NODES_SIZE; ++i)
     {
         if(FREE_NODES->n[i]==b)
             FREE_NODES->n[i]=NULL;
     }
-    for(int i=1; i<=10; ++i)
+    for(int i=1; i<=FREE_NODES_SIZE; ++i)
     {
         if(RESTS->n[i]==b)
             RESTS->n[i]=NULL;
     }
-    for(int i=1; i<=10; ++i)
+    for(int i=1; i<=FREE_NODES_SIZE; ++i)
     {
         if(FREE_NODES->n[i]==a)
             FREE_NODES->n[i]=NULL;
@@ -457,7 +435,7 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
 
 void initialize()
 {
-    for(int i=1; i<=10; ++i)
+    for(int i=0; i<=FREE_NODES_SIZE; ++i)
         RESTS->n[i]=NULL;
 }
 

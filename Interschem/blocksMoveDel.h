@@ -3,106 +3,132 @@
 
 #include "blocks.h"
 
-
-node *findNodeByTimeInStart(int time, node * head)
+void reinitializeListViz(node *head)
 {
-    int visited[ALL_NODES_TIME_SIZE];
-    int j = 0;
-    bool isVisited;
+    bool wasViz;
+    if (head)
+    {
+        if (head->viz)
+        {
+            wasViz = true;
+            head->viz = 0;
+        }
+        else
+            wasViz = false;
+
+        if (head->next && head->next->viz)
+            reinitializeListViz(head->next);
+        if (head->nextElse && head->nextElse->viz)
+            reinitializeListViz(head->nextElse);
+    }
+}
+
+void reinitializeAllViz()
+{
+    int i = 0;
+    int j;
+    if (START)
+        reinitializeListViz(START);
+
+    for (j = 0; j < FREE_NODES_SIZE; ++j)
+        if (FREE_NODES->n[j] != NULL && FREE_NODES->n[j]->viz)
+             FREE_NODES->n[j]->viz = 0;
+
+    for (j = 0; j < FREE_NODES_SIZE; ++j)
+        if (RESTS->n[j] != NULL)
+            reinitializeListViz(RESTS->n[j]);
+}
+
+node *findNodeByTimeInList(int time, node * head)
+{
+    bool wasViz;
     if (head->timePriority)
     {
-        if (ALL_NODES_TIME.arraySize != 0)
+        if (head->viz)
+            wasViz = true;
+        else
         {
-            for (int i = 0; i < ALL_NODES_TIME_SIZE; ++i)
-            {
-                if (visited[i] == head->timePriority)
-                {
-                    isVisited = true;
-                    break;
-                }
-                isVisited = false;
-            }
+            wasViz = false;
+            head->viz = 1;
         }
-        if (!isVisited)
-        {
-            visited[j] = head->timePriority;
-            if (head->timePriority == time)
-                return head;
-            findNodeByTimeInStart(time, head->next);
-            if (head->isDecision == true)
-                findNodeByTimeInStart(time, head->nextElse);
-        }
+
+        if (head->timePriority == time && wasViz == false)
+            return head;
+        if (head->next && !head->next->viz)
+            findNodeByTimeInList(time, head->next);
+        if (head->nextElse && !head->nextElse->viz)
+            findNodeByTimeInList(time, head->nextElse);
     }
     return NULL;
 }
 
-//to implement for rests
 node *findNodeByTime(int time)
 {
     node *found;
+    int j;
     if (START)
     {
         if (START->timePriority == time)
             return START;
         if (START->next)
         {
-            found = findNodeByTimeInStart(time, START->next);
+            found = findNodeByTimeInList(time, START->next);
             if (found)
                 return found;
         }
     }
-    for (int j = 0; j < FREE_NODES_SIZE; ++j)
+
+    for (j = 0; j < FREE_NODES_SIZE; ++j)
         if (FREE_NODES->n[j] != NULL && FREE_NODES->n[j]->timePriority == time)
             return FREE_NODES->n[j];
-    return NULL;
 
+    for (j = 0; j < FREE_NODES_SIZE; ++j)
+    {
+        if (RESTS->n[j] != NULL && RESTS->n[j]->timePriority == time)
+            return RESTS->n[j];
+        found = findNodeByTimeInList(time, RESTS->n[j]);
+        if (found)
+            return found;
+    }
+    return NULL;
 }
 
 void addBlocksFromList(node *head, int &i)
 {
-    int visited[ALL_NODES_TIME_SIZE];
-    int j = 0;
-    bool isVisited;
-    if (head->timePriority)
+    bool wasViz;
+    if (head)
     {
-        if (ALL_NODES_TIME.arraySize != 0)
+        if (head->viz)
+            wasViz = true;
+        else
         {
-            for (int i = 0; i < ALL_NODES_TIME_SIZE; ++i)
-            {
-                if (visited[i] == head->timePriority)
-                {
-                    isVisited = true;
-                    break;
-                }
-                isVisited = false;
-            }
+            wasViz = false;
+            head->viz = 1;
         }
-        if (!isVisited)
-        {
+
+        if (!wasViz)
             ALL_NODES_TIME.n[i++] = head->timePriority;
-            visited[j] = head->timePriority;
+        if (head->next && !head->next->viz)
             addBlocksFromList(head->next, i);
-            if (head->isDecision == true)
-                addBlocksFromList(head->nextElse, i);
-        }
+        if (head->nextElse && !head->nextElse->viz)
+            addBlocksFromList(head->nextElse, i);
     }
 }
 
-//to implement rest nodes
 void createArrayWithAllBlocks()
 {
     int i = 0;
     int j;
     if (START)
-    {
-        ALL_NODES_TIME.n[i++] = START->timePriority;
-        if (START->next)
-            addBlocksFromList(START->next, i);
-    }
+        addBlocksFromList(START, i);
 
     for (j = 0; j < FREE_NODES_SIZE; ++j)
         if (FREE_NODES->n[j] != NULL)
-            ALL_NODES_TIME.n[i++] = FREE_NODES->n[j]->timePriority;
+             ALL_NODES_TIME.n[i++] = FREE_NODES->n[j]->timePriority;
+
+    for (j = 0; j < FREE_NODES_SIZE; ++j)
+        if (RESTS->n[j] != NULL)
+            addBlocksFromList(RESTS->n[j], i);
 
     ALL_NODES_TIME.arraySize = i;
 }
@@ -138,12 +164,11 @@ void sortArrayByTime(int low, int high)
 
 void drawAll()
 {
+    reinitializeAllViz();
     createArrayWithAllBlocks();
     sortArrayByTime(0, ALL_NODES_TIME.arraySize - 1);
     for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
-    {
         createBlock(findNodeByTime(ALL_NODES_TIME.n[i]), true);
-    }
 }
 
 void moveBlock(int x, int y, node *p)
@@ -159,9 +184,7 @@ void moveBlock(int x, int y, node *p)
         if (cursorPos1.x != cursorPos2.x || cursorPos1.y != cursorPos2.y)
         {
             if (isFirstTime)
-            {
                 isFirstTime = false;
-            }
             else
             {
                 createBlock(p, false);
