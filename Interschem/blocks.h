@@ -93,7 +93,7 @@ void createStart(int x, int y, bool isColored)
     int textHeight = textheight("Start");
     outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2 - 5, "Start");
 
-//    createNode("START", 0, x, y);
+    createNode("START", 0, x, y);
 }
 
 void createStop(int x, int y, bool isColored)

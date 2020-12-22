@@ -9,19 +9,22 @@
 1607970984 e:\uni\ip\project\interschem\blocks.h
 	"list.h"
 
-1608377200 source:e:\ip\final project\interschem\interschem\main.cpp
+1608644783 source:e:\ip\final project\interschem\interschem\main.cpp
 	<iostream>
 	<graphics.h>
 	<winbgim.h>
 	<cmath>
 	"blocks.h"
+	"interpretation.h"
 
-1608120303 e:\ip\final project\interschem\interschem\blocks.h
+1608571835 e:\ip\final project\interschem\interschem\blocks.h
 	"list.h"
 
-1608377200 e:\ip\final project\interschem\interschem\list.h
+1608642684 e:\ip\final project\interschem\interschem\list.h
 	<iostream>
 
 1607970943 e:\uni\ip\project\interschem\list.h
 	<iostream>
+
+1608644818 e:\ip\final project\interschem\interschem\interpretation.h
 
