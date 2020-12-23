@@ -82,8 +82,8 @@ void dragNewBlock(int x, int y, char *blockType)
 
 void drawPage()
 {
-    setlinestyle(0, 0, 3);
     //drag and drop blocks
+    setlinestyle(0, 0, 3);
     createStart(START_X, START_Y, true, true);
     createStop(STOP_X, STOP_Y, true, true);
     createIn(IN_X, IN_Y, true, true);
@@ -190,7 +190,7 @@ void drawSubmenuCustomize(bool isColored)
     }
 }
 
-//to implement
+//to implement as sparkles
 void hoverMenu(int x, int y)
 {
 
@@ -216,10 +216,8 @@ void handleMenuClick(int x, int y)
                 if (xx > firstSchemeX && xx < lastSchemeX && yy > MENUY && yy < lastSchemeY)
                 {
 //                    if (yy < MENUY + smallTileY)
-//                        saveScheme();
-//                    else if (yy < MENUY + smallTileY * 2)
 //                        openScheme();
-//                    else if (yy < MENUY + smallTileY * 3)
+//                    else if (yy < MENUY + smallTileY * 2)
 //                        emptyScheme();
                 }
                 else
@@ -249,11 +247,13 @@ void handleMenuClick(int x, int y)
                 if (xx > firstCustomizeX && xx < lastCustomizeX && yy > MENUY && yy < lastCustomizeY)
                 {
 //                    if (yy < MENUY + smallTileY)
-//
+//                      //block color
 //                    else if (yy < MENUY + smallTileY * 2)
-//
+//                      //text color
 //                    else if (yy < MENUY + smallTileY * 3)
-//
+//                      //background color
+//                    else if (yy < MENUY + smallTileY * 4)
+//                      //binding color
                 }
                 else
                 {

@@ -22,11 +22,12 @@ int main()
     int xx, yy;
     node * p = new node;
     node * behind = new node;
-//    POINT cursorPos;
+//    POINT cursorPos; //for the hover thingie
     char newBlock[10];
     bool isFirstTime = true;
     bool isDone = false;
 
+    //interface for the app
     while(!isDone)
     {
 //        GetCursorPos(&cursorPos);
@@ -53,7 +54,7 @@ int main()
                     if (strcmp(newBlock, "NO") && ((strcmp(newBlock, "START") && !isFirstTime) || (!strcmp(newBlock, "START") && isFirstTime)))
                     {
                         dragNewBlock(xx, yy, newBlock);
-                        if (isFirstTime && START->wasCreated)
+                        if (isFirstTime)
                             isFirstTime = false;
                     }
                 }
@@ -95,7 +96,7 @@ int main()
 
 //    START->next=FREE_NODES->n[1];
 //    cout<<isSchemeCorrect(START);
-
+//
 
 //TESTING 2.0 analyzeScheme(START). To modify cin>>pisica value go to interpretation.h, getVariableFromIN() and modify value.
 //note: this function is not finished, dont judge it :)

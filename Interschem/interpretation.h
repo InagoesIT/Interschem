@@ -1,3 +1,5 @@
+#ifndef INTERPRETATION_H_INCLUDED
+#define INTERPRETATION_H_INCLUDED
 
 struct VarSub
 {
@@ -478,3 +480,5 @@ void analyzeScheme(node * k)
             analyzeScheme(k->nextElse);
     }
 }
+
+#endif // INTERPRETATION_H_INCLUDED

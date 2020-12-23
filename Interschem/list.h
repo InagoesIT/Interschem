@@ -330,7 +330,7 @@ void selectCorrectNodeFromRests(int x, int y, node * k, int & maxPriority, bool 
             selectCorrectNodeFromRests(x, y, k->nextElse, maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
     }
 }
-//!!changed
+
 void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelectedNode)  //select the correct node from (x,y)
 {
     int maxPriority=0;
