@@ -403,7 +403,7 @@ void deleteNode(node * & k)
             }
     if(!START)
     {
-        for(int i=0; i<=FREE_NODES_SIZE; ++i)
+        for(int i=0; i<FREE_NODES_SIZE; ++i)
         {
             if(RESTS->n[i]==k)
                 RESTS->n[i]=NULL;
