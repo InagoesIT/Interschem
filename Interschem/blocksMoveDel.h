@@ -2,12 +2,20 @@
 #define BLOCKSMOVEDEL_H_INCLUDED
 
 #include "blocks.h"
+#include "menu.h"
+
+#define DRAG_SIZE_X 250
+#define MENUY 70
+#define WINDOWX 1200
+#define WINDOWY 700
+
+void drawPage();
 
 void reinitializeListViz(node *head)
 {
-    bool wasViz;
     if (head)
     {
+        bool wasViz;
         if (head->viz)
         {
             wasViz = true;
@@ -25,18 +33,20 @@ void reinitializeListViz(node *head)
 
 void reinitializeAllViz()
 {
-    int i = 0;
     int j;
-    if (START)
+    if (START->wasCreated)
+    {
         reinitializeListViz(START);
 
-    for (j = 0; j < FREE_NODES_SIZE; ++j)
-        if (FREE_NODES->n[j] != NULL && FREE_NODES->n[j]->viz)
-             FREE_NODES->n[j]->viz = 0;
+        for (j = 0; j < FREE_NODES_SIZE; ++j)
+            if (FREE_NODES->n[j] != NULL && FREE_NODES->n[j]->viz)
+                FREE_NODES->n[j]->viz = 0;
 
-    for (j = 0; j < FREE_NODES_SIZE; ++j)
-        if (RESTS->n[j] != NULL)
-            reinitializeListViz(RESTS->n[j]);
+
+        for (j = 0; j < FREE_NODES_SIZE; ++j)
+            if (RESTS->n[j] != NULL)
+                reinitializeListViz(RESTS->n[j]);
+    }
 }
 
 node *findNodeByTimeInList(int time, node * head)
@@ -66,7 +76,7 @@ node *findNodeByTime(int time)
 {
     node *found;
     int j;
-    if (START)
+    if (START->wasCreated)
     {
         if (START->timePriority == time)
             return START;
@@ -119,18 +129,20 @@ void createArrayWithAllBlocks()
 {
     int i = 0;
     int j;
-    if (START)
+    if (START->wasCreated)
+    {
         addBlocksFromList(START, i);
 
-    for (j = 0; j < FREE_NODES_SIZE; ++j)
-        if (FREE_NODES->n[j] != NULL)
-             ALL_NODES_TIME.n[i++] = FREE_NODES->n[j]->timePriority;
+        for (j = 0; j < FREE_NODES_SIZE; ++j)
+            if (FREE_NODES->n[j] != NULL)
+                 ALL_NODES_TIME.n[i++] = FREE_NODES->n[j]->timePriority;
 
-    for (j = 0; j < FREE_NODES_SIZE; ++j)
-        if (RESTS->n[j] != NULL)
-            addBlocksFromList(RESTS->n[j], i);
+        for (j = 0; j < FREE_NODES_SIZE; ++j)
+            if (RESTS->n[j] != NULL)
+                addBlocksFromList(RESTS->n[j], i);
 
-    ALL_NODES_TIME.arraySize = i;
+        ALL_NODES_TIME.arraySize = i;
+    }
 }
 
 int partitionNodes(int low, int high)
@@ -162,7 +174,7 @@ void sortArrayByTime(int low, int high)
     }
 }
 
-void drawAll()
+void drawAllBlocks()
 {
     reinitializeAllViz();
     createArrayWithAllBlocks();
@@ -171,12 +183,14 @@ void drawAll()
         createBlock(findNodeByTime(ALL_NODES_TIME.n[i]), true);
 }
 
-void moveBlock(int x, int y, node *p)
+void moveBlock(int x, int y, node *p, bool isNew)
 {
     POINT cursorPos1, cursorPos2;
     cursorPos1.x = x;
     cursorPos1.y = y;
     bool isFirstTime = true;
+
+    clearmouseclick(WM_LBUTTONUP);
 
     while (!ismouseclick(WM_LBUTTONUP))
     {
@@ -187,16 +201,32 @@ void moveBlock(int x, int y, node *p)
                 isFirstTime = false;
             else
             {
-                createBlock(p, false);
-                p->coordX = cursorPos1.x;
-                p->coordY = cursorPos1.y;
-                createBlock(p, true);
-                updateTimePriority(p);
+                if (isNew && cursorPos1.y > MENUY + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - 200)
+                {
+                    createBlock(p, false);
+                    drawPage();
+                    p->coordX = cursorPos1.x;
+                    p->coordY = cursorPos1.y;
+                    createBlock(p, true);
+                }
+                else if (!isNew && cursorPos1.y > MENUY + 10 && cursorPos1.x > DRAG_SIZE_X + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - 200)
+                {
+                    createBlock(p, false);
+                    p->coordX = cursorPos1.x;
+                    p->coordY = cursorPos1.y;
+                    createBlock(p, true);
+                }
             }
         }
         GetCursorPos(&cursorPos1);
     }
-    drawAll();
+    updateTimePriority(p);
+    if ((isNew && strcmp(p->type, "START")) || !isNew)
+    {
+         line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);
+         drawAllBlocks();
+    }
+
     clearmouseclick(WM_LBUTTONUP);
 }
 

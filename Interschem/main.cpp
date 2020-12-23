@@ -3,49 +3,74 @@
 #include <winbgim.h>
 #include <cmath>
 
+#include "menu.h"
 #include "blocks.h"
-#include "blocksMoveDel.h"
+
+#define WINDOWX 1200
+#define WINDOWY 700
+#define MENUY 70
+
 
 int main()
 {
     initialize();
-    initwindow(800,600);
+    initwindow(WINDOWX, WINDOWY);
+    drawPage();
+    drawMenu();
 
-//    createStart(30, 30, true);
-//    createStop(30, 130, true);
-//    createIn(30, 230, true);
-//    createOut(30, 310, true);
-//    createAssign(30, 390, true);
-//    createDecision(30, 480, true);
+    int xx, yy;
+    node * p = new node;
+    node * behind = new node;
+//    POINT cursorPos;
+    char newBlock[10];
+    bool isFirstTime = true;
+    bool isDone = false;
 
+    while(!isDone)
+    {
+//        GetCursorPos(&cursorPos);
+//        if (cursorPos.y <= MENUY)
+//            hoverMenu(cursorPos.x, cursorPos.y);
+        if (ismouseclick(WM_LBUTTONDOWN))
+        {
+            getmouseclick(WM_LBUTTONDOWN, xx, yy);
+            clearmouseclick(WM_LBUTTONDOWN);
 
-//moving blocks//
+            if (yy <= MENUY)
+                handleMenuClick(xx, yy);
+            else
+            {
+                selectCorrectNode(xx, yy, p, behind);
 
-//    createStart(30, 150, true);
-//    createNode("START", false, 30, 150);
-//    createStop(50, 190, true);
-//    createNode("STOP", false, 50, 190);
-//    createOut(30, 310, true);
-//    createNode("OUT", false, 30, 310);
-//
-//    int xx, yy;
-//    node * p = new node;
-//    node * behind = new node;
-//
-//    while (1)
-//    {
-//        if (ismouseclick(WM_LBUTTONDOWN))
-//        {
-//            getmouseclick(WM_LBUTTONDOWN, xx, yy);
-//            selectCorrectNode(xx, yy, p, behind);
-//
-//            if (p)
-//                moveBlock(xx, yy, p);
-//        }
-//    }
+                if (p)
+                    moveBlock(xx, yy, p, false);
 
 
-    //testing//
+                else if (xx < DRAG_SIZE_X && yy > MENUY)
+                {
+                    strcpy(newBlock, selectedNewBlock(xx, yy));
+                    if (strcmp(newBlock, "NO") && ((strcmp(newBlock, "START") && !isFirstTime) || (!strcmp(newBlock, "START") && isFirstTime)))
+                    {
+                        dragNewBlock(xx, yy, newBlock);
+                        if (isFirstTime && START->wasCreated)
+                            isFirstTime = false;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+//testing//
+
+//    createStart(30, 30, true, true);
+//    createStop(30, 130, true, true);
+//    createIn(30, 230, true, true);
+//    createOut(30, 310, true, true);
+//    createAssign(30, 390, true, true);
+//    createDecision(30, 480, true, true);
+
 //    while (!ismouseclick(WM_LBUTTONDOWN))
 //        delay(500);
 //    getmouseclick(WM_LBUTTONDOWN, xx, yy);

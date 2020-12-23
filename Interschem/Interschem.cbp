@@ -28,6 +28,9 @@
 		</Unit>
 		<Unit filename="list.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="menu.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

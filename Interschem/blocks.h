@@ -1,12 +1,12 @@
 #ifndef BLOCKS_H_INCLUDED
 #define BLOCKS_H_INCLUDED
 
-#include "list.h"
-
 #define AUX_COLOR YELLOW
 #define BLOCK_COLOR GREEN
 #define LINE_COLOR WHITE
 #define IN_SMALL_BASE_DIFF 30
+
+float coef;
 
 void setColors(bool isColored)
 {
@@ -39,7 +39,7 @@ void createRoundedRect(int x, int y, bool isColored)
     {
         X += RADIUS / NR_POINTS;
         Y = sqrt(RADIUS * RADIUS - X * X);
-        points[0][i] = X + x + START_WIDTH - RADIUS;
+        points[0][i] = X + x + START_WIDTH * coef - RADIUS;
         points[1][i] = y - Y + RADIUS;
     }
     Y=0;
@@ -47,8 +47,8 @@ void createRoundedRect(int x, int y, bool isColored)
     {
         Y += RADIUS/NR_POINTS;
         X = sqrt(RADIUS * RADIUS - Y * Y);
-        points[0][i] = x + START_WIDTH + X - RADIUS;
-        points[1][i] = y + START_HEIGHT - RADIUS + Y;
+        points[0][i] = x + START_WIDTH * coef + X - RADIUS;
+        points[1][i] = y + START_HEIGHT * coef - RADIUS + Y;
     }
     X=0;
     for(; i < NR_POINTS * 3; i++)
@@ -56,7 +56,7 @@ void createRoundedRect(int x, int y, bool isColored)
         X += RADIUS/NR_POINTS;
         Y = sqrt(RADIUS * RADIUS - X * X);
         points[0][i] = x + RADIUS - X;
-        points[1][i] = y + START_HEIGHT - RADIUS + Y;
+        points[1][i] = y + START_HEIGHT * coef - RADIUS + Y;
     }
     Y=0;
     for(; i < NR_POINTS * 4; i++)
@@ -73,7 +73,7 @@ void createRoundedRect(int x, int y, bool isColored)
 
     if (isColored)
     {
-        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, AUX_COLOR);
+        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
         for (i = 0; i < NR_POINTS * 4 - 1; i++)
             line(points[0][i], points[1][i], points[0][i+1], points[1][i + 1]);
@@ -81,12 +81,17 @@ void createRoundedRect(int x, int y, bool isColored)
     }
     else
     {
-        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, BLACK);
+        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, BLACK);
     }
 }
 
-void createStart(int x, int y, bool isColored)
+void createStart(int x, int y, bool isSmall, bool isColored)
 {
+    if (!isSmall)
+        coef = 1;
+    else
+        coef = 0.7;
+
     createRoundedRect(x, y, isColored);
 
     if (isColored)
@@ -94,13 +99,18 @@ void createStart(int x, int y, bool isColored)
         int textWidth = textwidth("Start");
         int textHeight = textheight("Start");
         setbkcolor(BLOCK_COLOR);
-        outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2 - 5, "Start");
+        outtextxy(x + (START_WIDTH * coef - textWidth) / 2, y + (START_HEIGHT * coef - textHeight) / 2 - 5, "Start");
         setbkcolor(BLACK);
     }
 }
 
-void createStop(int x, int y, bool isColored)
+void createStop(int x, int y, bool isSmall, bool isColored)
 {
+    if (!isSmall)
+        coef = 1;
+    else
+        coef = 0.7;
+
     createRoundedRect(x, y, isColored);
 
     if (isColored)
@@ -108,159 +118,191 @@ void createStop(int x, int y, bool isColored)
         int textWidth = textwidth("Stop");
         int textHeight = textheight("Stop");
         setbkcolor(BLOCK_COLOR);
-        outtextxy(x + (STOP_WIDTH - textWidth)/2, y + (STOP_HEIGHT - textHeight)/2, "Stop");
+        outtextxy(x + (STOP_WIDTH * coef - textWidth)/2, y + (STOP_HEIGHT * coef - textHeight)/2, "Stop");
         setbkcolor(BLACK);
     }
 }
 
-void createIn(int x, int y, bool isColored)
+void createIn(int x, int y, bool isSmall, bool isColored)
 {
     const int LATERAL_PART = 50;
+    char text[10];
+
+    if (!isSmall)
+        coef = 1;
 
     setColors(isColored);
 
-	line(x, y, x + IN_BIG_BASE, y);
-	line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART);
-	line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
-	line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
+	line(x, y, x + IN_BIG_BASE * coef, y);
+	line(x + IN_BIG_BASE * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
+	line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
+	line(x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x, y);
 
 	if (isColored)
 	{
-	    floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
+	    floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, AUX_COLOR);
 	    setcolor(LINE_COLOR);
 
-	    line(x, y, x + IN_BIG_BASE, y);
-        line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART);
-        line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
-        line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
+	    line(x, y, x + IN_BIG_BASE * coef, y);
+        line(x + IN_BIG_BASE * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
+        line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
+        line(x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x, y);
 
-        int textWidth = textwidth("<var>");
-        int textHeight = textheight("<var>");
+        if (!isSmall)
+            strcpy(text, "<var>");
+        else
+            strcpy(text, "Input");
+
+        int textWidth = textwidth(text);
+        int textHeight = textheight(text);
         setbkcolor(BLOCK_COLOR);
-        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, "<var>");
+        outtextxy(x + (IN_BIG_BASE * coef - textWidth) / 2, y + (LATERAL_PART * coef - textHeight) / 2, text);
         setbkcolor(BLACK);
 	}
     else
-    {
-        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, BLACK);
-    }
-
-//    createNode("IN", 0, x, y);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
 }
 
-void createOut(int x, int y, bool isColored)
+void createOut(int x, int y, bool isSmall, bool isColored)
 {
     const int LATERAL_PART = 50;
+    char text[10];
+
+    if (!isSmall)
+        coef = 1;
 
     setColors(isColored);
 
-	line(x + IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y);
-	line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE, y + LATERAL_PART);
-	line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
-	line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
+	line(x + IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y);
+	line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef, y + LATERAL_PART * coef);
+	line(x + IN_BIG_BASE * coef, y + LATERAL_PART * coef, x, y + LATERAL_PART * coef);
+	line(x, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y);
 
     if (isColored)
     {
-        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, AUX_COLOR);
 
         setcolor(WHITE);
-        line(x + IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y);
-        line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE, y + LATERAL_PART);
-        line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
-        line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
+        line(x + IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y);
+        line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef, y + LATERAL_PART * coef);
+        line(x + IN_BIG_BASE * coef, y + LATERAL_PART * coef, x, y + LATERAL_PART * coef);
+        line(x, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y);
 
-        int textWidth = textwidth("<var>");
-        int textHeight = textheight("<var>");
+        if (!isSmall)
+            strcpy(text, "<var>");
+        else
+            strcpy(text, "Output");
+
+        int textWidth = textwidth(text);
+        int textHeight = textheight(text);
         setbkcolor(BLOCK_COLOR);
-        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, "<var>");
+        outtextxy(x + (IN_BIG_BASE * coef - textWidth) / 2, y + (LATERAL_PART * coef - textHeight) / 2, text);
         setbkcolor(BLACK);
     }
     else
-    {
-        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, BLACK);
-    }
-
-//    createNode("OUT", 0, x, y);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
 }
 
-void createAssign(int x, int y, bool isColored)
+void createAssign(int x, int y, bool isSmall, bool isColored)
 {
+    char text[15];
+
+    if (!isSmall)
+        coef = 1;
+    else
+        coef = 0.7;
+
     setColors(isColored);
 
-    rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
+    rectangle(x, y, x + ASSIGN_WIDTH * coef, y + ASSIGN_HEIGHT * coef);
 
     if (isColored)
     {
-        floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, AUX_COLOR);
+        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
-        rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
+        rectangle(x, y, x + ASSIGN_WIDTH * coef, y + ASSIGN_HEIGHT * coef);
 
-        int textWidth = textwidth("<var> <- exp");
-        int textHeight = textheight("<var> <- exp");
+        if (!isSmall)
+            strcpy(text, "<var> <- exp");
+        else
+            strcpy(text, "Assign");
+
+        int textWidth = textwidth(text);
+        int textHeight = textheight(text);
         setbkcolor(BLOCK_COLOR);
-        outtextxy(x + (ASSIGN_WIDTH - textWidth) / 2, y + (ASSIGN_HEIGHT - textHeight) / 2, "<var> <- exp");
+        outtextxy(x + (ASSIGN_WIDTH * coef - textWidth) / 2, y + (ASSIGN_HEIGHT * coef - textHeight) / 2, text);
         setbkcolor(BLACK);
     }
     else
-    {
-        floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, BLACK);
-    }
-
-//    createNode("ASSIGN", 0, x, y);
+        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, BLACK);
 }
 
-void createDecision(int x, int y, bool isColored)
+void createDecision(int x, int y, bool isSmall, bool isColored)
 {
     int TWidth = textwidth("T");
+    int FWidth = textwidth("F");
     const int EQUAL_PART = 80;
     const int X = x + TWidth + 10;
+    char text[16];
+
+    if (!isSmall)
+        coef = 1;
+    else
+        coef = 0.7;
 
     setColors(isColored);
 
-    line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
-    line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
-    line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
+    line(X + DECISION_BASE * coef / 2, y, X + DECISION_BASE * coef, y + EQUAL_PART * coef);
+    line(X + DECISION_BASE * coef, y + EQUAL_PART * coef, X, y + EQUAL_PART * coef);
+    line(X, y + EQUAL_PART * coef, X + DECISION_BASE * coef / 2, y);
 
     if (isColored)
     {
-        floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, AUX_COLOR);
+        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
-        line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
-        line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
-        line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
+        line(X + DECISION_BASE * coef / 2, y, X + DECISION_BASE * coef, y + EQUAL_PART * coef);
+        line(X + DECISION_BASE * coef, y + EQUAL_PART * coef, X, y + EQUAL_PART * coef);
+        line(X, y + EQUAL_PART * coef, X + DECISION_BASE * coef / 2, y);
 
-        int textWidth = textwidth("<var> ? <var>");
-        int textHeight = textheight("<var> ? <var>");
-        int FWidth = textwidth("F");
+        if (!isSmall)
+            strcpy(text, "<var> ? <var>");
+        else
+            strcpy(text, "Decision");
+
+        int textWidth = textwidth(text);
+        int textHeight = textheight(text);
 
         setbkcolor(BLOCK_COLOR);
-        outtextxy(X + (DECISION_BASE - textWidth)/2, y + (EQUAL_PART - textHeight)/2 + 20, "<var> ? <var>");
+        outtextxy(X + (DECISION_BASE * coef - textWidth) / 2, y + (EQUAL_PART * coef - textHeight) / 2 + 20 * coef, text);
         setbkcolor(BLACK);
-        outtextxy(30 + TWidth / 2, y + EQUAL_PART - 10, "T");
-        outtextxy(X + DECISION_BASE + 5 + FWidth / 2, y + EQUAL_PART - 10, "F");
+        outtextxy(x + TWidth / 2, y + EQUAL_PART * coef - 10, "T");
+        outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
     }
     else
     {
-        floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, BLACK);
-    }
+        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, BLACK);
 
-    //createNode("DECISION", 1, x, y);
+        setbkcolor(BLACK);
+        setcolor(BLACK);
+        outtextxy(x + TWidth / 2, y + EQUAL_PART * coef - 10, "T");
+        outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
+    }
 }
 
 void createBlock(node *p, bool isColored)
 {
     if (strcmp(p->type, "START") == 0)
-        createStart(p->coordX, p->coordY, isColored);
+        createStart(p->coordX, p->coordY, false, isColored);
     else if (strcmp(p->type, "STOP") == 0)
-        createStop(p->coordX, p->coordY, isColored);
+        createStop(p->coordX, p->coordY, false, isColored);
     else if (strcmp(p->type, "IN") == 0)
-        createIn(p->coordX, p->coordY, isColored);
+        createIn(p->coordX, p->coordY, false, isColored);
     else if (strcmp(p->type, "OUT") == 0)
-        createOut(p->coordX, p->coordY, isColored);
+        createOut(p->coordX, p->coordY, false, isColored);
     else if (strcmp(p->type, "ASSIGN") == 0)
-        createAssign(p->coordX, p->coordY, isColored);
+        createAssign(p->coordX, p->coordY, false, isColored);
     else
-        createDecision(p->coordX, p->coordY, isColored);
+        createDecision(p->coordX, p->coordY, false, isColored);
 }
 
 #endif // BLOCKS_H_INCLUDED
