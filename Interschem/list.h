@@ -262,10 +262,12 @@ bool isSchemeCorrect(node * k)
     k->viz=1;
     if(!(k->next) and !(k->nextElse) and strcmp(k->type, "STOP")!=0)
         return 0;
-    if(k->next and k->next->viz==0)
-        isSchemeCorrect(k->next);
-    if(k->nextElse and k->nextElse->viz==0)
-        isSchemeCorrect(k->nextElse);
+    else if((k->next and k->next->viz==0) and (k->nextElse and k->nextElse->viz==0))
+        return isSchemeCorrect(k->next)*isSchemeCorrect(k->nextElse);
+    else if((k->next and k->next->viz==0) and !(k->nextElse and k->nextElse->viz==0))
+        return isSchemeCorrect(k->next);
+    else if(!(k->next and k->next->viz==0) and (k->nextElse and k->nextElse->viz==0))
+        return isSchemeCorrect(k->nextElse);
     return 1;
 }
 
