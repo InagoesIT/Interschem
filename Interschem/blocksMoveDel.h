@@ -14,16 +14,13 @@ void drawPage();
 
 void makeAllVizEqualTo2(node *head)
 {
-    if (head)
+    if (head && (head->viz==1 or head->viz==0))
     {
-        if (head->viz==1 or head->viz==0)
-        {
-            head->viz = 2;
-            if (head->next && (head->next->viz==0 or head->next->viz==1))
-                makeAllVizEqualTo2(head->next);
-            if (head->nextElse && (head->nextElse->viz==0 or head->nextElse->viz==1))
-                makeAllVizEqualTo2(head->nextElse);
-        }
+        head->viz = 2;
+        if (head->next && (head->next->viz==0 or head->next->viz==1))
+            makeAllVizEqualTo2(head->next);
+        if (head->nextElse && (head->nextElse->viz==0 or head->nextElse->viz==1))
+            makeAllVizEqualTo2(head->nextElse);
     }
 }
 
@@ -66,7 +63,7 @@ void reinitializeAllViz()
     }
 }
 
-void findNodeByTimeInList(int time, node * head, node * & nodeFound, bool & nodeWasFound)//this function cannot have a return node because it is recurrent
+void findNodeByTimeInList(int time, node * head, node * & nodeFound, bool & nodeWasFound)
 {
     if(nodeWasFound==0)
     {
@@ -86,6 +83,7 @@ void findNodeByTimeInList(int time, node * head, node * & nodeFound, bool & node
                 nodeFound=head;
                 nodeWasFound=1;
             }
+
             if (head->next && !head->next->viz)
                 findNodeByTimeInList(time, head->next, nodeFound, nodeWasFound);
             if (head->nextElse && !head->nextElse->viz)
@@ -121,7 +119,7 @@ node *findNodeByTime(int time)
         if (RESTS->n[j] != NULL && RESTS->n[j]->timePriority == time)
             return RESTS->n[j];
         bool nodeWasFound=0;
-        if(RESTS->n[j])
+        if (RESTS->n[j])
             findNodeByTimeInList(time, RESTS->n[j], found, nodeWasFound);
         if (nodeWasFound==1)
             return found;
@@ -212,13 +210,13 @@ void drawAllBlocks()
     reinitializeAllViz();
     reinitializeAllNodesTime();
     createArrayWithAllBlocks();
-    reinitializeAllViz(); //we need to reinitialize all viz before calling "findNodeByTimeInList" too or else the program creashes
+    reinitializeAllViz();
     sortArrayByTime(0, ALL_NODES_TIME.arraySize - 1);
     if(ALL_NODES_TIME.arraySize)
     {
         for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
         {
-            reinitializeAllViz();//viz is always used by findNodeByTime so we need to reinitialize it in every loop
+            reinitializeAllViz();
             node * k = new node;
             k=findNodeByTime(ALL_NODES_TIME.n[i]);
             createBlock(k, true);

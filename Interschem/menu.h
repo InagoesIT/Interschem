@@ -297,8 +297,8 @@ void handleMenuClick(int x, int y)
                       saveScheme();
                     else if (yy < MENUY + smallTileY * 2)
                       openScheme();
-//                    else if (yy < MENUY + smallTileY * 3)
-//                      emptyScheme();
+                    else if (yy < MENUY + smallTileY * 3)
+                      emptyScheme();
                 }
                 else
                 {

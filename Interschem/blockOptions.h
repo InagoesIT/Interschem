@@ -237,14 +237,18 @@ int getNrOfOptions(node * p)
     }
 }
 
-
-void closeOptions(int opx, int opy, int nrOfOptions, int & finished)
+void refresh()
 {
     cleardevice();
     drawPage();
     drawMenu();
     drawAllBlocks();
     clearmouseclick(WM_LBUTTONDOWN);
+}
+
+void closeOptions(int opx, int opy, int nrOfOptions, int & finished)
+{
+    refresh();
     finished=true;
 }
 
@@ -255,16 +259,6 @@ bool insideOptions(int xx, int yy, int opx, int opy, int nrOfOptions)
     if(yy< opy or yy > opy + ONE_OPTION_HEIGHT * nrOfOptions)
         return 0;
     return 1;
-}
-
-
-void refresh()
-{
-    cleardevice();
-    drawPage();
-    drawMenu();
-    drawAllBlocks();
-    clearmouseclick(WM_LBUTTONDOWN);
 }
 
 void deleteWasPressed(node * & p)

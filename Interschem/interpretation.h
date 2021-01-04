@@ -8,7 +8,7 @@ struct VarSub
     bool isUsed;
 } VARIABLES[10];
 
-void getVariableFromIN(node * k, char var[EXPRESSION_LENGTH], int & value)
+void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
 {
     strcpy(var, k->expression);
     value=100; //implement right click to get value for IN blocks in menu
@@ -234,7 +234,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz1=getVariablePosition(op1, state1);
                 if(state1==0 or state1==2)
-                    cout<<"There are variables in this expression that are not defined!!!!!!!!1"; // continue code for menu
+                    cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
                 else
                     value1=VARIABLES[poz1].value;
             }
@@ -244,7 +244,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz2=getVariablePosition(op2, state2);
                 if(state2==0 or state2==2)
-                    cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
+                    cout<<"There are variables in this expression that are not defined!!!!!!!!!"; // continue code for menu
                 value2=VARIABLES[poz2].value;
             }
             result=calculateResult(value1, value2, postfix[i][0]);
@@ -408,7 +408,7 @@ void analyzeScheme(node * k)
     isSchemeCorrect(START, isCorrect);
     if(isCorrect==0)
         return;
-    restoreViz(START);
+    reinitializeAllViz();
     if(k==START)
         analyzeScheme(k->next);
     else if(strcmp(k->type, "IN")==0)
@@ -417,7 +417,7 @@ void analyzeScheme(node * k)
         char var[EXPRESSION_LENGTH];
         int poz=0;
 
-        getVariableFromIN(k, var, value);
+        getVariableFromIn(k, var, value);
         poz=getVariablePosition(var, state);
         if(state==0)
             cout<<"No more places for new variables!!!!!"; //continue code for menu
