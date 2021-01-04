@@ -1,3 +1,6 @@
+#ifndef LIST_H_INCLUDED
+#define LIST_H_INCLUDED
+
 #include <iostream>
 
 #define START_HEIGHT 70
@@ -15,20 +18,22 @@
 #define NEW_BLOCKS_SIZE 6
 #define ALL_NODES_TIME_SIZE 100
 
+void reinitializeAllViz();
+
 using namespace std;
 
 struct node
 {
     char type[20];
     bool isDecision;
-    char expression[50];
+    char expression[50] = "no expression";
     node * next;
     node * nextElse;
     double coordX;
     double coordY;
     int timePriority = 0;
     int location; //0 for main scheme, 1 for free node, 2 for rests
-    bool viz;
+    bool viz = 0;
     bool wasCreated = 0;
 };
 
@@ -55,20 +60,28 @@ node * START = new node;
 node * LAST_DELETED = new node;
 int PRIORITY=1;
 
+void changePRIORITY(int timePrior)
+{
+    PRIORITY = timePrior;
+}
+
 void updateTimePriority(node *p)
 {
     p->timePriority = PRIORITY;
     PRIORITY++;
 }
 
-node *createNode(char type[20], bool isDecision, int x, int y) //creates free node
+node *createNode(char type[20], bool isDecision, int x, int y, int timePriority) //creates free node
 {
     if(strcmp(type, "START")==0)
     {
         START->isDecision=0;
         strcpy(START->type, "START");
         START->next=START->nextElse=NULL;
-        updateTimePriority(START);
+        if (!timePriority)
+            updateTimePriority(START);
+        else
+            START->timePriority = timePriority;
         START->location=0;
         START->coordX=x;
         START->coordY=y;
@@ -84,17 +97,25 @@ node *createNode(char type[20], bool isDecision, int x, int y) //creates free no
         k->isDecision=isDecision;
         strcpy(k->type, type);
         k->next=k->nextElse=NULL;
-        updateTimePriority(k);
-        k->location=1;
+        if (!timePriority)
+            updateTimePriority(k);
+        else
+            k->timePriority = timePriority;
         k->coordX=x;
         k->coordY=y;
         k->viz=0;
-        for(int i=0; i<FREE_NODES_SIZE; ++i)
-            if(FREE_NODES->n[i]==NULL)
-            {
-                FREE_NODES->n[i]=k;
-                break;
-            }
+        if (!timePriority)
+        {
+            for(int i=0; i<FREE_NODES_SIZE; ++i)
+                if(FREE_NODES->n[i]==NULL)
+                {
+                    FREE_NODES->n[i]=k;
+                    break;
+                }
+            k->location=1;
+        }
+        else
+            k->location=0;
         return k;
     }
 }
@@ -448,5 +469,4 @@ void initialize()
         RESTS->n[i]=NULL;
 }
 
-
-
+#endif // LIST_H_INCLUDED

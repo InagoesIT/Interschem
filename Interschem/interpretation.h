@@ -153,7 +153,7 @@ void convertStringToInt(char op1[20], int & value1)
 int getVariablePosition(char var[20], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on pozition poz
 {
     int sum=0;
-    for(int i=0; i<=10; ++i)
+    for(int i=0; i<10; ++i)
     {
         if(strcmp(VARIABLES[i].name, var)==0)
         {
@@ -167,7 +167,7 @@ int getVariablePosition(char var[20], int & state)//state=0 no more places, stat
         state=0;
         return -1;
     }
-    for(int i=0; i<=10; ++i)
+    for(int i=0; i<10; ++i)
     {
         if(VARIABLES[i].freeSpace==0)
         {

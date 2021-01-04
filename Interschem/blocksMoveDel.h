@@ -3,6 +3,7 @@
 
 #include "blocks.h"
 #include "menu.h"
+#include "list.h"
 
 #define DRAG_SIZE_X 250
 #define MENUY 70
@@ -178,6 +179,7 @@ void drawAllBlocks()
 {
     reinitializeAllViz();
     createArrayWithAllBlocks();
+    reinitializeAllViz();
     sortArrayByTime(0, ALL_NODES_TIME.arraySize - 1);
     for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
         createBlock(findNodeByTime(ALL_NODES_TIME.n[i]), true);
@@ -220,7 +222,8 @@ void moveBlock(int x, int y, node *p, bool isNew)
         }
         GetCursorPos(&cursorPos1);
     }
-    updateTimePriority(p);
+    if (!isNew)
+        updateTimePriority(p);
     if ((isNew && strcmp(p->type, "START")) || !isNew)
     {
          line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);

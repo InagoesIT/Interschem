@@ -3,6 +3,7 @@
 
 #include "list.h"
 #include "blocksMoveDel.h"
+#include "openSaveScheme.h"
 
 #define START_X 50
 #define START_Y 110
@@ -28,7 +29,7 @@ const int smallTileX = 170;//width Background Color + 50 ?? textwidth("Backgroun
 const int smallTileY = MENUY * 0.8;
 const int firstSchemeX = (tileX - smallTileX) / 2;
 const int lastSchemeX = smallTileX + firstSchemeX;
-const int lastSchemeY = MENUY + smallTileY * 2;
+const int lastSchemeY = MENUY + smallTileY * 3;
 const int firstCustomizeX = tileX + (tileX - smallTileX) / 2;
 const int lastCustomizeX = smallTileX + firstCustomizeX;
 const int lastCustomizeY = MENUY + smallTileY * 4;
@@ -77,7 +78,7 @@ char *selectedNewBlock(int x, int y)
 
 void dragNewBlock(int x, int y, char *blockType)
 {
-    moveBlock(x, y, createNode(blockType, !strcmp(blockType, "DECISION"), x, y), true);
+    moveBlock(x, y, createNode(blockType, !strcmp(blockType, "DECISION"), x, y, 0), true);
 }
 
 void drawPage()
@@ -86,10 +87,10 @@ void drawPage()
     setlinestyle(0, 0, 3);
     createStart(START_X, START_Y, true, true);
     createStop(STOP_X, STOP_Y, true, true);
-    createIn(IN_X, IN_Y, true, true);
-    createOut(OUT_X, OUT_Y, true, true);
-    createAssign(ASSIGN_X, ASSIGN_Y, true, true);
-    createDecision(DECISION_X, DECISION_Y, true, true);
+    createIn(IN_X, IN_Y, true, true, "no expression");
+    createOut(OUT_X, OUT_Y, true, true, "no expression");
+    createAssign(ASSIGN_X, ASSIGN_Y, true, true, "no expression");
+    createDecision(DECISION_X, DECISION_Y, true, true, "no expression");
 
     line(0, MENUY, WINDOWX, MENUY); // orizontala
     line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //verticala
@@ -140,11 +141,13 @@ void drawSubmenuScheme(bool isColored)
     line(firstSchemeX, MENUY, lastSchemeX, MENUY); // -
 
     line(firstSchemeX, MENUY + smallTileY, lastSchemeX, MENUY + smallTileY);
+    line(firstSchemeX, MENUY + smallTileY * 2, lastSchemeX, MENUY + smallTileY * 2);
 
     if (isColored)
     {
-        outtextxy(firstSchemeX + (smallTileX - textwidth("Open")) / 2, MENUY + (smallTileY - textheight("Open")) / 2, "Open");
-        outtextxy(firstSchemeX + (smallTileX - textwidth("Empty Scheme")) / 2, MENUY + smallTileY + (smallTileY - textheight("Empty Scheme")) / 2, "Empty Scheme");
+        outtextxy(firstSchemeX + (smallTileX - textwidth("Save")) / 2, MENUY + (smallTileY - textheight("Save")) / 2, "Save");
+        outtextxy(firstSchemeX + (smallTileX - textwidth("Open")) / 2, MENUY + smallTileY + (smallTileY - textheight("Open")) / 2, "Open");
+        outtextxy(firstSchemeX + (smallTileX - textwidth("Clear")) / 2, MENUY + smallTileY * 2 + (smallTileY - textheight("Clear")) / 2, "Clear");
     }
 }
 
@@ -215,10 +218,12 @@ void handleMenuClick(int x, int y)
             {
                 if (xx > firstSchemeX && xx < lastSchemeX && yy > MENUY && yy < lastSchemeY)
                 {
-//                    if (yy < MENUY + smallTileY)
-//                        openScheme();
-//                    else if (yy < MENUY + smallTileY * 2)
-//                        emptyScheme();
+                    if (yy < MENUY + smallTileY)
+                      saveScheme();
+                    else if (yy < MENUY + smallTileY * 2)
+                      openScheme();
+//                    else if (yy < MENUY + smallTileY * 3)
+//                      emptyScheme();
                 }
                 else
                 {

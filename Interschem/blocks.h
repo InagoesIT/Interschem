@@ -123,10 +123,10 @@ void createStop(int x, int y, bool isSmall, bool isColored)
     }
 }
 
-void createIn(int x, int y, bool isSmall, bool isColored)
+void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
 {
     const int LATERAL_PART = 50;
-    char text[10];
+    char text[50];
 
     if (!isSmall)
         coef = 1;
@@ -149,7 +149,12 @@ void createIn(int x, int y, bool isSmall, bool isColored)
         line(x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x, y);
 
         if (!isSmall)
-            strcpy(text, "<var>");
+        {
+            if (strcmp(expression, "no expression"))
+                strcpy(text, expression);
+            else
+                strcpy(text, "<var>");
+        }
         else
             strcpy(text, "Input");
 
@@ -163,10 +168,10 @@ void createIn(int x, int y, bool isSmall, bool isColored)
         floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
 }
 
-void createOut(int x, int y, bool isSmall, bool isColored)
+void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
 {
     const int LATERAL_PART = 50;
-    char text[10];
+    char text[50];
 
     if (!isSmall)
         coef = 1;
@@ -189,7 +194,12 @@ void createOut(int x, int y, bool isSmall, bool isColored)
         line(x, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y);
 
         if (!isSmall)
-            strcpy(text, "<var>");
+        {
+            if (strcmp(expression, "no expression"))
+                strcpy(text, expression);
+            else
+                strcpy(text, "<var>");
+        }
         else
             strcpy(text, "Output");
 
@@ -203,9 +213,9 @@ void createOut(int x, int y, bool isSmall, bool isColored)
         floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
 }
 
-void createAssign(int x, int y, bool isSmall, bool isColored)
+void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50])
 {
-    char text[15];
+    char text[50];
 
     if (!isSmall)
         coef = 1;
@@ -223,7 +233,12 @@ void createAssign(int x, int y, bool isSmall, bool isColored)
         rectangle(x, y, x + ASSIGN_WIDTH * coef, y + ASSIGN_HEIGHT * coef);
 
         if (!isSmall)
-            strcpy(text, "<var> <- exp");
+        {
+            if (strcmp(expression, "no expression"))
+                strcpy(text, expression);
+            else
+                strcpy(text, "<var> <- exp");
+        }
         else
             strcpy(text, "Assign");
 
@@ -237,13 +252,13 @@ void createAssign(int x, int y, bool isSmall, bool isColored)
         floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, BLACK);
 }
 
-void createDecision(int x, int y, bool isSmall, bool isColored)
+void createDecision(int x, int y, bool isSmall, bool isColored, char expression[50])
 {
     int TWidth = textwidth("T");
     int FWidth = textwidth("F");
     const int EQUAL_PART = 80;
     const int X = x + TWidth + 10;
-    char text[16];
+    char text[50];
 
     if (!isSmall)
         coef = 1;
@@ -264,8 +279,14 @@ void createDecision(int x, int y, bool isSmall, bool isColored)
         line(X + DECISION_BASE * coef, y + EQUAL_PART * coef, X, y + EQUAL_PART * coef);
         line(X, y + EQUAL_PART * coef, X + DECISION_BASE * coef / 2, y);
 
+
         if (!isSmall)
-            strcpy(text, "<var> ? <var>");
+        {
+            if (strcmp(expression, "no expression"))
+                strcpy(text, expression);
+            else
+                strcpy(text, "<var> ? <var>");
+        }
         else
             strcpy(text, "Decision");
 
@@ -296,13 +317,13 @@ void createBlock(node *p, bool isColored)
     else if (strcmp(p->type, "STOP") == 0)
         createStop(p->coordX, p->coordY, false, isColored);
     else if (strcmp(p->type, "IN") == 0)
-        createIn(p->coordX, p->coordY, false, isColored);
+        createIn(p->coordX, p->coordY, false, isColored, p->expression);
     else if (strcmp(p->type, "OUT") == 0)
-        createOut(p->coordX, p->coordY, false, isColored);
+        createOut(p->coordX, p->coordY, false, isColored, p->expression);
     else if (strcmp(p->type, "ASSIGN") == 0)
-        createAssign(p->coordX, p->coordY, false, isColored);
+        createAssign(p->coordX, p->coordY, false, isColored, p->expression);
     else
-        createDecision(p->coordX, p->coordY, false, isColored);
+        createDecision(p->coordX, p->coordY, false, isColored, p->expression);
 }
 
 #endif // BLOCKS_H_INCLUDED
