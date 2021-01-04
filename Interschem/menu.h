@@ -98,7 +98,7 @@ void drawPage()
 
 void drawMenu()
 {
-    setfillstyle(LTSLASH_FILL , LIGHTCYAN);
+    setfillstyle(LTSLASH_FILL, LIGHTCYAN);
 
     line(tileX, 0, tileX, MENUY);
     floodfill(tileX / 2, MENUY / 2, WHITE);
@@ -113,7 +113,7 @@ void drawMenu()
 
 void drawSubmenuScheme(bool isColored)
 {
-    setlinestyle(0, 0 , 3);
+    setlinestyle(0, 0, 3);
     setcolor(DARKGRAY);
 
     line(firstSchemeX, MENUY, firstSchemeX, lastSchemeY); // |
@@ -123,17 +123,17 @@ void drawSubmenuScheme(bool isColored)
 
     if (isColored)
     {
-        setfillstyle(LTSLASH_FILL , LIGHTBLUE);
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
         setcolor(WHITE);
     }
 
     else
     {
-        setfillstyle(LTSLASH_FILL , BLACK);
+        setfillstyle(LTSLASH_FILL, BLACK);
         setcolor(BLACK);
     }
 
-    floodfill(firstSchemeX + smallTileX / 2, lastSchemeY / 2 , DARKGRAY);
+    floodfill(firstSchemeX + smallTileX / 2, lastSchemeY / 2, DARKGRAY);
 
     line(firstSchemeX, MENUY, firstSchemeX, lastSchemeY); // |
     line(firstSchemeX, lastSchemeY, lastSchemeX, lastSchemeY); // -
@@ -153,7 +153,7 @@ void drawSubmenuScheme(bool isColored)
 
 void drawSubmenuCustomize(bool isColored)
 {
-    setlinestyle(0, 0 , 3);
+    setlinestyle(0, 0, 3);
     setcolor(DARKGRAY);
 
     line(firstCustomizeX, MENUY, firstCustomizeX, lastCustomizeY); // |
@@ -163,17 +163,17 @@ void drawSubmenuCustomize(bool isColored)
 
     if (isColored)
     {
-        setfillstyle(LTSLASH_FILL , LIGHTBLUE);
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
         setcolor(WHITE);
     }
 
     else
     {
-        setfillstyle(LTSLASH_FILL , BLACK);
+        setfillstyle(LTSLASH_FILL, BLACK);
         setcolor(BLACK);
     }
 
-    floodfill(firstCustomizeX + smallTileX / 2, lastCustomizeY / 2 , DARKGRAY);
+    floodfill(firstCustomizeX + smallTileX / 2, lastCustomizeY / 2, DARKGRAY);
 
     line(firstCustomizeX, MENUY, firstCustomizeX, lastCustomizeY); // |
     line(firstCustomizeX, lastCustomizeY, lastCustomizeX, lastCustomizeY); // -
@@ -197,6 +197,81 @@ void drawSubmenuCustomize(bool isColored)
 void hoverMenu(int x, int y)
 {
 
+}
+
+void popUpAgreeEmptyScheme(bool & continueEmptyScheme)
+{
+    int textboxWidth=250, textboxHeight=100;
+    setcolor(RED);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    setfillstyle(SOLID_FILL, LIGHTBLUE);
+    floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+    setcolor(WHITE);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+    line(WINDOWX/2, WINDOWY/2, WINDOWX/2, WINDOWY/2+textboxHeight/2);
+
+    outtextxy(WINDOWX/2-textwidth("Unsaved scheme will be lost!")/2, WINDOWY/2-textheight("Unsaved scheme will be lost!")/2-textboxHeight/4, "Unsaved scheme will be lost!");
+    outtextxy(WINDOWX/2-textboxWidth/4-textwidth("Continue")/2, WINDOWY/2-textheight("Continue")/2+textboxHeight/4, "Continue");
+    outtextxy(WINDOWX/2+textboxWidth/4-textwidth("Back")/2, WINDOWY/2-textheight("Back")/2+textboxHeight/4, "Back");
+
+    bool done=0;
+    while(!done)
+    {
+        if (ismouseclick(WM_LBUTTONDOWN))
+        {
+            int xx, yy;
+            getmouseclick(WM_LBUTTONDOWN, xx, yy);
+            clearmouseclick(WM_LBUTTONDOWN);
+            if(xx<WINDOWX/2 and xx>WINDOWX/2-textboxWidth/2 and yy>WINDOWY/2 and yy<WINDOWY/2+textboxHeight/2)
+                done=1;
+            else
+            {
+                if(!(xx<WINDOWX/2+textboxWidth/2 and xx>WINDOWX/2-textboxWidth/2 and yy<WINDOWY/2 and yy>WINDOWY/2-textboxHeight/2))
+                {
+                    done=1;
+                    continueEmptyScheme=0;
+                }
+            }
+        }
+    }
+}
+
+void emptyScheme()
+{
+    bool continueEmptyScheme=1;
+    popUpAgreeEmptyScheme(continueEmptyScheme);
+    if(continueEmptyScheme==1)
+    {
+        reinitializeAllViz();
+        reinitializeAllNodesTime();
+        createArrayWithAllBlocks();
+        if(ALL_NODES_TIME.arraySize)
+        {
+            for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
+            {
+                reinitializeAllViz();
+                node * k = new node;
+                k=findNodeByTime(ALL_NODES_TIME.n[i]);
+                if(k!=START)
+                    deleteNode(k);
+            }
+        }
+        START->wasCreated=0;
+    }
+    cleardevice();
+    drawPage();
+    drawMenu();
+    drawAllBlocks();
 }
 
 void handleMenuClick(int x, int y)

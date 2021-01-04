@@ -324,6 +324,13 @@ void createBlock(node *p, bool isColored)
         createAssign(p->coordX, p->coordY, false, isColored, p->expression);
     else
         createDecision(p->coordX, p->coordY, false, isColored, p->expression);
+    if(p->next!=NULL)
+        line(p->coordX, p->coordY, p->next->coordX, p->next->coordY);
+    if(p->nextElse!=NULL)
+        line(p->coordX, p->coordY, p->nextElse->coordX, p->nextElse->coordY);
+    node * parent = new node;
+    bool fromElse, found=0;
+    createLineFromParents(p);
 }
 
 #endif // BLOCKS_H_INCLUDED

@@ -4,34 +4,34 @@
 struct VarSub
 {
     int value;
-    char name[20];
-    bool freeSpace;
+    char name[EXPRESSION_LENGTH];
+    bool isUsed;
 } VARIABLES[10];
 
-void getVariableFromIN(node * k, char var[20], int & value)
+void getVariableFromIN(node * k, char var[EXPRESSION_LENGTH], int & value)
 {
     strcpy(var, k->expression);
     value=100; //implement right click to get value for IN blocks in menu
 }
 
-void getVariableFromAssign(node * k, char var[20])
+void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH])
 {
-    char s[20];
+    char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
     char *p =strtok(s, "=");
     strcpy(var, p);
 }
 
-void getExpressionAfterEqualSign(node * k, char exp[20])
+void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH])
 {
-    char s[20];
+    char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
     char *p =strtok(s, "=");
     p=strtok(NULL, "=");
     strcpy(exp, p);
 }
 
-void getInfix(char s[20], char infix[20][20], int & infixElements)
+void getInfix(char s[EXPRESSION_LENGTH], char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)
 {
     int i=0, j=0, poz=0;
     while(s[i])
@@ -40,7 +40,7 @@ void getInfix(char s[20], char infix[20][20], int & infixElements)
             infix[poz][0]=s[i], infix[poz][1]=NULL, ++poz;
         else
         {
-            char var[20];
+            char var[EXPRESSION_LENGTH];
             j=0;
             while(s[i] and strchr("+-*/()", s[i])==0)
                 var[j]=s[i], ++j, ++i;
@@ -72,9 +72,9 @@ int operatorPriority(char x, char y) // 0 for equal priority, 1 for first argume
     }
 }
 
-void infixToPostfix(char infix[20][20], char postfix[20][20], int & infixElements, int & postfixElements)
+void infixToPostfix(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements, int & postfixElements)
 {
-    char stackS[20]= {' '};
+    char stackS[EXPRESSION_LENGTH]= {' '};
     int i=0, poz=0, j=-1;
     while(infixElements>i)
     {
@@ -119,7 +119,7 @@ void infixToPostfix(char infix[20][20], char postfix[20][20], int & infixElement
     postfixElements=poz;
 }
 
-bool isInt(char x[20])
+bool isInt(char x[EXPRESSION_LENGTH])
 {
     if(x[0]=='0' and x[1]==NULL)
         return 1;
@@ -136,7 +136,7 @@ bool isInt(char x[20])
     return 1;
 }
 
-void convertStringToInt(char op1[20], int & value1)
+void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1)
 {
     int negative=1, i=0;
     value1=0;
@@ -150,7 +150,7 @@ void convertStringToInt(char op1[20], int & value1)
     value1=value1*negative;
 }
 
-int getVariablePosition(char var[20], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on pozition poz
+int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on pozition poz
 {
     int sum=0;
     for(int i=0; i<10; ++i)
@@ -160,7 +160,7 @@ int getVariablePosition(char var[20], int & state)//state=0 no more places, stat
             state=1;
             return i;
         }
-        sum+=VARIABLES[i].freeSpace;
+        sum+=VARIABLES[i].isUsed;
     }
     if(sum==10)
     {
@@ -169,7 +169,7 @@ int getVariablePosition(char var[20], int & state)//state=0 no more places, stat
     }
     for(int i=0; i<10; ++i)
     {
-        if(VARIABLES[i].freeSpace==0)
+        if(VARIABLES[i].isUsed==0)
         {
             state=2;
             return i;
@@ -189,10 +189,10 @@ int calculateResult(int a, int b, char operand)
         return b/a;
 }
 
-void convertIntToString(int a, char s[20])
+void convertIntToString(int a, char s[EXPRESSION_LENGTH])
 {
     int i=0, nrDigits=0;
-    char aux[20];
+    char aux[EXPRESSION_LENGTH];
     if(a<0)
         s[0]='-', ++i, a=a*(-1);
     while(a)
@@ -210,9 +210,9 @@ void convertIntToString(int a, char s[20])
         s[nrDigits]=NULL;
 }
 
-void evaluate(char postfix[20][20], int & postfixElements, int & value)
+void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixElements, int & value)
 {
-    char stackS[20][20];
+    char stackS[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int j=0;
     for(int i=0; i<postfixElements; ++i)
     {
@@ -223,7 +223,7 @@ void evaluate(char postfix[20][20], int & postfixElements, int & value)
         }
         else
         {
-            char op1[20], op2[20], textResult[20];
+            char op1[EXPRESSION_LENGTH], op2[EXPRESSION_LENGTH], textResult[EXPRESSION_LENGTH];
             int poz1=0, poz2=0, state1=0, state2=0, result=0, value1=0, value2=0;
 
             strcpy(op1, stackS[j-1]);
@@ -266,7 +266,7 @@ void evaluate(char postfix[20][20], int & postfixElements, int & value)
     }
 }
 
-void makeZeroFirst(char infix[20][20], int & infixElements)
+void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)
 {
     for(int i=infixElements-1; i>=0; --i)
     {
@@ -277,9 +277,9 @@ void makeZeroFirst(char infix[20][20], int & infixElements)
     ++infixElements;
 }
 
-void getExpressionValue(char exp[20], int & value)
+void getExpressionValue(char exp[EXPRESSION_LENGTH], int & value)
 {
-    char s[20], infix[20][20],  postfix[20][20];
+    char s[EXPRESSION_LENGTH], infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH],  postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int infixElements=0, postfixElements=0;
     strcpy(s, exp);
     getInfix(s, infix, infixElements);
@@ -289,21 +289,21 @@ void getExpressionValue(char exp[20], int & value)
     evaluate(postfix, postfixElements, value);
 }
 
-void getVariableFormOut(node * k, char var[20])
+void getVariableFromOut(node * k, char var[EXPRESSION_LENGTH])
 {
     strcpy(var, k->expression);
 }
 
-void getFirstExpresionFromCondition(node * k, char exp1[20])
+void getFirstExpresionFromCondition(node * k, char exp1[EXPRESSION_LENGTH])
 {
-    char s[20];
+    char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
     char * p=strtok(s, "=<>");
     strcpy(exp1, p);
 }
-void getSecondExpressionFromCondition(node * k, char exp2[20])
+void getSecondExpressionFromCondition(node * k, char exp2[EXPRESSION_LENGTH])
 {
-    char s[20];
+    char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
     char * p=strtok(s, "=<>");
     p=strtok(NULL, "=<>");
@@ -312,7 +312,7 @@ void getSecondExpressionFromCondition(node * k, char exp2[20])
 
 void getRelationOperator(node * k, char oper[3])
 {
-    char s[20], c[20];
+    char s[EXPRESSION_LENGTH], c[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
     if(strchr(s, '!'))
     {
@@ -404,7 +404,9 @@ bool conditionIsMet(int a, int b, char oper[3])
 
 void analyzeScheme(node * k)
 {
-    if(isSchemeCorrect(START)==0)
+    bool isCorrect=1;
+    isSchemeCorrect(START, isCorrect);
+    if(isCorrect==0)
         return;
     restoreViz(START);
     if(k==START)
@@ -412,7 +414,7 @@ void analyzeScheme(node * k)
     else if(strcmp(k->type, "IN")==0)
     {
         int state=0, value=0;
-        char var[20];
+        char var[EXPRESSION_LENGTH];
         int poz=0;
 
         getVariableFromIN(k, var, value);
@@ -423,16 +425,17 @@ void analyzeScheme(node * k)
         {
             VARIABLES[poz].value=value;
             strcpy(VARIABLES[poz].name, var);
+            VARIABLES[poz].isUsed=1;
         }
         analyzeScheme(k->next);
     }
     else if(strcmp(k->type, "OUT")==0)
     {
         int state=0;
-        char var[20];
+        char var[EXPRESSION_LENGTH];
         int poz=0;
 
-        getVariableFormOut(k, var);
+        getVariableFromOut(k, var);
         poz=getVariablePosition(var, state);
         if(state==0 or state==2)
             cout<<"Variable not known!!!!!";   //continue code for menu
@@ -446,7 +449,7 @@ void analyzeScheme(node * k)
         cout<<"End of algorithm :)";
     else if(strcmp(k->type, "ASSIGN")==0)
     {
-        char var[20];
+        char var[EXPRESSION_LENGTH];
         int state=0, poz=0;
 
         getVariableFromAssign(k, var);
@@ -456,17 +459,17 @@ void analyzeScheme(node * k)
         else
         {
             int value=0;
-            char exp[20];
-
+            char exp[EXPRESSION_LENGTH];
             getExpressionAfterEqualSign(k, exp);
             getExpressionValue(exp, value);
             VARIABLES[poz].value=value;
+            VARIABLES[poz].isUsed=1;
         }
         analyzeScheme(k->next);
     }
     else if(strcmp(k->type, "DECISION")==0)
     {
-        char exp1[20], exp2[20], oper[3];
+        char exp1[EXPRESSION_LENGTH], exp2[EXPRESSION_LENGTH], oper[3];
         int value1=0, value2=0;
 
         getFirstExpresionFromCondition(k, exp1);

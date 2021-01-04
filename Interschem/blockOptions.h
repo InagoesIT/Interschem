@@ -1,0 +1,617 @@
+#ifndef BLOCKOPTIONS_H_INCLUDED
+#define BLOCKOPTIONS_H_INCLUDED
+
+#include <iostream>
+
+#define START_HEIGHT 70
+#define START_WIDTH 150
+#define STOP_HEIGHT 70
+#define STOP_WIDTH 150
+#define IN_HEIGHT 50
+#define IN_BIG_BASE 120
+#define IN_SMALL_BASE 60
+#define ASSIGN_HEIGHT 60
+#define ASSIGN_WIDTH 200
+#define DECISION_BASE 150
+#define DECISION_HEIGHT 80
+#define FREE_NODES_SIZE 10
+#define NEW_BLOCKS_SIZE 6
+#define ALL_NODES_TIME_SIZE 100
+
+#define DECISION_WIDTH 150+textwidth("T")+textwidth("F")+20
+
+#define OPTIONS_WIDTH 150
+#define ONE_OPTION_HEIGHT 30
+
+#define WINDOWX 1200
+#define WINDOWY 700
+#define MENUY 70
+#define DRAG_SIZE_X 250
+
+
+void getOptionsXY(node * p, int & opx, int & opy)
+{
+    opy=p->coordY;
+    if(p==START or strcmp(p->type, "START")==0)
+    {
+        opx=p->coordX+START_WIDTH;
+    }
+    else if(strcmp(p->type, "ASSIGN")==0)
+    {
+        opx=p->coordX+ASSIGN_WIDTH;
+    }
+    else if(strcmp(p->type, "STOP")==0)
+    {
+        opx=p->coordX+STOP_WIDTH;
+    }
+    else if(strcmp(p->type, "IN")==0)
+    {
+        opx=p->coordX+IN_BIG_BASE;
+    }
+    else if(strcmp(p->type, "OUT")==0)
+    {
+        opx=p->coordX+IN_BIG_BASE;
+    }
+    else if(strcmp(p->type, "DECISION")==0)
+    {
+        opx=p->coordX+DECISION_WIDTH;
+    }
+    opx+=5;
+}
+
+void drawRightClickOptions(node * p, int opx, int opy, int nrOfOptions)
+{
+    if(strcmp(p->type, "START")==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Make binding")/2, "Make binding");
+    }
+    else if(strcmp(p->type, "ASSIGN")==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Make binding")/2, "Make binding");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Expression")/2, opy + ONE_OPTION_HEIGHT + ONE_OPTION_HEIGHT/2 - textheight("Expression")/2, "Expression");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Delete")/2, opy + ONE_OPTION_HEIGHT*2 + ONE_OPTION_HEIGHT/2 - textheight("Delete")/2, "Delete");
+    }
+    else if(strcmp(p->type, "STOP")==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Delete")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Delete")/2, "Delete");
+    }
+    else if(strcmp(p->type, "IN")==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Make binding")/2, "Make binding");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Variable name")/2, opy + ONE_OPTION_HEIGHT + ONE_OPTION_HEIGHT/2 - textheight("Variable name")/2, "Variable name");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Delete")/2, opy + ONE_OPTION_HEIGHT*2 + ONE_OPTION_HEIGHT/2 - textheight("Delete")/2, "Delete");
+
+    }
+    else if(strcmp(p->type, "OUT")==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Make binding")/2, "Make binding");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Variable name")/2, opy + ONE_OPTION_HEIGHT + ONE_OPTION_HEIGHT/2 - textheight("Variable name")/2, "Variable name");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Delete")/2, opy + ONE_OPTION_HEIGHT*2 + ONE_OPTION_HEIGHT/2 - textheight("Delete")/2, "Delete");
+    }
+    else if(strcmp(p->type, "DECISION")==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+        line(opx, opy + nrOfOptions * ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + nrOfOptions * ONE_OPTION_HEIGHT);
+
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+        line(opx, opy + ONE_OPTION_HEIGHT*3, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*3);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding T")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Make binding T")/2, "Make binding T");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding F")/2, opy + ONE_OPTION_HEIGHT + ONE_OPTION_HEIGHT/2 - textheight("Make binding F")/2, "Make binding F");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Expression")/2, opy + ONE_OPTION_HEIGHT*2 + ONE_OPTION_HEIGHT/2 - textheight("Expression")/2, "Expression");
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Delete")/2, opy + ONE_OPTION_HEIGHT*3 + ONE_OPTION_HEIGHT/2 - textheight("Delete")/2, "Delete");
+    }
+}
+
+int getNrOfOptions(node * p)
+{
+    if(strcmp(p->type, "START")==0)
+    {
+        return 1;
+    }
+    else if(strcmp(p->type, "ASSIGN")==0)
+    {
+        return 3;
+    }
+    else if(strcmp(p->type, "STOP")==0)
+    {
+        return 1;
+    }
+    else if(strcmp(p->type, "IN")==0)
+    {
+        return 3;
+    }
+    else if(strcmp(p->type, "OUT")==0)
+    {
+        return 3;
+    }
+    else if(strcmp(p->type, "DECISION")==0)
+    {
+        return 4;
+    }
+}
+
+
+void closeOptions(int opx, int opy, int nrOfOptions, int & finished)
+{
+    cleardevice();
+    drawPage();
+    drawMenu();
+    drawAllBlocks();
+    clearmouseclick(WM_LBUTTONDOWN);
+    finished=true;
+}
+
+bool insideOptions(int xx, int yy, int opx, int opy, int nrOfOptions)
+{
+    if(xx < opx or xx > opx + OPTIONS_WIDTH)
+        return 0;
+    if(yy< opy or yy > opy + ONE_OPTION_HEIGHT * nrOfOptions)
+        return 0;
+    return 1;
+}
+
+
+void refresh()
+{
+    cleardevice();
+    drawPage();
+    drawMenu();
+    drawAllBlocks();
+    clearmouseclick(WM_LBUTTONDOWN);
+}
+
+void deleteWasPressed(node * & p)
+{
+    deleteNode(p);
+    refresh();
+}
+
+void getAssignOrDecisionExpression(node * & p)
+{
+    int textboxWidth=500, textboxHeight=100;
+    setcolor(RED);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    setfillstyle(SOLID_FILL, LIGHTBLUE);
+    floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+    setcolor(WHITE);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+    outtextxy(WINDOWX/2-textwidth("Insert Expression")/2, WINDOWY/2-textheight("Insert Expression")/2-textboxHeight/4, "Insert Expression");
+    outtextxy(WINDOWX/2-textwidth(p->expression)/2, WINDOWY/2-textheight(p->expression)/2+textboxHeight/4, p->expression);
+
+    bool finished=0;
+    char cc[EXPRESSION_LENGTH];
+    strcpy(cc, p->expression);
+    int i=strlen(cc);
+    do
+    {
+        char c=getch();
+        if(i==EXPRESSION_LENGTH-2)
+            c=getch();
+        if(c==32) //space
+            finished=1;
+        else
+        {
+            if(c==8) //backspace
+            {
+                if(strlen(cc)>=1)
+                {
+                    cc[strlen(cc)-1]=NULL;
+                    --i;
+                }
+            }
+            else
+            {
+                cc[i]=c;
+                ++i;
+                cc[i]=NULL;
+            }
+            setcolor(RED);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            setfillstyle(SOLID_FILL, LIGHTBLUE);
+            floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+            setcolor(WHITE);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+            outtextxy(WINDOWX/2-textwidth("Insert Expression")/2, WINDOWY/2-textheight("Insert Expression")/2-textboxHeight/4, "Insert Expression");
+            outtextxy(WINDOWX/2-textwidth(cc)/2, WINDOWY/2-textheight(cc)/2+textboxHeight/4, cc);
+        }
+    }
+    while(finished==0 and i<EXPRESSION_LENGTH-2);
+
+    strcpy(p->expression, cc);
+    refresh();
+}
+
+void getVariableName(node * & p)
+{
+    int textboxWidth=500, textboxHeight=100;
+    setcolor(RED);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    setfillstyle(SOLID_FILL, LIGHTBLUE);
+    floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+    setcolor(WHITE);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+    outtextxy(WINDOWX/2-textwidth("Insert variable name")/2, WINDOWY/2-textheight("Insert variable name")/2-textboxHeight/4, "Insert variable name");
+    outtextxy(WINDOWX/2-textwidth(p->expression)/2, WINDOWY/2-textheight(p->expression)/2+textboxHeight/4, p->expression);
+
+    bool finished=0;
+    char cc[EXPRESSION_LENGTH];
+    strcpy(cc, p->expression);
+    int i=strlen(cc);
+    do
+    {
+        char c=getch();
+        if(c==32) //space
+            finished=1;
+        else
+        {
+            if(c==8) //backspace
+            {
+                if(strlen(cc)>=1)
+                {
+                    cc[strlen(cc)-1]=NULL;
+                    --i;
+                }
+            }
+            else
+            {
+                cc[i]=c;
+                ++i;
+                cc[i]=NULL;
+            }
+            setcolor(RED);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            setfillstyle(SOLID_FILL, LIGHTBLUE);
+            floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+            setcolor(WHITE);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+            outtextxy(WINDOWX/2-textwidth("Insert variable name")/2, WINDOWY/2-textheight("Insert variable name")/2-textboxHeight/4, "Insert variable name");
+            outtextxy(WINDOWX/2-textwidth(cc)/2, WINDOWY/2-textheight(cc)/2+textboxHeight/4, cc);
+        }
+    }
+    while(finished==0 and i<EXPRESSION_LENGTH-2);
+
+    strcpy(p->expression, cc);
+    refresh();
+}
+
+void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, bool fromElse)
+{
+    int newBinding=0;
+    int secondNodeSelected=0;
+    node * q = new node;
+    node * otherNode = new node;
+    q=NULL;
+    if(fromElse==0)
+    {
+        setcolor(RED);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy, opx + OPTIONS_WIDTH, opy);
+        line(opx, opy, opx, opy + ONE_OPTION_HEIGHT);
+        line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+        line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Select second node")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Select second node")/2, "Select second node");
+    }
+    else
+    {
+        setcolor(RED);
+        line(opx, opy+ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy+ONE_OPTION_HEIGHT);
+        line(opx, opy+ONE_OPTION_HEIGHT, opx, opy + ONE_OPTION_HEIGHT*2);
+        line(opx + OPTIONS_WIDTH, opy+ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+
+        setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+        floodfill(opx+5, opy+ONE_OPTION_HEIGHT+5, RED);
+
+        setcolor(WHITE);
+        line(opx, opy+ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy+ONE_OPTION_HEIGHT);
+        line(opx, opy+ONE_OPTION_HEIGHT, opx, opy + ONE_OPTION_HEIGHT*2);
+        line(opx + OPTIONS_WIDTH, opy+ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
+
+        setcolor(WHITE);
+        outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Select second node")/2, opy + ONE_OPTION_HEIGHT+ONE_OPTION_HEIGHT/2 - textheight("Select second node")/2, "Select second node");
+
+    }
+    while(!secondNodeSelected)
+    {
+        if (ismouseclick(WM_LBUTTONDOWN))
+        {
+            getmouseclick(WM_LBUTTONDOWN, xx, yy);
+            clearmouseclick(WM_LBUTTONDOWN);
+            if(!(xx<=opx+OPTIONS_WIDTH and xx>=opx and yy>=opy and yy<=opy+ONE_OPTION_HEIGHT))
+            {
+                selectCorrectNode(xx, yy, q, otherNode);
+                if(q and q!=p and q!=START)
+                {
+                    if(strcmp(q->type, "IN")==0)
+                        newBinding=1;
+                    makeBindingAB(p, q, fromElse);
+                    secondNodeSelected=1;
+                    finished=true;
+                    newBinding=1;
+                }
+            }
+            setcolor(RED);
+            line(opx, opy, opx + OPTIONS_WIDTH, opy);
+            line(opx, opy, opx, opy + ONE_OPTION_HEIGHT);
+            line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+            line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+
+            setfillstyle(LTSLASH_FILL, LIGHTBLUE);
+            floodfill(opx+5, opy+5, RED);
+
+            setcolor(WHITE);
+            line(opx, opy, opx + OPTIONS_WIDTH, opy);
+            line(opx, opy, opx, opy + ONE_OPTION_HEIGHT);
+            line(opx + OPTIONS_WIDTH, opy, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+            line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
+
+            setcolor(WHITE);
+            outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Make binding")/2, opy + ONE_OPTION_HEIGHT/2 - textheight("Make binding")/2, "Make binding");
+            secondNodeSelected=1;
+            finished=true;
+        }
+    }
+}
+
+void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p, int &finished)
+{
+    if(strcmp(p->type, "START")==0)
+    {
+        makeBinding(xx, yy, opx, opy, p, finished, 0);
+        refresh();
+
+    }
+    else if(strcmp(p->type, "ASSIGN")==0)
+    {
+        if(yy<=opy+ONE_OPTION_HEIGHT)
+        {
+            makeBinding(xx, yy, opx, opy, p, finished, 0);
+        }
+        else
+        {
+            if(yy<=opy+ONE_OPTION_HEIGHT*2)
+            {
+                getAssignOrDecisionExpression(p);
+            }
+            else
+            {
+                deleteWasPressed(p);
+                finished=true;
+            }
+        }
+        refresh();
+    }
+    else if(strcmp(p->type, "STOP")==0)
+    {
+        deleteWasPressed(p);
+        finished=true;
+        refresh();
+    }
+    else if(strcmp(p->type, "IN")==0)
+    {
+        if(yy<opy+ONE_OPTION_HEIGHT)
+        {
+            makeBinding(xx, yy, opx, opy, p, finished, 0);
+        }
+        else if(yy>=opy+ONE_OPTION_HEIGHT and yy<opy+2*ONE_OPTION_HEIGHT)
+        {
+            getVariableName(p);
+            finished=true;
+        }
+        else
+        {
+            deleteWasPressed(p);
+            finished=true;
+        }
+        refresh();
+    }
+    else if(strcmp(p->type, "OUT")==0)
+    {
+        if(yy<opy+ONE_OPTION_HEIGHT)
+        {
+            makeBinding(xx, yy, opx, opy, p, finished, 0);
+        }
+        else if(yy>=opy+ONE_OPTION_HEIGHT and yy<opy+2*ONE_OPTION_HEIGHT)
+        {
+            getVariableName(p);
+            finished=true;
+        }
+        else
+        {
+            deleteWasPressed(p);
+            finished=true;
+        }
+        refresh();
+    }
+    else if(strcmp(p->type, "DECISION")==0)
+    {
+        if(yy<=opy+ONE_OPTION_HEIGHT)
+        {
+            makeBinding(xx, yy, opx, opy, p, finished, 0);
+        }
+        else
+        {
+            if(yy<=opy+ONE_OPTION_HEIGHT*2)
+            {
+                makeBinding(xx, yy, opx, opy, p, finished, 1);
+            }
+            else
+            {
+                if(yy<=opy+ONE_OPTION_HEIGHT*3)
+                {
+                    getAssignOrDecisionExpression(p);
+                }
+                else
+                {
+                    deleteWasPressed(p);
+                    finished=true;
+                }
+            }
+        }
+        refresh();
+    }
+}
+
+#endif // BLOCKOPTIONS_H_INCLUDED
