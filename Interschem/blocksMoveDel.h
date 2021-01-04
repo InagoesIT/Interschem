@@ -11,24 +11,40 @@
 
 void drawPage();
 
-void reinitializeListViz(node *head)
+void makeAllVizEqualTo2(node *head)
 {
     if (head)
     {
-        bool wasViz;
-        if (head->viz)
+        if (head->viz==1 or head->viz==0)
         {
-            wasViz = true;
-            head->viz = 0;
+            head->viz = 2;
+            if (head->next && (head->next->viz==0 or head->next->viz==1))
+                makeAllVizEqualTo2(head->next);
+            if (head->nextElse && (head->nextElse->viz==0 or head->nextElse->viz==1))
+                makeAllVizEqualTo2(head->nextElse);
         }
-        else
-            wasViz = false;
-
-        if (head->next && head->next->viz)
-            reinitializeListViz(head->next);
-        if (head->nextElse && head->nextElse->viz)
-            reinitializeListViz(head->nextElse);
     }
+}
+
+void makeAllVizFrom2To0(node * head)
+{
+    if (head)
+    {
+        if (head->viz==2)
+        {
+            head->viz = 0;
+            if (head->next && head->next->viz==2)
+                makeAllVizFrom2To0(head->next);
+            if (head->nextElse && head->nextElse->viz==2)
+                makeAllVizFrom2To0(head->nextElse);
+        }
+    }
+}
+
+void reinitializeListViz(node * head)
+{
+    makeAllVizEqualTo2(head);
+    makeAllVizFrom2To0(head);
 }
 
 void reinitializeAllViz()
@@ -49,32 +65,38 @@ void reinitializeAllViz()
     }
 }
 
-node *findNodeByTimeInList(int time, node * head)
+void findNodeByTimeInList(int time, node * head, node * & nodeFound, bool & nodeWasFound)//this function cannot have a return node because it is recurrent
 {
-    bool wasViz;
-    if (head->timePriority)
+    if(nodeWasFound==0)
     {
-        if (head->viz)
-            wasViz = true;
-        else
+        bool wasViz;
+        if (head->timePriority)
         {
-            wasViz = false;
-            head->viz = 1;
-        }
+            if (head->viz)
+                wasViz = true;
+            else
+            {
+                wasViz = false;
+                head->viz = 1;
+            }
 
-        if (head->timePriority == time && wasViz == false)
-            return head;
-        if (head->next && !head->next->viz)
-            findNodeByTimeInList(time, head->next);
-        if (head->nextElse && !head->nextElse->viz)
-            findNodeByTimeInList(time, head->nextElse);
+            if (head->timePriority == time && wasViz == false)
+            {
+                nodeFound=head;
+                nodeWasFound=1;
+            }
+            if (head->next && !head->next->viz)
+                findNodeByTimeInList(time, head->next, nodeFound, nodeWasFound);
+            if (head->nextElse && !head->nextElse->viz)
+                findNodeByTimeInList(time, head->nextElse, nodeFound, nodeWasFound);
+        }
     }
-    return NULL;
 }
 
 node *findNodeByTime(int time)
 {
-    node *found;
+    node *found = new node;
+    found=NULL;
     int j;
     if (START->wasCreated)
     {
@@ -82,8 +104,9 @@ node *findNodeByTime(int time)
             return START;
         if (START->next)
         {
-            found = findNodeByTimeInList(time, START->next);
-            if (found)
+            bool nodeWasFound=0;
+            findNodeByTimeInList(time, START->next, found, nodeWasFound);
+            if(nodeWasFound==1)
                 return found;
         }
     }
@@ -96,8 +119,10 @@ node *findNodeByTime(int time)
     {
         if (RESTS->n[j] != NULL && RESTS->n[j]->timePriority == time)
             return RESTS->n[j];
-        found = findNodeByTimeInList(time, RESTS->n[j]);
-        if (found)
+        bool nodeWasFound=0;
+        if(RESTS->n[j])
+            findNodeByTimeInList(time, RESTS->n[j], found, nodeWasFound);
+        if (nodeWasFound==1)
             return found;
     }
     return NULL;
@@ -135,7 +160,7 @@ void createArrayWithAllBlocks()
 
         for (j = 0; j < FREE_NODES_SIZE; ++j)
             if (FREE_NODES->n[j] != NULL)
-                 ALL_NODES_TIME.n[i++] = FREE_NODES->n[j]->timePriority;
+                ALL_NODES_TIME.n[i++] = FREE_NODES->n[j]->timePriority;
 
         for (j = 0; j < FREE_NODES_SIZE; ++j)
             if (RESTS->n[j] != NULL)
@@ -162,8 +187,8 @@ int partitionNodes(int low, int high)
     return (i + 1);
 }
 
-//quick sort
-void sortArrayByTime(int low, int high)
+
+void sortArrayByTime(int low, int high)//quick sort
 {
     if (low < high)
     {
@@ -174,13 +199,30 @@ void sortArrayByTime(int low, int high)
     }
 }
 
+void reinitializeAllNodesTime()
+{
+    for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
+        ALL_NODES_TIME.n[i]=0;
+    ALL_NODES_TIME.arraySize=0;
+}
+
 void drawAllBlocks()
 {
     reinitializeAllViz();
+    reinitializeAllNodesTime();
     createArrayWithAllBlocks();
+    reinitializeAllViz(); //we need to reinitialize all viz before calling "findNodeByTimeInList" too or else the program creashes
     sortArrayByTime(0, ALL_NODES_TIME.arraySize - 1);
-    for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
-        createBlock(findNodeByTime(ALL_NODES_TIME.n[i]), true);
+    if(ALL_NODES_TIME.arraySize)
+    {
+        for (int i = 0; i < ALL_NODES_TIME.arraySize; ++i)
+        {
+            reinitializeAllViz();//viz is always used by findNodeByTime so we need to reinitialize it in every loop
+            node * k = new node;
+            k=findNodeByTime(ALL_NODES_TIME.n[i]);
+            createBlock(k, true);
+        }
+    }
 }
 
 void moveBlock(int x, int y, node *p, bool isNew)
@@ -223,11 +265,12 @@ void moveBlock(int x, int y, node *p, bool isNew)
     updateTimePriority(p);
     if ((isNew && strcmp(p->type, "START")) || !isNew)
     {
-         line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);
-         drawAllBlocks();
+        line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);
+        drawAllBlocks();
     }
 
     clearmouseclick(WM_LBUTTONUP);
+    reinitializeAllViz();
 }
 
 #endif // BLOCKSMOVEDEL_H_INCLUDED

@@ -1,4 +1,8 @@
-#include <iostream>
+#ifndef LIST_H_INCLUDED
+#define LIST_H_INCLUDED
+
+//#include <iostream>
+
 
 #define START_HEIGHT 70
 #define START_WIDTH 150
@@ -14,6 +18,9 @@
 #define FREE_NODES_SIZE 10
 #define NEW_BLOCKS_SIZE 6
 #define ALL_NODES_TIME_SIZE 100
+#define EXPRESSION_LENGTH 50
+
+void reinitializeAllViz();
 
 using namespace std;
 
@@ -21,14 +28,14 @@ struct node
 {
     char type[20];
     bool isDecision;
-    char expression[50];
+    char expression[EXPRESSION_LENGTH];
     node * next;
     node * nextElse;
     double coordX;
     double coordY;
     int timePriority = 0;
     int location; //0 for main scheme, 1 for free node, 2 for rests
-    bool viz;
+    int viz;
     bool wasCreated = 0;
 };
 
@@ -89,6 +96,7 @@ node *createNode(char type[20], bool isDecision, int x, int y) //creates free no
         k->coordX=x;
         k->coordY=y;
         k->viz=0;
+        k->expression[0]=NULL;
         for(int i=0; i<FREE_NODES_SIZE; ++i)
             if(FREE_NODES->n[i]==NULL)
             {
@@ -255,20 +263,35 @@ void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & select
     }
 }
 
-bool isSchemeCorrect(node * k)
+void isSchemeCorrect(node * k, bool & isCorrect)
 {
     if(!(START->wasCreated))
-        return 0;
+    {
+        isCorrect=0;
+        return;
+    }
     k->viz=1;
     if(!(k->next) and !(k->nextElse) and strcmp(k->type, "STOP")!=0)
-        return 0;
-    else if((k->next and k->next->viz==0) and (k->nextElse and k->nextElse->viz==0))
-        return isSchemeCorrect(k->next)*isSchemeCorrect(k->nextElse);
-    else if((k->next and k->next->viz==0) and !(k->nextElse and k->nextElse->viz==0))
-        return isSchemeCorrect(k->next);
-    else if(!(k->next and k->next->viz==0) and (k->nextElse and k->nextElse->viz==0))
-        return isSchemeCorrect(k->nextElse);
-    return 1;
+    {
+        isCorrect=0;
+        return;
+    }
+    else
+    {
+        if((k->next and k->next->viz==0))
+        {
+            isSchemeCorrect(k->next, isCorrect);
+            if(isCorrect==0)
+                return;
+        }
+        if(k->nextElse and k->nextElse->viz==0)
+        {
+            isSchemeCorrect(k->nextElse, isCorrect);
+            if(isCorrect==0)
+                return;
+        }
+    }
+    isCorrect=1;
 }
 
 void restoreViz(node * k)
@@ -277,9 +300,9 @@ void restoreViz(node * k)
         return;
     k->viz=0;
     if(k->next and k->next->viz==1)
-        isSchemeCorrect(k->next);
+        restoreViz(k->next);
     if(k->nextElse and k->nextElse->viz==1)
-        isSchemeCorrect(k->nextElse);
+        restoreViz(k->nextElse);
 }
 
 void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all free nodes to see if selected now
@@ -339,8 +362,9 @@ void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelect
     {
         node * currentNode = new node;
         currentNode=START;
+        reinitializeAllViz();
         selectCorrectNodeFromStart(x, y, maxPriority, selectedNode, currentNode, selected, underSelectedNode, selectedAtLeastTwice);
-        restoreViz(START);
+        reinitializeAllViz();
         selectCorrectNodeFromFreeNodes(x, y, maxPriority, selectedNode, selected, underSelectedNode, selectedAtLeastTwice);
 
         for(int i=0; i<FREE_NODES_SIZE; ++i)
@@ -348,7 +372,7 @@ void selectCorrectNode(int x, int y, node * & selectedNode, node * & underSelect
             if(RESTS->n[i]!=NULL)
             {
                 selectCorrectNodeFromRests(x, y, RESTS->n[i], maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
-                restoreViz(RESTS->n[i]);
+                reinitializeAllViz();
             }
         }
         if(!selected)
@@ -381,9 +405,57 @@ void writeNode(node * n)
     else
         cout<<"There is no selected node";
 }
+
+void copyNodeInLastDeleted(node * k)
+{
+    LAST_DELETED->coordX=k->coordX;
+    LAST_DELETED->coordY=k->coordY;
+    strcpy(LAST_DELETED->expression, k->expression);
+    LAST_DELETED->isDecision=k->isDecision;
+    LAST_DELETED->location=k->location;
+    LAST_DELETED->next=k->next;
+    LAST_DELETED->nextElse=k->nextElse;
+    LAST_DELETED->timePriority=k->timePriority;
+    strcpy(LAST_DELETED->type, k->type);
+    LAST_DELETED->viz=k->viz;
+    LAST_DELETED->wasCreated=k->wasCreated;
+}
+
+void deleteBindingsFormParentsFromList(node * k, node * currentNode)
+{
+    if(START->wasCreated)
+    {
+        currentNode->viz=1;
+        if(currentNode->next and currentNode->next==k)
+        {
+            currentNode->next=NULL;
+        }
+        if(currentNode->nextElse and currentNode->nextElse==k)
+        {
+            currentNode->nextElse=NULL;
+        }
+        if(currentNode->next and currentNode->next->viz==0)
+            deleteBindingsFormParentsFromList(k, currentNode->next);
+        if(currentNode->nextElse and currentNode->nextElse->viz==0)
+            deleteBindingsFormParentsFromList(k, currentNode->nextElse);
+    }
+}
+
+void deleteBindingsFormParents(node * k)
+{
+    node * currentNode = new node;
+    deleteBindingsFormParentsFromList(k, START);
+    for(int i=0; i<FREE_NODES_SIZE; ++i)
+    {
+        if(RESTS->n[i])
+            deleteBindingsFormParentsFromList(k, RESTS->n[i]);
+    }
+}
+
+
 void deleteNode(node * & k)
 {
-    LAST_DELETED = k;
+    copyNodeInLastDeleted(k);
     k->wasCreated=0;
     if(k->next)
         for(int i=0; i<FREE_NODES_SIZE; ++i)
@@ -401,44 +473,77 @@ void deleteNode(node * & k)
                 RESTS->n[i]->wasCreated=1;
                 break;
             }
-    if(!START)
+    for(int i=0; i<FREE_NODES_SIZE; ++i)
     {
-        for(int i=0; i<FREE_NODES_SIZE; ++i)
-        {
-            if(RESTS->n[i]==k)
-                RESTS->n[i]=NULL;
-        }
+        if(RESTS->n[i]==k)
+            RESTS->n[i]=NULL;
+        if(FREE_NODES->n[i]==k)
+            FREE_NODES->n[i]=NULL;
+    }
+    if(k!=START)
+    {
+        node * parent = new node;
+        bool fromElse, found=0;
+        reinitializeAllViz();
+        deleteBindingsFormParents(k);
+        reinitializeAllViz();
         delete k;
     }
 }
 
 void makeBindingAB(node * & a, node * & b, bool fromElse)
 {
+    if(a->next)
+    {
+        for(int i=0; i<FREE_NODES_SIZE; ++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=a->next;
+                i=FREE_NODES_SIZE+1;
+            }
+    }
+    if(a->nextElse)
+    {
+        for(int i=0; i<FREE_NODES_SIZE; ++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=a->nextElse;
+                i=FREE_NODES_SIZE+1;
+            }
+    }
     if(fromElse==0)
         a->next=b;
     else
         a->nextElse=b;
     for(int i=0; i<FREE_NODES_SIZE; ++i)
     {
-        if(FREE_NODES->n[i]==b)
+        if(FREE_NODES->n[i] and FREE_NODES->n[i]==b)
             FREE_NODES->n[i]=NULL;
     }
     for(int i=0; i<FREE_NODES_SIZE; ++i)
     {
-        if(RESTS->n[i]==b)
+        if(RESTS->n[i] and RESTS->n[i]==b)
             RESTS->n[i]=NULL;
     }
-    for(int i=0; i<FREE_NODES_SIZE; ++i)
+    if(a->location==1)
     {
-        if(FREE_NODES->n[i]==a)
-            FREE_NODES->n[i]=NULL;
-        for(int j=0; j<FREE_NODES_SIZE; ++j)
-            if(RESTS->n[j]==NULL)
+        for(int i=0; i<FREE_NODES_SIZE; ++i)
+        {
+            if(FREE_NODES->n[i]==a)
             {
-                RESTS->n[j]=a;
-                a->location=3;
+                FREE_NODES->n[i]=NULL;
+                for(int j=0; j<FREE_NODES_SIZE; ++j)
+                    if(RESTS->n[j]==NULL)
+                    {
+                        RESTS->n[j]=a;
+                        a->location=3;
+                        j=FREE_NODES_SIZE+1;
+                        i=FREE_NODES_SIZE+1;
+                    }
             }
+        }
     }
+
     b->location=a->location;
 }
 
@@ -447,6 +552,35 @@ void initialize()
     for(int i=0; i<FREE_NODES_SIZE; ++i)
         RESTS->n[i]=NULL;
 }
+void createLineFromList(node * k, node * currentNode)
+{
+    if(START->wasCreated)
+    {
+        currentNode->viz=1;
+        if(currentNode->next and currentNode->next==k)
+        {
+            line(k->coordX, k->coordY, currentNode->coordX, currentNode->coordY); //will implement an appropriate function
+        }
+        if(currentNode->nextElse and currentNode->nextElse==k)
+        {
+            line(k->coordX, k->coordY, currentNode->coordX, currentNode->coordY); //will implement an appropriate function
+        }
+        if(currentNode->next and currentNode->next->viz==0)
+            createLineFromList(k, currentNode->next);
+        if(currentNode->nextElse and currentNode->nextElse->viz==0)
+            createLineFromList(k, currentNode->nextElse);
+    }
+}
+void createLineFromParents(node * k)
+{
+    reinitializeAllViz();
+    createLineFromList(k, START);
+    reinitializeAllViz();
+    for(int i=0;i<FREE_NODES_SIZE;++i)
+        if(RESTS->n[i])
+            createLineFromList(k, RESTS->n[i]);
+    reinitializeAllViz();
+}
 
-
+#endif // LIST_H_INCLUDED
 
