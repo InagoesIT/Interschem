@@ -150,7 +150,7 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
 
         if (!isSmall)
         {
-            if (strcmp(expression, "no expression"))
+            if (!strcmp(expression, "no expression"))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var>");
@@ -195,7 +195,7 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
 
         if (!isSmall)
         {
-            if (strcmp(expression, "no expression"))
+            if (!strcmp(expression, "no expression"))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var>");
@@ -234,7 +234,7 @@ void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50
 
         if (!isSmall)
         {
-            if (strcmp(expression, "no expression"))
+            if (!strcmp(expression, "no expression"))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var> <- exp");
@@ -282,7 +282,7 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
 
         if (!isSmall)
         {
-            if (strcmp(expression, "no expression"))
+            if (!strcmp(expression, "no expression"))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var> ? <var>");
@@ -330,7 +330,7 @@ void createBlock(node *p, bool isColored)
         line(p->coordX, p->coordY, p->nextElse->coordX, p->nextElse->coordY);
     node * parent = new node;
     bool fromElse, found=0;
-//    createLineFromParents(p);
+    createLineFromParents(p);
 }
 
 #endif // BLOCKS_H_INCLUDED

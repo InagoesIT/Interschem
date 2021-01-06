@@ -288,11 +288,13 @@ void getAssignOrDecisionExpression(node * & p)
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
 
     outtextxy(WINDOWX/2-textwidth("Insert Expression")/2, WINDOWY/2-textheight("Insert Expression")/2-textboxHeight/4, "Insert Expression");
-    outtextxy(WINDOWX/2-textwidth(p->expression)/2, WINDOWY/2-textheight(p->expression)/2+textboxHeight/4, p->expression);
+    if (strcmp(p->expression, "no expression"))
+        outtextxy(WINDOWX/2-textwidth(p->expression)/2, WINDOWY/2-textheight(p->expression)/2+textboxHeight/4, p->expression);
 
     bool finished=0;
-    char cc[EXPRESSION_LENGTH];
-    strcpy(cc, p->expression);
+    char cc[EXPRESSION_LENGTH] = "";
+    if (strcmp(p->expression, "no expression"))
+        strcpy(cc, p->expression);
     int i=strlen(cc);
     do
     {
@@ -365,11 +367,13 @@ void getVariableName(node * & p)
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
 
     outtextxy(WINDOWX/2-textwidth("Insert variable name")/2, WINDOWY/2-textheight("Insert variable name")/2-textboxHeight/4, "Insert variable name");
-    outtextxy(WINDOWX/2-textwidth(p->expression)/2, WINDOWY/2-textheight(p->expression)/2+textboxHeight/4, p->expression);
+    if (strcmp(p->expression, "no expression"))
+        outtextxy(WINDOWX/2-textwidth(p->expression)/2, WINDOWY/2-textheight(p->expression)/2+textboxHeight/4, p->expression);
 
     bool finished=0;
-    char cc[EXPRESSION_LENGTH];
-    strcpy(cc, p->expression);
+    char cc[EXPRESSION_LENGTH] = "";
+    if (strcmp(p->expression, "no expression"))
+        strcpy(cc, p->expression);
     int i=strlen(cc);
     do
     {
