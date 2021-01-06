@@ -9,6 +9,8 @@
 
 void drawPage();
 void drawMenu();
+void isSchemeCorrect(node * k, bool & isCorrect);
+
 
 struct readNode
 {
@@ -156,7 +158,9 @@ bool ispathForOut(char path[500])
 void saveScheme()
 {
     char path[500];
-    if (START->wasCreated && isFreeNull() && isRestsNull())  //change to isSchemeCorrect() from START->wasCreated
+    bool isCorrect=1;
+    isSchemeCorrect(START, isCorrect);
+    if (isCorrect && isFreeNull() && isRestsNull())  //change to isSchemeCorrect() from START->wasCreated
     {
         cout << "Give the path of the file you want to save your scheme into." << endl;
         cin >> path;
