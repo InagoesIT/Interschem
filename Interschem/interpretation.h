@@ -1,17 +1,81 @@
 #ifndef INTERPRETATION_H_INCLUDED
 #define INTERPRETATION_H_INCLUDED
 
-struct VarSub
-{
-    int value;
-    char name[EXPRESSION_LENGTH];
-    bool isUsed;
-} VARIABLES[10];
+void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1);
+void refresh();
 
 void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
 {
     strcpy(var, k->expression);
-    value=100; //implement right click to get value for IN blocks in menu
+    value=100;
+    int textboxWidth=500, textboxHeight=100;
+    setcolor(RED);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    setfillstyle(SOLID_FILL, LIGHTBLUE);
+    floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+    setcolor(WHITE);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+    outtextxy(WINDOWX/2-textwidth("Insert input value")/2, WINDOWY/2-textheight("Insert input value")/2-textboxHeight/4, "Insert input value");
+
+    bool finished=0;
+    char cc[EXPRESSION_LENGTH] = "";
+    int i=strlen(cc);
+    do
+    {
+        char c=getch();
+        if(c==32) //space
+            finished=1;
+        else
+        {
+            if(c==8) //backspace
+            {
+                if(strlen(cc)>=1)
+                {
+                    cc[strlen(cc)-1]=NULL;
+                    --i;
+                }
+            }
+            else
+            {
+                cc[i]=c;
+                ++i;
+                cc[i]=NULL;
+            }
+            setcolor(RED);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            setfillstyle(SOLID_FILL, LIGHTBLUE);
+            floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+            setcolor(WHITE);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+            outtextxy(WINDOWX/2-textwidth("Insert input value")/2, WINDOWY/2-textheight("Insert input value")/2-textboxHeight/4, "Insert input value");
+            outtextxy(WINDOWX/2-textwidth(cc)/2, WINDOWY/2-textheight(cc)/2+textboxHeight/4, cc);
+        }
+    }
+    while(finished==0 and i<EXPRESSION_LENGTH-2);
+    convertStringToInt(cc, value);
+    refresh();
 }
 
 void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH])
@@ -301,13 +365,17 @@ void getFirstExpresionFromCondition(node * k, char exp1[EXPRESSION_LENGTH])
     char * p=strtok(s, "=<>");
     strcpy(exp1, p);
 }
-void getSecondExpressionFromCondition(node * k, char exp2[EXPRESSION_LENGTH])
+void getSecondExpressionFromCondition(node * k, char exp2[EXPRESSION_LENGTH], bool & notCorrect)
 {
+    notCorrect=0;
     char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
-    char * p=strtok(s, "=<>");
-    p=strtok(NULL, "=<>");
-    strcpy(exp2, p);
+    char * p=strtok(s, "!=<>");
+    p=strtok(NULL, "!=<>");
+    if(p)
+        strcpy(exp2, p);
+    else
+        notCorrect=1;
 }
 
 void getRelationOperator(node * k, char oper[3])
@@ -404,10 +472,6 @@ bool conditionIsMet(int a, int b, char oper[3])
 
 void analyzeScheme(node * k)
 {
-    bool isCorrect=1;
-    isSchemeCorrect(START, isCorrect);
-    if(isCorrect==0)
-        return;
     reinitializeAllViz();
     if(k==START)
         analyzeScheme(k->next);
@@ -417,7 +481,7 @@ void analyzeScheme(node * k)
         char var[EXPRESSION_LENGTH];
         int poz=0;
 
-        getVariableFromIn(k, var, value);
+        getVariableFromIn(k, var, value); // implement popup
         poz=getVariablePosition(var, state);
         if(state==0)
             cout<<"No more places for new variables!!!!!"; //continue code for menu
@@ -471,9 +535,10 @@ void analyzeScheme(node * k)
     {
         char exp1[EXPRESSION_LENGTH], exp2[EXPRESSION_LENGTH], oper[3];
         int value1=0, value2=0;
+        bool notCorrect=0;
 
         getFirstExpresionFromCondition(k, exp1);
-        getSecondExpressionFromCondition(k, exp2);
+        getSecondExpressionFromCondition(k, exp2, notCorrect);
         getRelationOperator(k, oper);
         getExpressionValue(exp1, value1);
         getExpressionValue(exp2, value2);
@@ -484,4 +549,388 @@ void analyzeScheme(node * k)
     }
 }
 
+
+bool isLetter(char x)
+{
+    if((x>=65 and x<=90) or (x>=97 and x<=122))
+        return 1;
+    return 0;
+}
+
+bool isLetterOrDigit(char x)
+{
+    if((x>=65 and x<=90) or (x>=97 and x<=122) or (x>=48 and x<=57))
+        return 1;
+    return 0;
+}
+
+bool variableNameCorrect(char exp[EXPRESSION_LENGTH])
+{
+    if(!isLetter(exp[0]))
+        return 0;
+    for(int i=0; exp[i]; ++i)
+        if(!isLetterOrDigit(exp[i]))
+            return 0;
+    return 1;
+}
+
+bool isADigit(char x)
+{
+    if(strchr("0123456789", x))
+        return 1;
+    return 0;
+}
+
+bool numberCorrect(char exp[EXPRESSION_LENGTH])
+{
+    for(int i=0; exp[i]; ++i)
+        if(!isADigit(exp[i]))
+            return 0;
+    return 1;
+}
+
+bool isSymbol(char x)
+{
+    if(strchr("()*+-/", x))
+        return 1;
+    return 0;
+}
+
+bool variablePlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int lgInfix)
+{
+    if(i==0)
+        return 1;
+    if(isADigit(infix[i-1][0]))
+        return 0;
+    return 1;
+}
+
+bool isSymbolNextToSymbolOk(char x, char y)
+{
+    if(x=='+' and y=='(')
+        return 1;
+    if(x=='-' and y=='(')
+        return 1;
+    if(x=='*' and (y=='-' or y=='+' or y=='('))
+        return 1;
+    if(x=='/' and (y=='-' or y=='+' or y=='('))
+        return 1;
+    if(x=='(' and (y=='-' or y=='+'))
+        return 1;
+    if(x==')' and (y=='-' or y=='+' or y=='*' or y=='/'))
+        return 1;
+    return 0;
+}
+
+bool symbolPlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int lgInfix)
+{
+    char b=infix[i][0];
+    if(i==0)
+    {
+        if(i!=lgInfix-1) //position i+1 exists
+        {
+            char c=infix[i+1][0];
+            if(isSymbol(c))
+            {
+                bool ok=isSymbolNextToSymbolOk(b, c);
+                if(ok==0)
+                    return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if(i!=lgInfix-1) //positions i-1 and i+1 exist
+    {
+        char a=infix[i-1][0];
+        if(isSymbol(a))
+        {
+            bool ok=isSymbolNextToSymbolOk(a, b);
+            if(ok==0)
+                return 0;
+        }
+        else
+        {
+            if(isLetterOrDigit(a))
+                if(b=='(')
+                    return 0;
+        }
+        char c=infix[i+1][0];
+        if(isSymbol(c))
+        {
+            bool ok=isSymbolNextToSymbolOk(b, c);
+            if(ok==0)
+                return 0;
+        }
+    }
+    else
+    {
+        if(b!=')')
+            return 0;
+    }
+    return 1;
+}
+
+bool isExpressionCorrect(char exp[EXPRESSION_LENGTH])
+{
+    if(strlen(exp)==0)
+        return 0;
+    char s[EXPRESSION_LENGTH], infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
+    int lgInfix=0;
+    strcpy(s, exp);
+    getInfix(s, infix, lgInfix);
+    for(int i=0; i<lgInfix; ++i)
+    {
+        if(isLetter(infix[i][0]))
+        {
+            if(!variableNameCorrect(infix[i]))
+                return 0;
+            int state=0;
+            int poz=getVariablePosition(infix[i], state);
+            if(state!=1)
+                return 0;
+            if(!variablePlacedCorrect(i, infix, lgInfix))
+                return 0;
+        }
+        else if(isADigit(infix[i][0]))
+        {
+            if(!numberCorrect(infix[i]))
+                return 0;
+        }
+        else if(isSymbol(infix[i][0]))
+        {
+            if(!symbolPlacedCorrect(i, infix, lgInfix))
+                return 0;
+        }
+        else
+            return 0;
+    }
+    return 1;
+}
+
+bool isOperatorCorrect(char exp[EXPRESSION_LENGTH])
+{
+    char s[EXPRESSION_LENGTH];
+    strcpy(s, exp);
+    int howMany=0;
+    for(int i=0; s[i]; ++i)
+    {
+        if(s[i]=='!')
+        {
+            ++howMany;
+            if(s[i+1] and s[i+1]!='=')
+                return 0;
+            if(s[i+2] and (s[i+2]=='=' or s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+                return 0;
+            ++i; //jump over = form !=
+        }
+        else if(s[i]=='=')
+        {
+            ++howMany;
+            if(s[i+1] and (s[i+1]=='<' or s[i+1]=='>' or s[i+1]=='!'))
+                return 0;
+            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+                return 0;
+            if(s[i+1]=='=')
+                ++i; //jump over = form ==
+        }
+        else if(s[i]=='<')
+        {
+            ++howMany;
+            if(s[i+1] and (s[i+1]=='<' or s[i+1]=='>' or s[i+1]=='!'))
+                return 0;
+            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+                return 0;
+            if(s[i+1]=='=')
+                ++i; //jump over = form <=
+        }
+        else if(s[i]=='>')
+        {
+            ++howMany;
+            if(s[i+1] and (s[i+1]=='<' or s[i+1]=='>' or s[i+1]=='!'))
+                return 0;
+            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+                return 0;
+            if(s[i+1]=='=')
+                ++i; //jump over = form >=
+        }
+    }
+    if(howMany==1)
+        return 1;
+    return 0;
+}
+
+void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a=1; isSchemeCorrect(START, a);
+{
+    if(!(START->wasCreated))
+    {
+        isCorrect=0;
+        return;
+    }
+    k->viz=1;
+    if(!(k->next) and !(k->nextElse) and strcmp(k->type, "STOP")!=0)
+    {
+        isCorrect=0;
+        return;
+    }
+    else
+    {
+        if(strcmp(k->type, "IN")==0)
+        {
+            if(!variableNameCorrect(k->expression))
+            {
+                isCorrect=0;
+                return;
+            }
+            else
+            {
+                int state=0, value=0;
+                char var[EXPRESSION_LENGTH];
+                int poz=0;
+                strcpy(var, k->expression);
+                poz=getVariablePosition(var, state);
+                if(state==0)
+                {
+                    cout<<"No more places for new variables!!!!!"; //continue code for menu
+                    isCorrect=0;
+                    return;
+                }
+                else
+                {
+                    strcpy(VARIABLES[poz].name, var);
+                    VARIABLES[poz].isUsed=1;
+                }
+            }
+        }
+        else if(strcmp(k->type, "OUT")==0)
+        {
+            int state=0;
+            char var[EXPRESSION_LENGTH];
+            int poz=0;
+            getVariableFromOut(k, var);
+            poz=getVariablePosition(var, state);
+            if(state==0 or state==2)
+            {
+                cout<<"Variable not known!!!!!";   //continue code for menu
+                isCorrect=0;
+                return;
+            }
+        }
+        else if(strcmp(k->type, "ASSIGN")==0)
+        {
+            char var[EXPRESSION_LENGTH];
+            int state=0, poz=0;
+            if(k->expression[0]==NULL)
+            {
+                cout<<"Assign empty!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            getVariableFromAssign(k, var);
+            if(!variableNameCorrect(var))
+            {
+                cout<<"Assign variable incorrect!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            poz=getVariablePosition(var, state);
+            if(state==0)
+            {
+                cout<<"No more places for this new variable!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            else
+            {
+                char exp[EXPRESSION_LENGTH];
+                char s[EXPRESSION_LENGTH];
+                strcpy(s, k->expression);
+                if(strtok(s, "=")==NULL)
+                {
+                    cout<<"Assign expression has no ="; //continue code for menu
+                    isCorrect=0;
+                    return;
+                }
+                getExpressionAfterEqualSign(k, exp);
+                if(!isExpressionCorrect(exp))
+                {
+                    cout<<"Assign expression is not correct!!!"; //continue code for menu
+                    isCorrect=0;
+                    return;
+                }
+                else {
+                        strcpy(VARIABLES[poz].name, var);
+                        VARIABLES[poz].isUsed=1;
+                }
+            }
+        }
+        else if(strcmp(k->type, "DECISION")==0)
+        {
+            char exp1[EXPRESSION_LENGTH], exp2[EXPRESSION_LENGTH], oper[3];
+            int value1=0, value2=0;
+            if(!k->next or !k->nextElse)
+            {
+                cout<<"Decision does not have 2 bindings!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            if(k->expression[0]==NULL)
+            {
+                cout<<"Decision empty!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            getFirstExpresionFromCondition(k, exp1);
+            char s[EXPRESSION_LENGTH];
+            strcpy(s, k->expression);
+            if(strtok(s, "!<=>")==NULL)
+            {
+                cout<<"Decision expression has wrong operator!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            if(!isOperatorCorrect(k->expression))
+            {
+                cout<<"Decision expression has wrong operator!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            bool notCorrect=0;
+            getSecondExpressionFromCondition(k, exp2, notCorrect);
+            if(notCorrect==1)
+            {
+                cout<<"Decision expression 2 is empty!!!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            getRelationOperator(k, oper);
+            if(!isExpressionCorrect(exp1))
+            {
+                cout<<"Decision expression 1 is not correct!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+            else if(!isExpressionCorrect(exp2))
+            {
+                cout<<"Decision expression 2 is not correct!"; //continue code for menu
+                isCorrect=0;
+                return;
+            }
+        }
+        if((k->next and k->next->viz==0))
+        {
+            isSchemeCorrect(k->next, isCorrect);
+            if(isCorrect==0)
+                return;
+        }
+        if(k->nextElse and k->nextElse->viz==0)
+        {
+            isSchemeCorrect(k->nextElse, isCorrect);
+            if(isCorrect==0)
+                return;
+        }
+    }
+}
 #endif // INTERPRETATION_H_INCLUDED

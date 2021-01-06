@@ -14,12 +14,19 @@
 #define ASSIGN_WIDTH 200
 #define DECISION_BASE 150
 #define DECISION_HEIGHT 80
-#define FREE_NODES_SIZE 10
+#define FREE_NODES_SIZE 20
 #define NEW_BLOCKS_SIZE 6
 #define ALL_NODES_TIME_SIZE 100
 #define EXPRESSION_LENGTH 50
-
+int cacacacca=0;
 void reinitializeAllViz();
+
+struct VarSub
+{
+    int value;
+    char name[EXPRESSION_LENGTH];
+    bool isUsed;
+} VARIABLES[10];
 
 using namespace std;
 
@@ -283,37 +290,6 @@ void selectCorrectNodeFromStart(int x, int y, int & maxPriority, node * & select
     }
 }
 
-void isSchemeCorrect(node * k, bool & isCorrect)
-{
-    if(!(START->wasCreated))
-    {
-        isCorrect=0;
-        return;
-    }
-    k->viz=1;
-    if(!(k->next) and !(k->nextElse) and strcmp(k->type, "STOP")!=0)
-    {
-        isCorrect=0;
-        return;
-    }
-    else
-    {
-        if((k->next and k->next->viz==0))
-        {
-            isSchemeCorrect(k->next, isCorrect);
-            if(isCorrect==0)
-                return;
-        }
-        if(k->nextElse and k->nextElse->viz==0)
-        {
-            isSchemeCorrect(k->nextElse, isCorrect);
-            if(isCorrect==0)
-                return;
-        }
-    }
-    isCorrect=1;
-}
-
 void selectCorrectNodeFromFreeNodes(int x, int y, int & maxPriority, node * & selectedNode, bool & selected, node * & underSelectedNode, bool & selectedAtLeastTwice) //goes through all free nodes to see if selected now
 {
     int i;
@@ -501,7 +477,18 @@ void deleteNode(node * & k)
 
 void makeBindingAB(node * & a, node * & b, bool fromElse)
 {
-    if(a->next)
+
+    if(strcmp(b->type, "STOP")==0)
+    {
+        ++cacacacca;
+        if(cacacacca==1)
+        {
+            fromElse=fromElse;
+            cacacacca=2;
+        }
+    }
+
+    if(fromElse==0 and a->next and a->next!=b)
     {
         for(int i=0; i<FREE_NODES_SIZE; ++i)
             if(RESTS->n[i]==NULL)
@@ -510,7 +497,7 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
                 i=FREE_NODES_SIZE+1;
             }
     }
-    if(a->nextElse)
+    if(fromElse==1 and a->nextElse)
     {
         for(int i=0; i<FREE_NODES_SIZE; ++i)
             if(RESTS->n[i]==NULL)
@@ -580,7 +567,7 @@ void createLineFromParents(node * k)
     reinitializeAllViz();
     createLineFromList(k, START);
     reinitializeAllViz();
-    for(int i=0;i<FREE_NODES_SIZE;++i)
+    for(int i=0; i<FREE_NODES_SIZE; ++i)
         if(RESTS->n[i])
             createLineFromList(k, RESTS->n[i]);
     reinitializeAllViz();

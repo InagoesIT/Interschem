@@ -330,7 +330,7 @@ void createBlock(node *p, bool isColored)
         line(p->coordX, p->coordY, p->nextElse->coordX, p->nextElse->coordY);
     node * parent = new node;
     bool fromElse, found=0;
-//    createLineFromParents(p);
+    createLineFromParents(p);
 }
 
 #endif // BLOCKS_H_INCLUDED

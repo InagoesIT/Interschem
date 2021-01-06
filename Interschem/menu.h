@@ -23,13 +23,15 @@
 #define WINDOWY 700
 
 void moveBlock(int x, int y, node *p, bool isNew);
+void isSchemeCorrect(node * k, bool & isCorrect);
+void analyzeScheme(node * k);
 
 const int tileX = WINDOWX / 3;
 const int smallTileX = 170;//width Background Color + 50 ?? textwidth("Background Color") + 50 won't work))))
 const int smallTileY = MENUY * 0.8;
 const int firstSchemeX = (tileX - smallTileX) / 2;
 const int lastSchemeX = smallTileX + firstSchemeX;
-const int lastSchemeY = MENUY + smallTileY * 3;
+const int lastSchemeY = MENUY + smallTileY * 4;
 const int firstCustomizeX = tileX + (tileX - smallTileX) / 2;
 const int lastCustomizeX = smallTileX + firstCustomizeX;
 const int lastCustomizeY = MENUY + smallTileY * 4;
@@ -142,12 +144,14 @@ void drawSubmenuScheme(bool isColored)
 
     line(firstSchemeX, MENUY + smallTileY, lastSchemeX, MENUY + smallTileY);
     line(firstSchemeX, MENUY + smallTileY * 2, lastSchemeX, MENUY + smallTileY * 2);
+    line(firstSchemeX, MENUY + smallTileY * 3, lastSchemeX, MENUY + smallTileY * 3);
 
     if (isColored)
     {
         outtextxy(firstSchemeX + (smallTileX - textwidth("Save")) / 2, MENUY + (smallTileY - textheight("Save")) / 2, "Save");
         outtextxy(firstSchemeX + (smallTileX - textwidth("Open")) / 2, MENUY + smallTileY + (smallTileY - textheight("Open")) / 2, "Open");
         outtextxy(firstSchemeX + (smallTileX - textwidth("Clear")) / 2, MENUY + smallTileY * 2 + (smallTileY - textheight("Clear")) / 2, "Clear");
+        outtextxy(firstSchemeX + (smallTileX - textwidth("Run")) / 2, MENUY + smallTileY * 3 + (smallTileY - textheight("Run")) / 2, "Run");
     }
 }
 
@@ -208,7 +212,7 @@ void popUpAgreeEmptyScheme(bool & continueEmptyScheme)
     line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
     line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
 
-    setfillstyle(SOLID_FILL, LIGHTBLUE);
+    setfillstyle(SOLID_FILL, CYAN);
     floodfill(WINDOWX/2, WINDOWY/2, RED);
 
     setcolor(WHITE);
@@ -274,6 +278,14 @@ void emptyScheme()
     drawAllBlocks();
 }
 
+void run()
+{
+    bool isCorrect=1;
+    isSchemeCorrect(START, isCorrect);
+    if(isCorrect)
+        analyzeScheme(START);
+}
+
 void handleMenuClick(int x, int y)
 {
     int xx, yy;
@@ -299,6 +311,8 @@ void handleMenuClick(int x, int y)
                       openScheme();
                     else if (yy < MENUY + smallTileY * 3)
                       emptyScheme();
+                    else if (yy < MENUY + smallTileY * 4)
+                      run();
                 }
                 else
                 {
