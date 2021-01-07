@@ -19,8 +19,8 @@ void setColors(bool isColored)
     }
     else
     {
-        setcolor(BLACK);
-        setfillstyle(SOLID_FILL, BLACK);
+        setcolor(THEME[CURRENT_THEME].bck_clr);
+        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
     }
 }
 
@@ -80,7 +80,7 @@ void createRoundedRect(int x, int y, bool isColored)
     }
     else
     {
-        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, BLACK);
+        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, THEME[CURRENT_THEME].bck_clr);
     }
 }
 
@@ -166,7 +166,7 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
 	}
     else
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
 void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
@@ -212,7 +212,7 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
 void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50])
@@ -252,7 +252,7 @@ void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, BLACK);
+        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
 void createDecision(int x, int y, bool isSmall, bool isColored, char expression[50])
@@ -306,7 +306,7 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
     }
     else
     {
-        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, BLACK);
+        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
 
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
         setcolor(THEME[CURRENT_THEME].bck_clr);
