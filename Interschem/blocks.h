@@ -15,12 +15,12 @@ void setColors(bool isColored)
     if (isColored)
     {
         setcolor(AUX_COLOR);
-        setfillstyle(SOLID_FILL, BLOCK_COLOR);
+        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].block_clr);
     }
     else
     {
-        setcolor(BLACK);
-        setfillstyle(SOLID_FILL, BLACK);
+        setcolor(THEME[CURRENT_THEME].bck_clr);
+        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
     }
 }
 
@@ -32,7 +32,6 @@ void createRoundedRect(int x, int y, bool isColored)
     float X = 0;
     float Y = 0;
     float points[2][4 * NR_POINTS];
-
     setColors(isColored);
 
     for(; i < NR_POINTS; i++)
@@ -81,7 +80,7 @@ void createRoundedRect(int x, int y, bool isColored)
     }
     else
     {
-        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, BLACK);
+        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, THEME[CURRENT_THEME].bck_clr);
     }
 }
 
@@ -98,9 +97,9 @@ void createStart(int x, int y, bool isSmall, bool isColored)
     {
         int textWidth = textwidth("Start");
         int textHeight = textheight("Start");
-        setbkcolor(BLOCK_COLOR);
-        outtextxy(x + (START_WIDTH * coef - textWidth) / 2, y + (START_HEIGHT * coef - textHeight) / 2 - 5, "Start");
-        setbkcolor(BLACK);
+        setbkcolor(THEME[CURRENT_THEME].block_clr);
+        outtextxy(x + (START_WIDTH * coef - textWidth) / 2, y + (START_HEIGHT * coef - textHeight) / 2, "Start");
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
 }
 
@@ -117,9 +116,10 @@ void createStop(int x, int y, bool isSmall, bool isColored)
     {
         int textWidth = textwidth("Stop");
         int textHeight = textheight("Stop");
-        setbkcolor(BLOCK_COLOR);
+        setbkcolor(THEME[CURRENT_THEME].block_clr);
+        setcolor(WHITE);
         outtextxy(x + (STOP_WIDTH * coef - textWidth)/2, y + (STOP_HEIGHT * coef - textHeight)/2, "Stop");
-        setbkcolor(BLACK);
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
 }
 
@@ -160,12 +160,13 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
 
         int textWidth = textwidth(text);
         int textHeight = textheight(text);
-        setbkcolor(BLOCK_COLOR);
+        setbkcolor(THEME[CURRENT_THEME].block_clr);
+        setcolor(WHITE);
         outtextxy(x + (IN_BIG_BASE * coef - textWidth) / 2, y + (LATERAL_PART * coef - textHeight) / 2, text);
-        setbkcolor(BLACK);
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
 	}
     else
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
 void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
@@ -205,12 +206,13 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
 
         int textWidth = textwidth(text);
         int textHeight = textheight(text);
-        setbkcolor(BLOCK_COLOR);
+        setbkcolor(THEME[CURRENT_THEME].block_clr);
+        setcolor(WHITE);
         outtextxy(x + (IN_BIG_BASE * coef - textWidth) / 2, y + (LATERAL_PART * coef - textHeight) / 2, text);
-        setbkcolor(BLACK);
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, BLACK);
+        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
 void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50])
@@ -244,12 +246,13 @@ void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50
 
         int textWidth = textwidth(text);
         int textHeight = textheight(text);
-        setbkcolor(BLOCK_COLOR);
+        setbkcolor(THEME[CURRENT_THEME].block_clr);
+        setcolor(WHITE);
         outtextxy(x + (ASSIGN_WIDTH * coef - textWidth) / 2, y + (ASSIGN_HEIGHT * coef - textHeight) / 2, text);
-        setbkcolor(BLACK);
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, BLACK);
+        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
 void createDecision(int x, int y, bool isSmall, bool isColored, char expression[50])
@@ -293,18 +296,20 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
         int textWidth = textwidth(text);
         int textHeight = textheight(text);
 
-        setbkcolor(BLOCK_COLOR);
+        setbkcolor(THEME[CURRENT_THEME].block_clr);
+        setcolor(WHITE);
         outtextxy(X + (DECISION_BASE * coef - textWidth) / 2, y + (EQUAL_PART * coef - textHeight) / 2 + 20 * coef, text);
-        setbkcolor(BLACK);
+
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
         outtextxy(x + TWidth / 2, y + EQUAL_PART * coef - 10, "T");
         outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
     }
     else
     {
-        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, BLACK);
+        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
 
-        setbkcolor(BLACK);
-        setcolor(BLACK);
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
+        setcolor(THEME[CURRENT_THEME].bck_clr);
         outtextxy(x + TWidth / 2, y + EQUAL_PART * coef - 10, "T");
         outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
     }

@@ -9,24 +9,30 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
     strcpy(var, k->expression);
     value=100;
     int textboxWidth=500, textboxHeight=100;
+    setlinestyle(SOLID_LINE, 0, 1);
     setcolor(RED);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
     line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
     line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
 
-    setfillstyle(SOLID_FILL, LIGHTBLUE);
+    setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
     floodfill(WINDOWX/2, WINDOWY/2, RED);
 
-    setcolor(WHITE);
+    setlinestyle(SOLID_LINE, 0, 1);
+    setcolor(THEME[CURRENT_THEME].option_clr);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
     line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
     line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
 
+    setcolor(THEME[CURRENT_THEME].bck_clr);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
 
+    setbkcolor(THEME[CURRENT_THEME].option_clr);
+    setcolor(WHITE);
     outtextxy(WINDOWX/2-textwidth("Insert input value")/2, WINDOWY/2-textheight("Insert input value")/2-textboxHeight/4, "Insert input value");
+    setbkcolor(THEME[CURRENT_THEME].bck_clr);
 
     bool finished=0;
     char cc[EXPRESSION_LENGTH] = "";
@@ -52,25 +58,31 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
                 ++i;
                 cc[i]=NULL;
             }
+            setlinestyle(SOLID_LINE, 0, 1);
             setcolor(RED);
             line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
             line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
             line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
             line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
 
-            setfillstyle(SOLID_FILL, LIGHTBLUE);
+            setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
             floodfill(WINDOWX/2, WINDOWY/2, RED);
 
-            setcolor(WHITE);
+            setlinestyle(SOLID_LINE, 0, 1);
+            setcolor(THEME[CURRENT_THEME].option_clr);
             line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
             line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
             line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
             line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
 
+            setcolor(THEME[CURRENT_THEME].bck_clr);
             line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
 
+            setbkcolor(THEME[CURRENT_THEME].option_clr);
+            setcolor(WHITE);
             outtextxy(WINDOWX/2-textwidth("Insert input value")/2, WINDOWY/2-textheight("Insert input value")/2-textboxHeight/4, "Insert input value");
             outtextxy(WINDOWX/2-textwidth(cc)/2, WINDOWY/2-textheight(cc)/2+textboxHeight/4, cc);
+            setbkcolor(THEME[CURRENT_THEME].bck_clr);
         }
     }
     while(finished==0 and i<EXPRESSION_LENGTH-2);

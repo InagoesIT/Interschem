@@ -28,7 +28,7 @@ int main()
     bool isDone = false;
 
     //interface for the app//
-
+    refresh();
     int ok=1;
     while(!isDone)
     {
@@ -51,6 +51,7 @@ int main()
                     if (strcmp(newBlock, "NO") && ((strcmp(newBlock, "START") && START->wasCreated) || (!strcmp(newBlock, "START") && !START->wasCreated)))
                         dragNewBlock(xx, yy, newBlock);
                 }
+                refresh();
             }
         }
         else
@@ -121,39 +122,3 @@ int main()
     closegraph();
     return 0;
 }
-
-//TESTING 2.0 analyzeScheme(START). To modify cin>>pisica value go to interpretation.h, getVariableFromIN() and modify value.
-//note: this function is not finished, dont judge it :)
-
-//    node * in = new node;
-//    strcpy(in->type, "IN");
-//    strcpy(in->expression, "pisica");
-//    in->nextElse=NULL;
-//
-//    node * decision = new node;
-//    strcpy(decision->type, "DECISION");
-//    strcpy(decision->expression, "pisica<=29");
-//
-//    node * assig = new node;
-//    strcpy(assig->type, "ASSIGN");
-//    strcpy(assig->expression, "pisica=10*pisica+1");
-//    assig->nextElse=NULL;
-//
-//    node * out = new node;
-//    strcpy(out->type, "OUT");
-//    strcpy(out->expression, "pisica");
-//    out->nextElse=NULL;
-//
-//    node * stop = new node;
-//    strcpy(stop->type, "STOP");
-//    stop->next=stop->nextElse=NULL;
-//
-//    START->wasCreated=1;
-//    START->next=in;
-//    in->next=decision;
-//    decision->next=out;
-//    decision->nextElse=assig;
-//    assig->next=out;
-//    out->next=stop;
-//
-//    analyzeScheme(START);
