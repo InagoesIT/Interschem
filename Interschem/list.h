@@ -18,8 +18,18 @@
 #define NEW_BLOCKS_SIZE 6
 #define ALL_NODES_TIME_SIZE 100
 #define EXPRESSION_LENGTH 50
-int cacacacca=0;
+
 void reinitializeAllViz();
+
+struct Theme_Color_Struct
+{
+    int bck_clr;
+    int block_clr;
+    int button_clr;
+    int option_clr;
+} THEME[2]; //1 for dark 0 for colorful
+bool CURRENT_THEME=1;
+
 
 struct VarSub
 {
@@ -83,6 +93,15 @@ void initialize()
 {
     for(int i=0; i<FREE_NODES_SIZE; ++i)
         RESTS->n[i]=NULL;
+    THEME[0].bck_clr=COLOR(53, 80, 112);
+    THEME[0].block_clr=COLOR(181, 101, 118);
+    THEME[0].button_clr=COLOR(109, 89, 122);
+    THEME[0].option_clr=COLOR(229, 107, 111);
+
+    THEME[1].bck_clr=COLOR(34, 3, 31);
+    THEME[1].block_clr=COLOR(23, 126, 137);
+    THEME[1].button_clr=COLOR(8, 76, 97);
+    THEME[1].option_clr=COLOR(162, 126, 142);
 }
 
 node *createNode(char type[20], bool isDecision, int x, int y, int timePriority) //creates free node
@@ -477,17 +496,6 @@ void deleteNode(node * & k)
 
 void makeBindingAB(node * & a, node * & b, bool fromElse)
 {
-
-    if(strcmp(b->type, "STOP")==0)
-    {
-        ++cacacacca;
-        if(cacacacca==1)
-        {
-            fromElse=fromElse;
-            cacacacca=2;
-        }
-    }
-
     if(fromElse==0 and a->next and a->next!=b)
     {
         for(int i=0; i<FREE_NODES_SIZE; ++i)

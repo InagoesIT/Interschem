@@ -265,6 +265,8 @@ void moveBlock(int x, int y, node *p, bool isNew)
         updateTimePriority(p);
     if ((isNew && strcmp(p->type, "START")) || !isNew)
     {
+        setlinestyle(SOLID_LINE, 0, 1);
+        setcolor(THEME[CURRENT_THEME].button_clr);
         line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);
         drawAllBlocks();
     }
