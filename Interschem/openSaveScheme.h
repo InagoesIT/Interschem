@@ -84,12 +84,18 @@ void writeSchemeToScreen(char path[500], node *head)
     }
 }
 
-void writeSchemeToFile(char path[500], node *head)
+void writeSchemeToFile(char path[500], node *head, bool &isFirstTime)
 {
     if (head && !head->viz)
     {
         ofstream File;
-        File.open(path, ios::app);
+        if (!isFirstTime)
+            File.open(path, ios::app);
+        else
+        {
+            isFirstTime = 0;
+            File.open(path, ios::trunc);
+        }
         File << head->type << ",";
         File << head->timePriority << ",";
         File << head->coordX << ",";
@@ -121,9 +127,9 @@ void writeSchemeToFile(char path[500], node *head)
 
         head->viz = 1;
 
-        writeSchemeToFile(path, head->next);
+        writeSchemeToFile(path, head->next, isFirstTime);
         if (head->isDecision)
-            writeSchemeToFile(path, head->nextElse);
+            writeSchemeToFile(path, head->nextElse, isFirstTime);
 
         File.close();
     }
@@ -166,8 +172,9 @@ void saveScheme()
         cin >> path;
         if (ispathForOut(path))
         {
+            bool isFirstTime = 1;
             reinitializeAllViz();
-            writeSchemeToFile(path, START);
+            writeSchemeToFile(path, START, isFirstTime);
             cout << "The scheme was saved successfully!" << endl;
         }
         else
@@ -186,10 +193,12 @@ void reinitializeArr()
         nodesInfo[i].timePriority = 0;
         nodesInfo[i].coordX = 0;
         nodesInfo[i].coordY = 0;
+        nodesInfo[i].viz = 0;
         strcpy(nodesInfo[i].expression, "no expression");
         nodesInfo[i].isDecision = 0;
         nodesInfo[i].next = 0;
         nodesInfo[i].nextElse = 0;
+        i++;
     }
 }
 
@@ -200,6 +209,8 @@ void writeNodesInfoInArr(char path[500])
     char info[200];
     char *token;
     int i = 0;
+    if (nodesInfo[0].timePriority)
+        reinitializeArr();
     while (!File.eof())
     {
         File >> info;
@@ -227,68 +238,75 @@ void writeNodesInfoInArr(char path[500])
     File.close();
 }
 
-readNode findNodeInArr(int time)
+readNode findNodeInArr(int time, int &i)
 {
-    int i = 0;
+    i = 0;
     while (nodesInfo[i].timePriority)
     {
         if (nodesInfo[i].timePriority == time)
             return nodesInfo[i];
-        i++;
+        else
+            i++;
     }
 }
 
 void addNextNodesToScheme(readNode headArr, node *head)
 {
-    node *next = new node;
+    node *next;
     readNode nextArr;
-    node *nextElse = new node;
+    node *nextElse;
     readNode nextElseArr;
+    int i;
 
-    if (headArr.timePriority)
-    {
         if (headArr.next && !head->next)
         {
-            nextArr = findNodeInArr(headArr.next);
-            if (!nextArr.viz)
+            nextArr = findNodeInArr(headArr.next, i);
+            if (!nodesInfo[i].viz)
             {
                 next = createNode(nextArr.type, nextArr.isDecision, nextArr.coordX, nextArr.coordY, nextArr.timePriority);
                 strcpy(next->expression, nextArr.expression);
+                nodesInfo[i].viz = 1;
+                head->next = next;
+                addNextNodesToScheme(nextArr, next);
             }
             else
+            {
                 next = findNodeByTime(headArr.next);
-            head->next = next;
-            nextArr.viz = 1;
-            addNextNodesToScheme(nextArr, next);
+                head->next = next;
+            }
+
         }
         if (headArr.isDecision && !head->nextElse && headArr.nextElse)
         {
-            nextElseArr = findNodeInArr(headArr.nextElse);
-            if (!nextElseArr.viz)
+            nextElseArr = findNodeInArr(headArr.nextElse, i);
+            if (!nodesInfo[i].viz)
             {
                 nextElse = createNode(nextElseArr.type, nextElseArr.isDecision, nextElseArr.coordX, nextElseArr.coordY, nextElseArr.timePriority);
                 strcpy(nextElse->expression, nextElseArr.expression);
+                nodesInfo[i].viz = 1;
+                head->nextElse = nextElse;
+                addNextNodesToScheme(nextElseArr, nextElse);
+            }
+            else
+            {
+                nextElse = findNodeByTime(headArr.nextElse);
+                head->nextElse = nextElse;
             }
 
-            else
-                nextElse = findNodeByTime(headArr.nextElse);
-            head->nextElse = nextElse;
-            nextElseArr.viz = 1;
-            addNextNodesToScheme(nextElseArr, nextElse);
         }
-    }
 }
 
 void convertArrToScheme()
 {
+    node *head;
     if (nodesInfo[0].timePriority)
     {
-        node *head = new node;
         if (START->wasCreated)
         {
             delete START;
             START = new node;
-            initialize();
+            for(int i=0; i<FREE_NODES_SIZE; ++i)
+                RESTS->n[i]=NULL;
         }
         head = createNode(nodesInfo[0].type, nodesInfo[0].isDecision, nodesInfo[0].coordX, nodesInfo[0].coordY, nodesInfo[0].timePriority);
         nodesInfo[0].viz = 1;

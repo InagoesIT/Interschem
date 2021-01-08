@@ -150,7 +150,7 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
 
         if (!isSmall)
         {
-            if (!strcmp(expression, "no expression"))
+            if (strcmp(expression, "no expression") && strlen(expression))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var>");
@@ -196,7 +196,7 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
 
         if (!isSmall)
         {
-            if (!strcmp(expression, "no expression"))
+            if (strcmp(expression, "no expression") && strlen(expression))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var>");
@@ -236,7 +236,7 @@ void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50
 
         if (!isSmall)
         {
-            if (!strcmp(expression, "no expression"))
+            if (strcmp(expression, "no expression") && strlen(expression))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var> <- exp");
@@ -285,7 +285,7 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
 
         if (!isSmall)
         {
-            if (!strcmp(expression, "no expression"))
+            if (strcmp(expression, "no expression") && strlen(expression))
                 strcpy(text, expression);
             else
                 strcpy(text, "<var> ? <var>");
