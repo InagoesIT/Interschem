@@ -332,7 +332,7 @@ void getAssignOrDecisionExpression(node * & p)
         char c=getch();
         if(i==EXPRESSION_LENGTH-2)
             c=getch();
-        if(c==32) //space
+        if(c==13) //enter
             finished=1;
         else
         {
@@ -419,7 +419,7 @@ void getVariableName(node * & p)
     do
     {
         char c=getch();
-        if(c==32) //space
+        if(c==13) //enter
             finished=1;
         else
         {
@@ -525,6 +525,7 @@ void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, b
         line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
 
         setcolor(THEME[CURRENT_THEME].bck_clr);
+        line(opx, opy + ONE_OPTION_HEIGHT*2, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT*2);
         line(opx, opy + ONE_OPTION_HEIGHT, opx + OPTIONS_WIDTH, opy + ONE_OPTION_HEIGHT);
 
         setbkcolor(THEME[CURRENT_THEME].option_clr);
@@ -582,6 +583,7 @@ void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, b
 
 void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p, int &finished)
 {
+    Beep(400, 100);
     if(strcmp(p->type, "START")==0)
     {
         makeBinding(xx, yy, opx, opy, p, finished, 0);

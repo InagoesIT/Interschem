@@ -224,18 +224,19 @@ void drawAllBlocks()
     }
 }
 
-void moveBlock(int x, int y, node *p, bool isNew)
+void moveBlock(int x, int y, node *p, bool isNew, int difX, int difY)
 {
     POINT cursorPos1, cursorPos2;
-    cursorPos1.x = x;
-    cursorPos1.y = y;
+    cursorPos1.x = x-difX;
+    cursorPos1.y = y-difY;
     bool isFirstTime = true;
 
     clearmouseclick(WM_LBUTTONUP);
 
     while (!ismouseclick(WM_LBUTTONUP))
     {
-        GetCursorPos(&cursorPos2);
+        cursorPos2.x=mousex()-difX;
+        cursorPos2.y=mousey()-difY;
         if (cursorPos1.x != cursorPos2.x || cursorPos1.y != cursorPos2.y)
         {
             if (isFirstTime)
@@ -246,20 +247,21 @@ void moveBlock(int x, int y, node *p, bool isNew)
                 {
                     createBlock(p, false);
                     drawPage();
-                    p->coordX = cursorPos1.x;
-                    p->coordY = cursorPos1.y;
+                    p->coordX = cursorPos2.x;
+                    p->coordY = cursorPos2.y;
                     createBlock(p, true);
                 }
                 else if (!isNew && cursorPos1.y > MENUY + 10 && cursorPos1.x > DRAG_SIZE_X + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - 200)
                 {
                     createBlock(p, false);
-                    p->coordX = cursorPos1.x;
-                    p->coordY = cursorPos1.y;
+                    p->coordX = cursorPos2.x;
+                    p->coordY = cursorPos2.y;
                     createBlock(p, true);
                 }
             }
         }
-        GetCursorPos(&cursorPos1);
+        cursorPos1.x=mousex()-difX;
+        cursorPos1.y=mousey()-difY;
     }
     if (!isNew)
         updateTimePriority(p);
@@ -270,7 +272,6 @@ void moveBlock(int x, int y, node *p, bool isNew)
         line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);
         drawAllBlocks();
     }
-
     clearmouseclick(WM_LBUTTONUP);
     reinitializeAllViz();
 }

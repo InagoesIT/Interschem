@@ -14,6 +14,7 @@
 #define MENUY 70
 #define DRAG_SIZE_X 250
 
+
 int main()
 {
     initialize();
@@ -32,6 +33,42 @@ int main()
     int ok=1;
     while(!isDone)
     {
+        POINT CursorPosition;
+        CursorPosition.x=mousex();
+        CursorPosition.y=mousey();
+        if(isInsideScheme(CursorPosition) and IS_INSIDE_SCHEME==0)
+        {
+            IS_INSIDE_SCHEME=1;
+            hoverEffect(0, 0, "SCHEME", IS_INSIDE_SCHEME);
+        }
+        else if(!isInsideScheme(CursorPosition) and IS_INSIDE_SCHEME==1)
+        {
+            IS_INSIDE_SCHEME=0;
+            hoverEffect(0, 0, "SCHEME", IS_INSIDE_SCHEME);
+        }
+
+        if(isInsideCustomize(CursorPosition) and IS_INSIDE_CUSTOMIZE==0)
+        {
+            IS_INSIDE_CUSTOMIZE=1;
+            hoverEffect(tileX, 0, "CUSTOMIZE", IS_INSIDE_CUSTOMIZE);
+        }
+        else if(!isInsideCustomize(CursorPosition) and IS_INSIDE_CUSTOMIZE==1)
+        {
+            IS_INSIDE_CUSTOMIZE=0;
+            hoverEffect(tileX, 0, "CUSTOMIZE", IS_INSIDE_CUSTOMIZE);
+        }
+
+        if(isInsideOthers(CursorPosition) and IS_INSIDE_OTHERS==0) //inside others button
+        {
+            IS_INSIDE_OTHERS=1;
+            hoverEffect(tileX*2, 0, "OTHERS", IS_INSIDE_OTHERS);
+        }
+        else if(!isInsideOthers(CursorPosition) and IS_INSIDE_OTHERS==1) //inside others button
+        {
+            IS_INSIDE_OTHERS=0;
+            hoverEffect(tileX*2, 0, "OTHERS", IS_INSIDE_OTHERS);
+        }
+
         if (ismouseclick(WM_LBUTTONDOWN))
         {
             getmouseclick(WM_LBUTTONDOWN, xx, yy);
@@ -43,8 +80,13 @@ int main()
             {
                 reinitializeAllViz();
                 selectCorrectNode(xx, yy, p, behind);
+
                 if(p)
-                    moveBlock(xx, yy, p, false);
+                    {
+                        int difX=xx-p->coordX;
+                        int difY=yy-p->coordY;
+                        moveBlock(xx, yy, p, false, difX, difY);
+                    }
                 else if (xx < DRAG_SIZE_X && yy > MENUY)
                 {
                     strcpy(newBlock, selectedNewBlock(xx, yy));
@@ -54,69 +96,69 @@ int main()
                 refresh();
             }
         }
-        else
-            if (ismouseclick(WM_RBUTTONDOWN))
-            {
-                getmouseclick(WM_RBUTTONDOWN, xx, yy);
-                clearmouseclick(WM_RBUTTONDOWN);
-                if (yy > MENUY and xx > DRAG_SIZE_X)
-                {
-                    reinitializeAllViz();
-                    selectCorrectNode(xx, yy, p, behind);
-                    reinitializeAllViz();
-                    if(p)
-                    {
-                        int opx, opy;
-                        getOptionsXY(p, opx, opy);
-                        int nrOfOptions = getNrOfOptions(p);
+        else if (ismouseclick(WM_RBUTTONDOWN))
+        {
+            getmouseclick(WM_RBUTTONDOWN, xx, yy);
+            clearmouseclick(WM_RBUTTONDOWN);
 
-                        if(opx + OPTIONS_WIDTH < WINDOWX-5)
+            if (yy > MENUY and xx > DRAG_SIZE_X)
+            {
+                reinitializeAllViz();
+                selectCorrectNode(xx, yy, p, behind);
+                reinitializeAllViz();
+                if(p)
+                {
+                    int opx, opy;
+                    getOptionsXY(p, opx, opy);
+                    int nrOfOptions = getNrOfOptions(p);
+
+                    if(opx + OPTIONS_WIDTH < WINDOWX-5)
+                    {
+                        if(opy + ONE_OPTION_HEIGHT * nrOfOptions < WINDOWY-5)
+                            drawRightClickOptions(p, opx, opy, nrOfOptions);
+                        else
                         {
-                            if(opy + ONE_OPTION_HEIGHT * nrOfOptions < WINDOWY-5)
-                                drawRightClickOptions(p, opx, opy, nrOfOptions);
-                            else
-                            {
-                                int dif=opy + ONE_OPTION_HEIGHT * nrOfOptions - WINDOWY + 5;
-                                opy-=dif;
-                                drawRightClickOptions(p, opx, opy, nrOfOptions);
-                            }
+                            int dif=opy + ONE_OPTION_HEIGHT * nrOfOptions - WINDOWY + 5;
+                            opy-=dif;
+                            drawRightClickOptions(p, opx, opy, nrOfOptions);
+                        }
+                    }
+                    else
+                    {
+                        if(opy + ONE_OPTION_HEIGHT * nrOfOptions < WINDOWY-5)
+                        {
+                            opx=p->coordX-OPTIONS_WIDTH;
+                            drawRightClickOptions(p, opx, opy, nrOfOptions);
                         }
                         else
                         {
-                            if(opy + ONE_OPTION_HEIGHT * nrOfOptions < WINDOWY-5)
-                            {
-                                opx=p->coordX-OPTIONS_WIDTH;
-                                drawRightClickOptions(p, opx, opy, nrOfOptions);
-                            }
-                            else
-                            {
-                                opx=p->coordX-OPTIONS_WIDTH;
-                                opy=p->coordY-ONE_OPTION_HEIGHT * nrOfOptions;
-                                drawRightClickOptions(p, opx, opy, nrOfOptions);
-                            }
+                            opx=p->coordX-OPTIONS_WIDTH;
+                            opy=p->coordY-ONE_OPTION_HEIGHT * nrOfOptions;
+                            drawRightClickOptions(p, opx, opy, nrOfOptions);
                         }
-                        int finished=0;
-                        while(!finished)
+                    }
+                    int finished=0;
+                    while(!finished)
+                    {
+                        if (ismouseclick(WM_LBUTTONDOWN))
                         {
-                            if (ismouseclick(WM_LBUTTONDOWN))
-                            {
-                                getmouseclick(WM_LBUTTONDOWN, xx, yy);
-                                clearmouseclick(WM_LBUTTONDOWN);
-                                if(!insideOptions(xx, yy, opx, opy, nrOfOptions))
-                                    closeOptions(opx, opy, nrOfOptions, finished);
-                                else
-                                    triggerOption(xx, yy, opx, opy, nrOfOptions, p, finished);
-                            }
-                            else if(ismouseclick(WM_RBUTTONDOWN))
-                            {
-                                getmouseclick(WM_RBUTTONDOWN, xx, yy);
-                                clearmouseclick(WM_RBUTTONDOWN);
+                            getmouseclick(WM_LBUTTONDOWN, xx, yy);
+                            clearmouseclick(WM_LBUTTONDOWN);
+                            if(!insideOptions(xx, yy, opx, opy, nrOfOptions))
                                 closeOptions(opx, opy, nrOfOptions, finished);
-                            }
+                            else
+                                triggerOption(xx, yy, opx, opy, nrOfOptions, p, finished);
+                        }
+                        else if(ismouseclick(WM_RBUTTONDOWN))
+                        {
+                            getmouseclick(WM_RBUTTONDOWN, xx, yy);
+                            clearmouseclick(WM_RBUTTONDOWN);
+                            closeOptions(opx, opy, nrOfOptions, finished);
                         }
                     }
                 }
             }
+        }
     }
     getch();
     closegraph();
