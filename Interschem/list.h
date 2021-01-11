@@ -30,7 +30,6 @@ struct Theme_Color_Struct
 } THEME[2]; //1 for dark 0 for colorful
 bool CURRENT_THEME=1;
 
-
 struct VarSub
 {
     int value;
@@ -407,7 +406,7 @@ void writeNode(node * n)
         cout<<'\n';
     }
     else
-        cout<<"There is no selected node";
+        cout<<"There is no selected node" << endl;
 }
 
 void copyNodeInLastDeleted(node * k)

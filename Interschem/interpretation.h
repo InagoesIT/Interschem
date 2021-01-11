@@ -310,7 +310,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz1=getVariablePosition(op1, state1);
                 if(state1==0 or state1==2)
-                    cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
+                    showerrorbox("There are variables in this expression that are not defined!!!!!!!!"); // continue code for menu
                 else
                     value1=VARIABLES[poz1].value;
             }
@@ -320,7 +320,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz2=getVariablePosition(op2, state2);
                 if(state2==0 or state2==2)
-                    cout<<"There are variables in this expression that are not defined!!!!!!!!!"; // continue code for menu
+                    showerrorbox("There are variables in this expression that are not defined!!!!!!!!!"); // continue code for menu
                 value2=VARIABLES[poz2].value;
             }
             result=calculateResult(value1, value2, postfix[i][0]);
@@ -336,7 +336,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
         int poz1=0, state1=0;
         poz1=getVariablePosition(stackS[0], state1);
         if(state1==0 or state1==2)
-            cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
+            showerrorbox("There are variables in this expression that are not defined!!!!!!!!"); // continue code for menu
         else
             value=VARIABLES[poz1].value;
     }
@@ -496,7 +496,7 @@ void analyzeScheme(node * k)
         getVariableFromIn(k, var, value); // implement popup
         poz=getVariablePosition(var, state);
         if(state==0)
-            cout<<"No more places for new variables!!!!!"; //continue code for menu
+            showerrorbox("No more places for new variables!!!!!"); //continue code for menu
         else
         {
             VARIABLES[poz].value=value;
@@ -514,15 +514,13 @@ void analyzeScheme(node * k)
         getVariableFromOut(k, var);
         poz=getVariablePosition(var, state);
         if(state==0 or state==2)
-            cout<<"Variable not known!!!!!";   //continue code for menu
+            showerrorbox("Variable not known!!!!!");   //continue code for menu
         else
-        {
             cout<<VARIABLES[poz].name<<"="<<VARIABLES[poz].value<<' ';   //implement procedure for menu
-        }
         analyzeScheme(k->next);
     }
     else if(strcmp(k->type, "STOP")==0)
-        cout<<"End of algorithm :)";
+        cout<<"End of algorithm :)" << endl;
     else if(strcmp(k->type, "ASSIGN")==0)
     {
         char var[EXPRESSION_LENGTH];
@@ -531,7 +529,7 @@ void analyzeScheme(node * k)
         getVariableFromAssign(k, var);
         poz=getVariablePosition(var, state);
         if(state==0)
-            cout<<"No more places for this new variable!!!"; //continue code for menu
+            showerrorbox("No more places for this new variable!!!"); //continue code for menu
         else
         {
             int value=0;
@@ -805,7 +803,7 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
                 poz=getVariablePosition(var, state);
                 if(state==0)
                 {
-                    cout<<"No more places for new variables!!!!!"; //continue code for menu
+                    showerrorbox("No more places for new variables!!!!!"); //continue code for menu
                     isCorrect=0;
                     return;
                 }
@@ -825,7 +823,7 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             poz=getVariablePosition(var, state);
             if(state==0 or state==2)
             {
-                cout<<"Variable not known!!!!!";   //continue code for menu
+                showerrorbox("Variable not known!!!!!");   //continue code for menu
                 isCorrect=0;
                 return;
             }
@@ -836,21 +834,21 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             int state=0, poz=0;
             if(k->expression[0]==NULL)
             {
-                cout<<"Assign empty!!!"; //continue code for menu
+                showerrorbox("Assign empty!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
             getVariableFromAssign(k, var);
             if(!variableNameCorrect(var))
             {
-                cout<<"Assign variable incorrect!!!"; //continue code for menu
+                showerrorbox("Assign variable incorrect!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
             poz=getVariablePosition(var, state);
             if(state==0)
             {
-                cout<<"No more places for this new variable!!!"; //continue code for menu
+                showerrorbox("No more places for this new variable!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
@@ -861,14 +859,14 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
                 strcpy(s, k->expression);
                 if(strtok(s, "=")==NULL)
                 {
-                    cout<<"Assign expression has no ="; //continue code for menu
+                    showerrorbox("Assign expression has no ="); //continue code for menu
                     isCorrect=0;
                     return;
                 }
                 getExpressionAfterEqualSign(k, exp);
                 if(!isExpressionCorrect(exp))
                 {
-                    cout<<"Assign expression is not correct!!!"; //continue code for menu
+                    showerrorbox("Assign expression is not correct!!!"); //continue code for menu
                     isCorrect=0;
                     return;
                 }
@@ -884,13 +882,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             int value1=0, value2=0;
             if(!k->next or !k->nextElse)
             {
-                cout<<"Decision does not have 2 bindings!!!"; //continue code for menu
+                showerrorbox("Decision does not have 2 bindings!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]==NULL)
             {
-                cout<<"Decision empty!!!"; //continue code for menu
+                showerrorbox("Decision empty!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
@@ -899,13 +897,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             strcpy(s, k->expression);
             if(strtok(s, "!<=>")==NULL)
             {
-                cout<<"Decision expression has wrong operator!!!"; //continue code for menu
+                showerrorbox("Decision expression has wrong operator!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
             if(!isOperatorCorrect(k->expression))
             {
-                cout<<"Decision expression has wrong operator!!!"; //continue code for menu
+                showerrorbox("Decision expression has wrong operator!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
@@ -913,20 +911,20 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             getSecondExpressionFromCondition(k, exp2, notCorrect);
             if(notCorrect==1)
             {
-                cout<<"Decision expression 2 is empty!!!"; //continue code for menu
+                showerrorbox("Decision expression 2 is empty!!!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
             getRelationOperator(k, oper);
             if(!isExpressionCorrect(exp1))
             {
-                cout<<"Decision expression 1 is not correct!"; //continue code for menu
+                showerrorbox("Decision expression 1 is not correct!"); //continue code for menu
                 isCorrect=0;
                 return;
             }
             else if(!isExpressionCorrect(exp2))
             {
-                cout<<"Decision expression 2 is not correct!"; //continue code for menu
+                showerrorbox("Decision expression 2 is not correct!"); //continue code for menu
                 isCorrect=0;
                 return;
             }

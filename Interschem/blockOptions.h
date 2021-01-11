@@ -22,13 +22,10 @@
 #define OPTIONS_WIDTH 150
 #define ONE_OPTION_HEIGHT 30
 
-#define WINDOWX 1200
-#define WINDOWY 700
+#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
+#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
 #define MENUY 70
 #define DRAG_SIZE_X 250
-
-
-
 
 
 void getOptionsXY(node * p, int & opx, int & opy)

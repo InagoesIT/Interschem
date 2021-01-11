@@ -11,7 +11,6 @@ void drawPage();
 void drawMenu();
 void isSchemeCorrect(node * k, bool & isCorrect);
 
-
 struct readNode
 {
     char type[20];
@@ -164,9 +163,9 @@ bool ispathForOut(char path[500])
 void saveScheme()
 {
     char path[500];
-    bool isCorrect=1;
-    isSchemeCorrect(START, isCorrect);
-    if (isCorrect && isFreeNull() && isRestsNull())  //change to isSchemeCorrect() from START->wasCreated
+    bool isCorrect=0;
+//    isSchemeCorrect(START, isCorrect);
+    if (isCorrect)
     {
         cout << "Give the path of the file you want to save your scheme into." << endl;
         cin >> path;
@@ -178,10 +177,10 @@ void saveScheme()
             cout << "The scheme was saved successfully!" << endl;
         }
         else
-            cout << "The path choosen doesn't permit creating a new file." << endl;
+           showerrorbox("The path choosen doesn't permit creating a new file.");
     }
     else
-        cout << "The scheme isn't correct." << endl;
+       showerrorbox("The scheme isn't correct.");
 }
 
 void reinitializeArr()
@@ -344,7 +343,7 @@ void openScheme()
         cout << "Scheme opened with succes!" << endl;
     }
     else
-        cout << "There is no such path." << endl;
+        showerrorbox("There is no such path.");
 }
 
 

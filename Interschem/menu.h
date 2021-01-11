@@ -5,13 +5,13 @@
 #include "blocksMoveDel.h"
 #include "openSaveScheme.h"
 
-#define START_X 50
+#define START_X 70
 #define START_Y 110
-#define STOP_X 50
+#define STOP_X 70
 #define STOP_Y 200
-#define IN_X 50
+#define IN_X 80
 #define IN_Y 300
-#define OUT_X 50
+#define OUT_X 80
 #define OUT_Y 380
 #define ASSIGN_X 50
 #define ASSIGN_Y 480
@@ -19,8 +19,8 @@
 #define DECISION_Y 570
 
 #define MENUY 70
-#define WINDOWX 1200
-#define WINDOWY 700
+#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
+#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
 
 void refresh();
 void moveBlock(int x, int y, node *p, bool isNew);
@@ -28,7 +28,7 @@ void isSchemeCorrect(node * k, bool & isCorrect);
 void analyzeScheme(node * k);
 
 const int tileX = WINDOWX / 3;
-const int smallTileX = 170;//width Background Color + 50 ?? textwidth("Background Color") + 50 won't work))))
+const int smallTileX = 170;// textwidth("Background Color") + 50
 const int smallTileY = MENUY * 0.8;
 const int firstSchemeX = (tileX - smallTileX) / 2;
 const int lastSchemeX = smallTileX + firstSchemeX;
@@ -36,6 +36,14 @@ const int lastSchemeY = MENUY + smallTileY * 4;
 const int firstCustomizeX = tileX + (tileX - smallTileX) / 2;
 const int lastCustomizeX = smallTileX + firstCustomizeX;
 const int lastCustomizeY = MENUY + smallTileY * 2;
+const int spaceGenCodeY = 10;
+const int sizeGenCodeY = MENUY * 0.6;
+const int sizeGenCodeX = 146; // textwidth("Generate Code")-96 + 50
+const int spaceGenCodeX = (OUTPUT_SIZE_X  - sizeGenCodeX) / 2;
+const int firstGenCodeX = WINDOWX - OUTPUT_SIZE_X + spaceGenCodeX;
+const int lastGenCodeX = WINDOWX - spaceGenCodeX;
+const int textGenCodeX = firstGenCodeX + 25; // 50/2
+const int textGenCodeY = (sizeGenCodeY - 16)/2 + MENUY + spaceGenCodeY; // 16-- textheight
 
 char *selectedNewBlock(int x, int y)
 {
@@ -84,8 +92,26 @@ void dragNewBlock(int x, int y, char *blockType)
     moveBlock(x, y, createNode(blockType, !strcmp(blockType, "DECISION"), x, y, 0), true);
 }
 
+void drawGenCodeButton()
+{
+    setcolor(DARKGRAY);
+    line(firstGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY, firstGenCodeX, MENUY + spaceGenCodeY); // |
+    line(firstGenCodeX, MENUY + spaceGenCodeY, lastGenCodeX, MENUY + spaceGenCodeY); // --
+    line(lastGenCodeX, MENUY + spaceGenCodeY, lastGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY); // |
+    line(lastGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY, firstGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY); // --
+
+    setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
+    floodfill(firstGenCodeX + sizeGenCodeX / 2, MENUY + spaceGenCodeY + sizeGenCodeY / 2, DARKGRAY);
+
+    setcolor(WHITE);
+    setbkcolor(THEME[CURRENT_THEME].option_clr);
+    outtextxy(textGenCodeX, textGenCodeY, "Generate Code");
+    setbkcolor(THEME[CURRENT_THEME].bck_clr);
+}
+
 void drawPage()
 {
+    setbkcolor(THEME[CURRENT_THEME].bck_clr);
     //drag and drop blocks
     setlinestyle(0, 0, 3);
     createStart(START_X, START_Y, true, true);
@@ -96,8 +122,10 @@ void drawPage()
     createDecision(DECISION_X, DECISION_Y, true, true, "no expression");
 
     setcolor(THEME[CURRENT_THEME].button_clr);
-    line(0, MENUY, WINDOWX, MENUY); // orizontala
-    line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //verticala
+    line(0, MENUY, WINDOWX, MENUY); // menu
+    line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //drag
+    line(WINDOWX - OUTPUT_SIZE_X, MENUY, WINDOWX - OUTPUT_SIZE_X, WINDOWY); //output
+    drawGenCodeButton();
 }
 
 void drawMenu()
@@ -106,7 +134,6 @@ void drawMenu()
 
     setcolor(RED);
     line(0, MENUY, WINDOWX, MENUY);
-
 
     floodfill(tileX / 2, MENUY / 2, RED);
 
@@ -139,31 +166,28 @@ void drawSubmenuScheme(bool isColored)
     if (isColored)
     {
         setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
-        setcolor(WHITE);
+        setcolor(THEME[CURRENT_THEME].option_clr);
     }
-
     else
     {
-        setfillstyle(SOLID_FILL, BLACK);
-        setcolor(BLACK);
+        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
+        setcolor(THEME[CURRENT_THEME].bck_clr);
     }
 
-    setcolor(THEME[CURRENT_THEME].option_clr);
     floodfill(firstSchemeX + smallTileX / 2, lastSchemeY / 2, DARKGRAY);
 
-    setcolor(THEME[CURRENT_THEME].option_clr);
     line(firstSchemeX, MENUY, firstSchemeX, lastSchemeY); // |
     line(firstSchemeX, lastSchemeY, lastSchemeX, lastSchemeY); // -
     line(lastSchemeX, MENUY, lastSchemeX, lastSchemeY); // |
     line(firstSchemeX, MENUY, lastSchemeX, MENUY); // -
 
-    setcolor(THEME[CURRENT_THEME].bck_clr);
-    line(firstSchemeX, MENUY + smallTileY, lastSchemeX, MENUY + smallTileY);
-    line(firstSchemeX, MENUY + smallTileY * 2, lastSchemeX, MENUY + smallTileY * 2);
-    line(firstSchemeX, MENUY + smallTileY * 3, lastSchemeX, MENUY + smallTileY * 3);
-
     if (isColored)
     {
+        setcolor(THEME[CURRENT_THEME].bck_clr);
+        line(firstSchemeX, MENUY + smallTileY, lastSchemeX, MENUY + smallTileY);
+        line(firstSchemeX, MENUY + smallTileY * 2, lastSchemeX, MENUY + smallTileY * 2);
+        line(firstSchemeX, MENUY + smallTileY * 3, lastSchemeX, MENUY + smallTileY * 3);
+
         setbkcolor(THEME[CURRENT_THEME].option_clr);
         setcolor(WHITE);
         outtextxy(firstSchemeX + (smallTileX - textwidth("Save")) / 2, MENUY + (smallTileY - textheight("Save")) / 2, "Save");
@@ -187,29 +211,26 @@ void drawSubmenuCustomize(bool isColored)
     if (isColored)
     {
         setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
-        setcolor(WHITE);
+        setcolor(THEME[CURRENT_THEME].option_clr);
     }
-
     else
     {
-        setfillstyle(LTSLASH_FILL, BLACK);
-        setcolor(BLACK);
+        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
+        setcolor(THEME[CURRENT_THEME].bck_clr);
     }
 
-    setcolor(THEME[CURRENT_THEME].option_clr);
     floodfill(firstCustomizeX + smallTileX / 2, lastCustomizeY / 2, DARKGRAY);
 
-    setcolor(THEME[CURRENT_THEME].option_clr);
     line(firstCustomizeX, MENUY, firstCustomizeX, lastCustomizeY); // |
     line(firstCustomizeX, lastCustomizeY, lastCustomizeX, lastCustomizeY); // -
     line(lastCustomizeX, MENUY, lastCustomizeX, lastCustomizeY); // |
     line(firstCustomizeX, MENUY, lastCustomizeX, MENUY); // -
 
-    setcolor(THEME[CURRENT_THEME].bck_clr);
-    line(firstCustomizeX, MENUY + smallTileY, lastCustomizeX, MENUY + smallTileY);
-
     if (isColored)
     {
+        setcolor(THEME[CURRENT_THEME].bck_clr);
+        line(firstCustomizeX, MENUY + smallTileY, lastCustomizeX, MENUY + smallTileY);
+
         setbkcolor(THEME[CURRENT_THEME].option_clr);
         setcolor(WHITE);
         outtextxy(firstCustomizeX + (smallTileX - textwidth("Theme 1")) / 2, MENUY + (smallTileY - textheight("Theme 1")) / 2, "Theme 1");
@@ -221,7 +242,6 @@ void drawSubmenuCustomize(bool isColored)
 //to implement as sparkles
 void hoverMenu(int x, int y)
 {
-
 }
 
 void popUpAgreeEmptyScheme(bool & continueEmptyScheme)
@@ -376,10 +396,6 @@ void handleMenuClick(int x, int y)
                             CURRENT_THEME=1;
                             refresh();
                         }
-//                    else if (yy < MENUY + smallTileY * 3)
-//                      //background color
-//                    else if (yy < MENUY + smallTileY * 4)
-//                      //binding color
                 }
                 cleardevice();
                 drawPage();

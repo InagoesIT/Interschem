@@ -1,6 +1,7 @@
 #include <iostream>
 #include <graphics.h>
 #include <winbgim.h>
+#include <conio.h>
 #include <cmath>
 #include <fstream>
 
@@ -8,9 +9,10 @@
 #include "blocks.h"
 #include "interpretation.h"
 #include "blockOptions.h"
+#include "generateCode.h"
 
-#define WINDOWX 1200
-#define WINDOWY 700
+#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
+#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
 #define MENUY 70
 #define DRAG_SIZE_X 250
 
@@ -20,6 +22,8 @@ int main()
     initwindow(WINDOWX, WINDOWY);
     drawPage();
     drawMenu();
+//    generateCode();
+
 
     int xx, yy;
     node * p = new node;
@@ -51,7 +55,9 @@ int main()
                     if (strcmp(newBlock, "NO") && ((strcmp(newBlock, "START") && START->wasCreated) || (!strcmp(newBlock, "START") && !START->wasCreated)))
                         dragNewBlock(xx, yy, newBlock);
                 }
-                refresh();
+                else if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
+                    generateCode();
+//                refresh();
             }
         }
         else
