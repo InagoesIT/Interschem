@@ -10,6 +10,7 @@
 void drawPage();
 void drawMenu();
 void isSchemeCorrect(node * k, bool & isCorrect);
+void popUpMessage(char a[200]);
 
 struct readNode
 {
@@ -139,7 +140,7 @@ bool pathExists(char path[500])
     fstream File;
     File.open(path, ios::in);
     if (!File)
-		return false;
+        return false;
     else
     {
         File.close();
@@ -152,7 +153,7 @@ bool ispathForOut(char path[500])
     fstream File;
     File.open(path, ios::app);
     if (!File)
-		return false;
+        return false;
     else
     {
         File.close();
@@ -160,27 +161,118 @@ bool ispathForOut(char path[500])
     }
 }
 
+void getPathName(char path[500], bool fromOpen)
+{
+    char b[150];
+    if(fromOpen==1)
+        strcpy(b, "Enter the path of the scheme you want to open");
+    else
+        strcpy(b, "Enter path name");
+
+    int textboxWidth=600, textboxHeight=100;
+    setlinestyle(SOLID_LINE, 0, 1);
+    setcolor(RED);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
+    floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+    setlinestyle(SOLID_LINE, 0, 1);
+    setcolor(THEME[CURRENT_THEME].option_clr);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+    line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+    setcolor(THEME[CURRENT_THEME].bck_clr);
+    line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+    setbkcolor(THEME[CURRENT_THEME].option_clr);
+    setcolor(WHITE);
+    outtextxy(WINDOWX/2-textwidth(b)/2, WINDOWY/2-textheight(b)/2-textboxHeight/4, b);
+    setbkcolor(THEME[CURRENT_THEME].bck_clr);
+
+    bool finished=0;
+    char cc[500] = "";
+    int i=strlen(cc);
+    do
+    {
+        char c=getch();
+        if(c==13) //enter
+            finished=1;
+        else
+        {
+            if(c==8) //backspace
+            {
+                if(strlen(cc)>=1)
+                {
+                    cc[strlen(cc)-1]=NULL;
+                    --i;
+                }
+            }
+            else
+            {
+                cc[i]=c;
+                ++i;
+                cc[i]=NULL;
+            }
+            setlinestyle(SOLID_LINE, 0, 1);
+            setcolor(RED);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
+            floodfill(WINDOWX/2, WINDOWY/2, RED);
+
+            setlinestyle(SOLID_LINE, 0, 1);
+            setcolor(THEME[CURRENT_THEME].option_clr);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2);
+            line(WINDOWX/2+textboxWidth/2, WINDOWY/2+textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
+
+            setcolor(THEME[CURRENT_THEME].bck_clr);
+            line(WINDOWX/2-textboxWidth/2, WINDOWY/2, WINDOWX/2+textboxWidth/2, WINDOWY/2);
+
+            setbkcolor(THEME[CURRENT_THEME].option_clr);
+            setcolor(WHITE);
+            outtextxy(WINDOWX/2-textwidth(b)/2, WINDOWY/2-textheight(b)/2-textboxHeight/4, b);
+            outtextxy(WINDOWX/2-textwidth(cc)/2, WINDOWY/2-textheight(cc)/2+textboxHeight/4, cc);
+            setbkcolor(THEME[CURRENT_THEME].bck_clr);
+        }
+    }
+    while(finished==0 and i<EXPRESSION_LENGTH-2);
+    strcpy(path, cc);
+    refresh();
+}
+
 void saveScheme()
 {
     char path[500];
-    bool isCorrect=0;
-//    isSchemeCorrect(START, isCorrect);
-    if (isCorrect)
+    bool isCorrect=1;
+    restoreVariables();
+    isSchemeCorrect(START, isCorrect);
+    restoreVariables();
+    if (isCorrect && isFreeNull() && isRestsNull())
     {
-        cout << "Give the path of the file you want to save your scheme into." << endl;
-        cin >> path;
+        getPathName(path, 0);
         if (ispathForOut(path))
         {
             bool isFirstTime = 1;
             reinitializeAllViz();
-            writeSchemeToFile(path, START, isFirstTime);
-            cout << "The scheme was saved successfully!" << endl;
+            writeSchemeToFile(path, START);
+            popUpMessage("The scheme was saved succesfully!");
         }
         else
-           showerrorbox("The path choosen doesn't permit creating a new file.");
+            popUpMessage("The path choosen doesn't permit creating a new file.");
     }
     else
-       showerrorbox("The scheme isn't correct.");
+        popUpMessage("The scheme is incorrect!");
 }
 
 void reinitializeArr()
@@ -329,8 +421,7 @@ void makePriorityMax()
 void openScheme()
 {
     char path[500];
-    cout << "Give the path of the file you want to open." << endl;
-    cin >> path;
+    getPathName(path, 1);
     if (pathExists(path))
     {
         writeNodesInfoInArr(path);
@@ -340,10 +431,10 @@ void openScheme()
         drawPage();
         drawMenu();
         drawAllBlocks();
-        cout << "Scheme opened with succes!" << endl;
+        popUpMessage("Scheme opened with succes!");
     }
     else
-        showerrorbox("There is no such path.");
+        popUpMessage("There is no such path.");
 }
 
 

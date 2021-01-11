@@ -4,11 +4,30 @@
 void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1);
 void refresh();
 
+
+bool isInt(char x[EXPRESSION_LENGTH])
+{
+    if(x[0]=='0' and x[1]==NULL)
+        return 1;
+    int i=0;
+    if(strchr("123456789-", x[0])==0)
+        return 0;
+    ++i;
+    while(x[i])
+    {
+        if(strchr("1234567890", x[i])==0)
+            return 0;
+        ++i;
+    }
+    return 1;
+}
+
 void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
 {
     strcpy(var, k->expression);
+
     value=100;
-    int textboxWidth=500, textboxHeight=100;
+    int textboxWidth=600, textboxHeight=100;
     setlinestyle(SOLID_LINE, 0, 1);
     setcolor(RED);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
@@ -31,7 +50,8 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
 
     setbkcolor(THEME[CURRENT_THEME].option_clr);
     setcolor(WHITE);
-    outtextxy(WINDOWX/2-textwidth("Insert input value")/2, WINDOWY/2-textheight("Insert input value")/2-textboxHeight/4, "Insert input value");
+    outtextxy(WINDOWX/2-textwidth("Insert input value for ")/2-textwidth(var)/2, WINDOWY/2-textheight("Insert input value for ")/2-textboxHeight/4, "Insert input value for ");
+    outtextxy(WINDOWX/2-textwidth("Insert input value for ")/2-textwidth(var)/2+textwidth("Insert input value for "), WINDOWY/2-textheight("Insert input value for ")/2-textboxHeight/4, var);
     setbkcolor(THEME[CURRENT_THEME].bck_clr);
 
     bool finished=0;
@@ -40,7 +60,7 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
     do
     {
         char c=getch();
-        if(c==32) //space
+        if(c==13) //enter
             finished=1;
         else
         {
@@ -80,13 +100,24 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
 
             setbkcolor(THEME[CURRENT_THEME].option_clr);
             setcolor(WHITE);
-            outtextxy(WINDOWX/2-textwidth("Insert input value")/2, WINDOWY/2-textheight("Insert input value")/2-textboxHeight/4, "Insert input value");
+            outtextxy(WINDOWX/2-textwidth("Insert input value for ")/2-textwidth(var)/2, WINDOWY/2-textheight("Insert input value for ")/2-textboxHeight/4, "Insert input value for ");
+            outtextxy(WINDOWX/2-textwidth("Insert input value for ")/2-textwidth(var)/2+textwidth("Insert input value for "), WINDOWY/2-textheight("Insert input value for ")/2-textboxHeight/4, var);
             outtextxy(WINDOWX/2-textwidth(cc)/2, WINDOWY/2-textheight(cc)/2+textboxHeight/4, cc);
             setbkcolor(THEME[CURRENT_THEME].bck_clr);
         }
     }
     while(finished==0 and i<EXPRESSION_LENGTH-2);
-    convertStringToInt(cc, value);
+    if(!isInt(cc))
+    {
+        refresh();
+        popUpMessage("Invalid input! Try again after clicking!");
+        waitForClickToRefresh();
+        getVariableFromIn(k, var, value);
+    }
+    else
+    {
+        convertStringToInt(cc, value);
+    }
     refresh();
 }
 
@@ -98,12 +129,17 @@ void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH])
     strcpy(var, p);
 }
 
-void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH])
+void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & isNull)
 {
     char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
     char *p =strtok(s, "=");
     p=strtok(NULL, "=");
+    if(p==NULL)
+    {
+        isNull=1;
+        return;
+    }
     strcpy(exp, p);
 }
 
@@ -195,23 +231,6 @@ void infixToPostfix(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], char postf
     postfixElements=poz;
 }
 
-bool isInt(char x[EXPRESSION_LENGTH])
-{
-    if(x[0]=='0' and x[1]==NULL)
-        return 1;
-    int i=0;
-    if(strchr("123456789-", x[0])==0)
-        return 0;
-    ++i;
-    while(x[i])
-    {
-        if(strchr("1234567890", x[i])==0)
-            return 0;
-        ++i;
-    }
-    return 1;
-}
-
 void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1)
 {
     int negative=1, i=0;
@@ -229,7 +248,7 @@ void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1)
 int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on pozition poz
 {
     int sum=0;
-    for(int i=0; i<10; ++i)
+    for(int i=0; i<NR_OF_VARIABLES; ++i)
     {
         if(strcmp(VARIABLES[i].name, var)==0)
         {
@@ -243,7 +262,7 @@ int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no mo
         state=0;
         return -1;
     }
-    for(int i=0; i<10; ++i)
+    for(int i=0; i<NR_OF_VARIABLES; ++i)
     {
         if(VARIABLES[i].isUsed==0)
         {
@@ -310,7 +329,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz1=getVariablePosition(op1, state1);
                 if(state1==0 or state1==2)
-                    showerrorbox("There are variables in this expression that are not defined!!!!!!!!"); // continue code for menu
+                    cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
                 else
                     value1=VARIABLES[poz1].value;
             }
@@ -320,7 +339,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz2=getVariablePosition(op2, state2);
                 if(state2==0 or state2==2)
-                    showerrorbox("There are variables in this expression that are not defined!!!!!!!!!"); // continue code for menu
+                    cout<<"There are variables in this expression that are not defined!!!!!!!!!"; // continue code for menu
                 value2=VARIABLES[poz2].value;
             }
             result=calculateResult(value1, value2, postfix[i][0]);
@@ -336,7 +355,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
         int poz1=0, state1=0;
         poz1=getVariablePosition(stackS[0], state1);
         if(state1==0 or state1==2)
-            showerrorbox("There are variables in this expression that are not defined!!!!!!!!"); // continue code for menu
+            cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
         else
             value=VARIABLES[poz1].value;
     }
@@ -482,6 +501,15 @@ bool conditionIsMet(int a, int b, char oper[3])
     }
 }
 
+bool isText(char a[EXPRESSION_LENGTH])
+{
+    if(a[0]==NULL)
+        return 0;
+    if(a[0]=='"' and a[strlen(a)-1]=='"')
+        return 1;
+    return 0;
+}
+
 void analyzeScheme(node * k)
 {
     reinitializeAllViz();
@@ -493,16 +521,11 @@ void analyzeScheme(node * k)
         char var[EXPRESSION_LENGTH];
         int poz=0;
 
-        getVariableFromIn(k, var, value); // implement popup
+        getVariableFromIn(k, var, value);
         poz=getVariablePosition(var, state);
-        if(state==0)
-            showerrorbox("No more places for new variables!!!!!"); //continue code for menu
-        else
-        {
-            VARIABLES[poz].value=value;
-            strcpy(VARIABLES[poz].name, var);
-            VARIABLES[poz].isUsed=1;
-        }
+        VARIABLES[poz].value=value;
+        strcpy(VARIABLES[poz].name, var);
+        VARIABLES[poz].isUsed=1;
         analyzeScheme(k->next);
     }
     else if(strcmp(k->type, "OUT")==0)
@@ -510,17 +533,19 @@ void analyzeScheme(node * k)
         int state=0;
         char var[EXPRESSION_LENGTH];
         int poz=0;
-
-        getVariableFromOut(k, var);
-        poz=getVariablePosition(var, state);
-        if(state==0 or state==2)
-            showerrorbox("Variable not known!!!!!");   //continue code for menu
+        if(isText(k->expression))
+            cout<<k->expression; //implement interface
         else
-            cout<<VARIABLES[poz].name<<"="<<VARIABLES[poz].value<<' ';   //implement procedure for menu
+        {
+            getVariableFromOut(k, var);
+            poz=getVariablePosition(var, state);
+            cout<<VARIABLES[poz].value<<' ';   //implement interface
+        }
+
         analyzeScheme(k->next);
     }
     else if(strcmp(k->type, "STOP")==0)
-        cout<<"End of algorithm :)" << endl;
+        popUpAnalyzedWithSucces();
     else if(strcmp(k->type, "ASSIGN")==0)
     {
         char var[EXPRESSION_LENGTH];
@@ -528,17 +553,13 @@ void analyzeScheme(node * k)
 
         getVariableFromAssign(k, var);
         poz=getVariablePosition(var, state);
-        if(state==0)
-            showerrorbox("No more places for this new variable!!!"); //continue code for menu
-        else
-        {
-            int value=0;
-            char exp[EXPRESSION_LENGTH];
-            getExpressionAfterEqualSign(k, exp);
-            getExpressionValue(exp, value);
-            VARIABLES[poz].value=value;
-            VARIABLES[poz].isUsed=1;
-        }
+        int value=0;
+        char exp[EXPRESSION_LENGTH];
+        bool isNull=0;
+        getExpressionAfterEqualSign(k, exp, isNull);
+        getExpressionValue(exp, value);
+        VARIABLES[poz].value=value;
+        VARIABLES[poz].isUsed=1;
         analyzeScheme(k->next);
     }
     else if(strcmp(k->type, "DECISION")==0)
@@ -576,6 +597,8 @@ bool isLetterOrDigit(char x)
 
 bool variableNameCorrect(char exp[EXPRESSION_LENGTH])
 {
+    if(exp[0]==NULL)
+        return 0;
     if(!isLetter(exp[0]))
         return 0;
     for(int i=0; exp[i]; ++i)
@@ -646,6 +669,11 @@ bool symbolPlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH]
                 if(ok==0)
                     return 0;
             }
+            else
+            {
+                if(b==')')
+                    return 0;
+            }
         }
         else
         {
@@ -674,6 +702,8 @@ bool symbolPlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH]
             if(ok==0)
                 return 0;
         }
+        else if(b==')')
+            return 0;
     }
     else
     {
@@ -683,14 +713,34 @@ bool symbolPlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH]
     return 1;
 }
 
+bool correctParentheses(char s[EXPRESSION_LENGTH])
+{
+    int nrOpen=0, nrClosed=0;
+    for(int i=0; s[i]; ++i)
+    {
+        if(s[i]=='(')
+            ++nrOpen;
+        else if(s[i]==')')
+        {
+            ++nrClosed;
+            if(nrClosed>nrOpen)
+                return 0;
+        }
+    }
+    return 1;
+}
+
 bool isExpressionCorrect(char exp[EXPRESSION_LENGTH])
 {
-    if(strlen(exp)==0)
+    if(exp[0]==NULL)
         return 0;
     char s[EXPRESSION_LENGTH], infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int lgInfix=0;
     strcpy(s, exp);
+    if(!correctParentheses(s))
+        return 0;
     getInfix(s, infix, lgInfix);
+
     for(int i=0; i<lgInfix; ++i)
     {
         if(isLetter(infix[i][0]))
@@ -732,16 +782,16 @@ bool isOperatorCorrect(char exp[EXPRESSION_LENGTH])
             ++howMany;
             if(s[i+1] and s[i+1]!='=')
                 return 0;
-            if(s[i+2] and (s[i+2]=='=' or s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+            if(s[i+2] and (s[i+2]=='=' or s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!')) //too long, starting with "!="
                 return 0;
             ++i; //jump over = form !=
         }
         else if(s[i]=='=')
         {
             ++howMany;
-            if(s[i+1] and (s[i+1]=='<' or s[i+1]=='>' or s[i+1]=='!'))
+            if(s[i+1] and s[i+1]!='=')
                 return 0;
-            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!')) //too long starting with "=="
                 return 0;
             if(s[i+1]=='=')
                 ++i; //jump over = form ==
@@ -751,7 +801,7 @@ bool isOperatorCorrect(char exp[EXPRESSION_LENGTH])
             ++howMany;
             if(s[i+1] and (s[i+1]=='<' or s[i+1]=='>' or s[i+1]=='!'))
                 return 0;
-            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!')) //too long starting with "<="
                 return 0;
             if(s[i+1]=='=')
                 ++i; //jump over = form <=
@@ -761,7 +811,7 @@ bool isOperatorCorrect(char exp[EXPRESSION_LENGTH])
             ++howMany;
             if(s[i+1] and (s[i+1]=='<' or s[i+1]=='>' or s[i+1]=='!'))
                 return 0;
-            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!'))
+            if(s[i+2] and s[i+1]=='=' and (s[i+2]=='<' or s[i+2]=='>' or s[i+2]=='!')) //too long starting with ">="
                 return 0;
             if(s[i+1]=='=')
                 ++i; //jump over = form >=
@@ -772,7 +822,26 @@ bool isOperatorCorrect(char exp[EXPRESSION_LENGTH])
     return 0;
 }
 
-void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a=1; isSchemeCorrect(START, a);
+bool tooManyEqalSigns(char s[EXPRESSION_LENGTH])
+{
+    int nr=0;
+    for(int i=0; i<strlen(s); ++i)
+        if(s[i]=='=')
+            ++nr;
+    if(nr>1)
+        return 1;
+    return 0;
+}
+
+bool stringHasEqualSign(char s[EXPRESSION_LENGTH])
+{
+    for(int i=0; i<strlen(s); ++i)
+        if(s[i]=='=')
+            return 1;
+    return 0;
+}
+
+void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: restoreVariables(); a=1; isSchemeCorrect(START, a);
 {
     if(!(START->wasCreated))
     {
@@ -789,8 +858,15 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
     {
         if(strcmp(k->type, "IN")==0)
         {
+            if(k->expression[0]==NULL)
+            {
+                cout<<"In is empty!";
+                isCorrect=0;
+                return;
+            }
             if(!variableNameCorrect(k->expression))
             {
+                cout<<"In variable name incorrect!";
                 isCorrect=0;
                 return;
             }
@@ -803,7 +879,7 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
                 poz=getVariablePosition(var, state);
                 if(state==0)
                 {
-                    showerrorbox("No more places for new variables!!!!!"); //continue code for menu
+                    cout<<"No more places for new variables!";
                     isCorrect=0;
                     return;
                 }
@@ -819,36 +895,53 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             int state=0;
             char var[EXPRESSION_LENGTH];
             int poz=0;
-            getVariableFromOut(k, var);
-            poz=getVariablePosition(var, state);
-            if(state==0 or state==2)
+
+            if(!isText(k->expression))
             {
-                showerrorbox("Variable not known!!!!!");   //continue code for menu
-                isCorrect=0;
-                return;
+
+                getVariableFromOut(k, var);
+                if(k->expression[0]==NULL)
+                {
+                    cout<<"Out is empty!";
+                    isCorrect=0;
+                    return;
+                }
+                poz=getVariablePosition(var, state);
+                if(state==0 or state==2)
+                {
+                    cout<<"Variable not known!";
+                    isCorrect=0;
+                    return;
+                }
             }
         }
         else if(strcmp(k->type, "ASSIGN")==0)
         {
             char var[EXPRESSION_LENGTH];
             int state=0, poz=0;
+            if(k->expression[0]=='=')
+            {
+                cout<<"Assign has no 1st expression!";
+                isCorrect=0;
+                return;
+            }
             if(k->expression[0]==NULL)
             {
-                showerrorbox("Assign empty!!!"); //continue code for menu
+                cout<<"Assign empty!";
                 isCorrect=0;
                 return;
             }
             getVariableFromAssign(k, var);
             if(!variableNameCorrect(var))
             {
-                showerrorbox("Assign variable incorrect!!!"); //continue code for menu
+                cout<<"Assign variable incorrect!";
                 isCorrect=0;
                 return;
             }
             poz=getVariablePosition(var, state);
             if(state==0)
             {
-                showerrorbox("No more places for this new variable!!!"); //continue code for menu
+                cout<<"No more places for this new variable!";
                 isCorrect=0;
                 return;
             }
@@ -857,22 +950,36 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
                 char exp[EXPRESSION_LENGTH];
                 char s[EXPRESSION_LENGTH];
                 strcpy(s, k->expression);
-                if(strtok(s, "=")==NULL)
+                if(!stringHasEqualSign(s))
                 {
-                    showerrorbox("Assign expression has no ="); //continue code for menu
+                    cout<<"Assign expression has no =";
                     isCorrect=0;
                     return;
                 }
-                getExpressionAfterEqualSign(k, exp);
+                if(tooManyEqalSigns(s))
+                {
+                    cout<<"Too many =";
+                    isCorrect=0;
+                    return;
+                }
+                bool isNull=0;
+                getExpressionAfterEqualSign(k, exp, isNull);
+                if(isNull==1)
+                {
+                    cout<<"Assign expression is null!";
+                    isCorrect=0;
+                    return;
+                }
                 if(!isExpressionCorrect(exp))
                 {
-                    showerrorbox("Assign expression is not correct!!!"); //continue code for menu
+                    cout<<"Assign expression is incorrect!";
                     isCorrect=0;
                     return;
                 }
-                else {
-                        strcpy(VARIABLES[poz].name, var);
-                        VARIABLES[poz].isUsed=1;
+                else
+                {
+                    strcpy(VARIABLES[poz].name, var);
+                    VARIABLES[poz].isUsed=1;
                 }
             }
         }
@@ -882,28 +989,34 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             int value1=0, value2=0;
             if(!k->next or !k->nextElse)
             {
-                showerrorbox("Decision does not have 2 bindings!!!"); //continue code for menu
+                cout<<"Decision does not have 2 bindings!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]==NULL)
             {
-                showerrorbox("Decision empty!!!"); //continue code for menu
+                cout<<"Decision empty!";
+                isCorrect=0;
+                return;
+            }
+            if(k->expression[0]=='=' or k->expression[0]=='<' or k->expression[0]=='>' or k->expression[0]=='!')
+            {
+                cout<<"Decision has no 1st expression!";
                 isCorrect=0;
                 return;
             }
             getFirstExpresionFromCondition(k, exp1);
             char s[EXPRESSION_LENGTH];
             strcpy(s, k->expression);
-            if(strtok(s, "!<=>")==NULL)
+            if(strchr(s, '!')==NULL and strchr(s, '=')==NULL and strchr(s, '<')==NULL and strchr(s, '>')==NULL)
             {
-                showerrorbox("Decision expression has wrong operator!!!"); //continue code for menu
+                cout<<"Decision expression has no operator!";
                 isCorrect=0;
                 return;
             }
             if(!isOperatorCorrect(k->expression))
             {
-                showerrorbox("Decision expression has wrong operator!!!"); //continue code for menu
+                cout<<"Decision expression has wrong operator!";
                 isCorrect=0;
                 return;
             }
@@ -911,20 +1024,19 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: a
             getSecondExpressionFromCondition(k, exp2, notCorrect);
             if(notCorrect==1)
             {
-                showerrorbox("Decision expression 2 is empty!!!"); //continue code for menu
+                cout<<"Decision expression 2 is empty!!!";
                 isCorrect=0;
                 return;
             }
-            getRelationOperator(k, oper);
             if(!isExpressionCorrect(exp1))
             {
-                showerrorbox("Decision expression 1 is not correct!"); //continue code for menu
+                cout<<"Decision expression 1 is not correct!";
                 isCorrect=0;
                 return;
             }
             else if(!isExpressionCorrect(exp2))
             {
-                showerrorbox("Decision expression 2 is not correct!"); //continue code for menu
+                cout<<"Decision expression 2 is not correct!";
                 isCorrect=0;
                 return;
             }

@@ -18,8 +18,11 @@
 #define NEW_BLOCKS_SIZE 6
 #define ALL_NODES_TIME_SIZE 100
 #define EXPRESSION_LENGTH 50
+#define NR_OF_THEMES 5
+#define NR_OF_VARIABLES 20
 
 void reinitializeAllViz();
+void refresh();
 
 struct Theme_Color_Struct
 {
@@ -27,15 +30,15 @@ struct Theme_Color_Struct
     int block_clr;
     int button_clr;
     int option_clr;
-} THEME[2]; //1 for dark 0 for colorful
-bool CURRENT_THEME=1;
+} THEME[NR_OF_THEMES]; //1 for dark 0 for colorful
+int CURRENT_THEME=0;
 
 struct VarSub
 {
     int value;
     char name[EXPRESSION_LENGTH];
     bool isUsed;
-} VARIABLES[10];
+} VARIABLES[NR_OF_VARIABLES];
 
 using namespace std;
 
@@ -74,7 +77,12 @@ restNodesStruct * RESTS = new restNodesStruct;
 allNodesTimeStruct ALL_NODES_TIME;
 freeNodesStruct * FREE_NODES = new freeNodesStruct;
 node * START = new node;
-node * LAST_DELETED = new node;
+struct restorDeletedNode
+{
+    node * LAST_DELETED = new node;
+    bool canBeUsed=0;
+} LAST_DELELED_NODE;
+
 int PRIORITY=1;
 
 void changePRIORITY(int timePrior)
@@ -101,6 +109,21 @@ void initialize()
     THEME[1].block_clr=COLOR(23, 126, 137);
     THEME[1].button_clr=COLOR(8, 76, 97);
     THEME[1].option_clr=COLOR(162, 126, 142);
+
+    THEME[2].bck_clr=COLOR(43, 158, 179);
+    THEME[2].block_clr=COLOR(68, 175, 105);
+    THEME[2].button_clr=COLOR(252, 171, 16);
+    THEME[2].option_clr=COLOR(248, 51, 60);
+
+    THEME[3].bck_clr=COLOR(0,0,0);
+    THEME[3].block_clr=COLOR(130, 145, 145);
+    THEME[3].button_clr=COLOR(76, 91, 97);
+    THEME[3].option_clr=COLOR(197, 197, 197);
+
+    THEME[4].bck_clr=COLOR(34, 107, 117);
+    THEME[4].block_clr=COLOR(76, 218, 237);
+    THEME[4].button_clr=COLOR(51, 161, 176);
+    THEME[4].option_clr=COLOR(138, 219, 230);
 }
 
 node *createNode(char type[20], bool isDecision, int x, int y, int timePriority) //creates free node
@@ -154,11 +177,11 @@ node *createNode(char type[20], bool isDecision, int x, int y, int timePriority)
 
 void calculateVertices(double & xa, double & ya, double & xb, double & yb, double & xc, double & yc, node * p)
 {
-    xa=p->coordX+DECISION_BASE/2;
+    xa=p->coordX+DECISION_BASE/2+10+textwidth("T");
     ya=p->coordY;
-    xb=p->coordX;
+    xb=p->coordX+10+textwidth("T");
     yb=p->coordY+DECISION_HEIGHT;
-    xc=p->coordX+DECISION_BASE;
+    xc=p->coordX+DECISION_BASE+10+textwidth("T");
     yc=p->coordY+DECISION_HEIGHT;
 }
 
@@ -167,14 +190,17 @@ double calculateSlope(double xa, double ya, double xb, double yb)
     double m, a, b;
     a=xa-xb;
     b=ya-yb;
-    m=a/b;
+    m=-b/a;
     return m;
 }
 
 double calculateConstant(double slope, double xa, double ya)
 {
     double c;
-    c=ya-slope*xa;
+    ya=-ya;
+    double fraction;
+    fraction=-ya/slope;
+    c=fraction+xa;
     return c;
 }
 
@@ -210,7 +236,7 @@ bool isInsideNode(double x, double y, node * k)
         mAC = calculateSlope(xa, ya, xc, yc);
         constantAC = calculateConstant(mAC, xa, ya);
         currentConstant = calculateConstant(mAC, x, y);
-        if(currentConstant<constantAC)
+        if(currentConstant>constantAC)
             return 0;
 
         mBC = 0;
@@ -235,7 +261,7 @@ bool isInsideNode(double x, double y, node * k)
         m = calculateSlope(xa, ya, xb, yb);
         constant = calculateConstant(m, xa, ya);
         currentConstant = calculateConstant(m, x, y);
-        if(currentConstant>constant)
+        if(currentConstant<constant)
             return 0;
 
         xa=k->coordX+IN_BIG_BASE;
@@ -276,7 +302,7 @@ bool isInsideNode(double x, double y, node * k)
         m = calculateSlope(xa, ya, xb, yb);
         constant = calculateConstant(m, xa, ya);
         currentConstant = calculateConstant(m, x, y);
-        if(currentConstant<constant)
+        if(currentConstant>constant)
             return 0;
 
         return 1;
@@ -352,7 +378,7 @@ void selectCorrectNodeFromRests(int x, int y, node * k, int & maxPriority, bool 
         }
         if(k->next and k->next->viz==0)
             selectCorrectNodeFromRests(x, y, k->next, maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
-        if(k->nextElse and k->next->viz==0)
+        if(k->nextElse and k->nextElse->viz==0)
             selectCorrectNodeFromRests(x, y, k->nextElse, maxPriority, selected, selectedAtLeastTwice, selectedNode, underSelectedNode);
     }
 }
@@ -411,17 +437,17 @@ void writeNode(node * n)
 
 void copyNodeInLastDeleted(node * k)
 {
-    LAST_DELETED->coordX=k->coordX;
-    LAST_DELETED->coordY=k->coordY;
-    strcpy(LAST_DELETED->expression, k->expression);
-    LAST_DELETED->isDecision=k->isDecision;
-    LAST_DELETED->location=k->location;
-    LAST_DELETED->next=k->next;
-    LAST_DELETED->nextElse=k->nextElse;
-    LAST_DELETED->timePriority=k->timePriority;
-    strcpy(LAST_DELETED->type, k->type);
-    LAST_DELETED->viz=k->viz;
-    LAST_DELETED->wasCreated=k->wasCreated;
+    LAST_DELELED_NODE.LAST_DELETED->coordX=k->coordX;
+    LAST_DELELED_NODE.LAST_DELETED->coordY=k->coordY;
+    strcpy(LAST_DELELED_NODE.LAST_DELETED->expression, k->expression);
+    LAST_DELELED_NODE.LAST_DELETED->isDecision=k->isDecision;
+    LAST_DELELED_NODE.LAST_DELETED->location=1;
+    LAST_DELELED_NODE.LAST_DELETED->next=NULL;
+    LAST_DELELED_NODE.LAST_DELETED->nextElse=NULL;
+    LAST_DELELED_NODE.LAST_DELETED->timePriority=k->timePriority;
+    strcpy(LAST_DELELED_NODE.LAST_DELETED->type, k->type);
+    LAST_DELELED_NODE.LAST_DELETED->viz=k->viz;
+    LAST_DELELED_NODE.LAST_DELETED->wasCreated=k->wasCreated;
 }
 
 void deleteBindingsFromParentsFromList(node * k, node * currentNode)
@@ -491,6 +517,7 @@ void deleteNode(node * & k)
         reinitializeAllViz();
         delete k;
     }
+    LAST_DELELED_NODE.canBeUsed=1;
 }
 
 void makeBindingAB(node * & a, node * & b, bool fromElse)
@@ -504,7 +531,7 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
                 i=FREE_NODES_SIZE+1;
             }
     }
-    if(fromElse==1 and a->nextElse)
+    if(fromElse==1 and a->nextElse and a->nextElse!=b)
     {
         for(int i=0; i<FREE_NODES_SIZE; ++i)
             if(RESTS->n[i]==NULL)
@@ -549,35 +576,9 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
     b->location=a->location;
 }
 
-void createLineFromList(node * k, node * currentNode)
+void restoreVariables()
 {
-    if(START->wasCreated)
-    {
-        currentNode->viz=1;
-        if(currentNode->next and currentNode->next==k)
-        {
-            line(k->coordX, k->coordY, currentNode->coordX, currentNode->coordY); //will implement an appropriate function
-        }
-        if(currentNode->nextElse and currentNode->nextElse==k)
-        {
-            line(k->coordX, k->coordY, currentNode->coordX, currentNode->coordY); //will implement an appropriate function
-        }
-        if(currentNode->next and currentNode->next->viz==0)
-            createLineFromList(k, currentNode->next);
-        if(currentNode->nextElse and currentNode->nextElse->viz==0)
-            createLineFromList(k, currentNode->nextElse);
-    }
+    for(int i=0;i<NR_OF_VARIABLES;++i)
+        VARIABLES[i].isUsed=0;
 }
-
-void createLineFromParents(node * k)
-{
-    reinitializeAllViz();
-    createLineFromList(k, START);
-    reinitializeAllViz();
-    for(int i=0; i<FREE_NODES_SIZE; ++i)
-        if(RESTS->n[i])
-            createLineFromList(k, RESTS->n[i]);
-    reinitializeAllViz();
-}
-
 #endif // LIST_H_INCLUDED
