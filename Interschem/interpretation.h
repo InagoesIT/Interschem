@@ -250,7 +250,7 @@ int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no mo
     int sum=0;
     for(int i=0; i<NR_OF_VARIABLES; ++i)
     {
-        if(strcmp(VARIABLES[i].name, var)==0)
+        if(VARIABLES[i].isUsed==1 and strcmp(VARIABLES[i].name, var)==0)
         {
             state=1;
             return i;
@@ -860,13 +860,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
         {
             if(k->expression[0]==NULL)
             {
-                cout<<"In is empty!";
+                //cout<<"In is empty!";
                 isCorrect=0;
                 return;
             }
             if(!variableNameCorrect(k->expression))
             {
-                cout<<"In variable name incorrect!";
+                //cout<<"In variable name incorrect!";
                 isCorrect=0;
                 return;
             }
@@ -879,7 +879,7 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 poz=getVariablePosition(var, state);
                 if(state==0)
                 {
-                    cout<<"No more places for new variables!";
+                    //cout<<"No more places for new variables!";
                     isCorrect=0;
                     return;
                 }
@@ -902,14 +902,14 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 getVariableFromOut(k, var);
                 if(k->expression[0]==NULL)
                 {
-                    cout<<"Out is empty!";
+                    //cout<<"Out is empty!";
                     isCorrect=0;
                     return;
                 }
                 poz=getVariablePosition(var, state);
                 if(state==0 or state==2)
                 {
-                    cout<<"Variable not known!";
+                    //cout<<"Variable not known!";
                     isCorrect=0;
                     return;
                 }
@@ -921,27 +921,27 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             int state=0, poz=0;
             if(k->expression[0]=='=')
             {
-                cout<<"Assign has no 1st expression!";
+                //cout<<"Assign has no 1st expression!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]==NULL)
             {
-                cout<<"Assign empty!";
+                //cout<<"Assign empty!";
                 isCorrect=0;
                 return;
             }
             getVariableFromAssign(k, var);
             if(!variableNameCorrect(var))
             {
-                cout<<"Assign variable incorrect!";
+                //cout<<"Assign variable incorrect!";
                 isCorrect=0;
                 return;
             }
             poz=getVariablePosition(var, state);
             if(state==0)
             {
-                cout<<"No more places for this new variable!";
+                //cout<<"No more places for this new variable!";
                 isCorrect=0;
                 return;
             }
@@ -952,13 +952,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 strcpy(s, k->expression);
                 if(!stringHasEqualSign(s))
                 {
-                    cout<<"Assign expression has no =";
+                    //cout<<"Assign expression has no =";
                     isCorrect=0;
                     return;
                 }
                 if(tooManyEqalSigns(s))
                 {
-                    cout<<"Too many =";
+                    //cout<<"Too many =";
                     isCorrect=0;
                     return;
                 }
@@ -966,13 +966,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 getExpressionAfterEqualSign(k, exp, isNull);
                 if(isNull==1)
                 {
-                    cout<<"Assign expression is null!";
+                    //cout<<"Assign expression is null!";
                     isCorrect=0;
                     return;
                 }
                 if(!isExpressionCorrect(exp))
                 {
-                    cout<<"Assign expression is incorrect!";
+                    //cout<<"Assign expression is incorrect!";
                     isCorrect=0;
                     return;
                 }
@@ -989,19 +989,19 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             int value1=0, value2=0;
             if(!k->next or !k->nextElse)
             {
-                cout<<"Decision does not have 2 bindings!";
+                //cout<<"Decision does not have 2 bindings!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]==NULL)
             {
-                cout<<"Decision empty!";
+                //cout<<"Decision empty!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]=='=' or k->expression[0]=='<' or k->expression[0]=='>' or k->expression[0]=='!')
             {
-                cout<<"Decision has no 1st expression!";
+                //cout<<"Decision has no 1st expression!";
                 isCorrect=0;
                 return;
             }
@@ -1010,13 +1010,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             strcpy(s, k->expression);
             if(strchr(s, '!')==NULL and strchr(s, '=')==NULL and strchr(s, '<')==NULL and strchr(s, '>')==NULL)
             {
-                cout<<"Decision expression has no operator!";
+                //cout<<"Decision expression has no operator!";
                 isCorrect=0;
                 return;
             }
             if(!isOperatorCorrect(k->expression))
             {
-                cout<<"Decision expression has wrong operator!";
+                //cout<<"Decision expression has wrong operator!";
                 isCorrect=0;
                 return;
             }
@@ -1024,19 +1024,19 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             getSecondExpressionFromCondition(k, exp2, notCorrect);
             if(notCorrect==1)
             {
-                cout<<"Decision expression 2 is empty!!!";
+                //cout<<"Decision expression 2 is empty!!!";
                 isCorrect=0;
                 return;
             }
             if(!isExpressionCorrect(exp1))
             {
-                cout<<"Decision expression 1 is not correct!";
+                //cout<<"Decision expression 1 is not correct!";
                 isCorrect=0;
                 return;
             }
             else if(!isExpressionCorrect(exp2))
             {
-                cout<<"Decision expression 2 is not correct!";
+                //cout<<"Decision expression 2 is not correct!";
                 isCorrect=0;
                 return;
             }

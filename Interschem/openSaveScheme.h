@@ -11,6 +11,7 @@ void drawPage();
 void drawMenu();
 void isSchemeCorrect(node * k, bool & isCorrect);
 void popUpMessage(char a[200]);
+void waitForClickToRefresh();
 
 struct readNode
 {
@@ -266,6 +267,7 @@ void saveScheme()
     }
     else
         popUpMessage("The scheme is incorrect!");
+    waitForClickToRefresh();
 }
 
 void reinitializeArr()
