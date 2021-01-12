@@ -8,6 +8,9 @@
 #define OUTPUT_MIDDLE_Y (WINDOWY - MENUY) / 2 + MENUY
 #define LINE_SPACE 25
 
+void getVariableFromAssign(node *k, char var[EXPRESSION_LENGTH]);
+void drawGenCodeButton();
+
 struct declaredVars
 {
     char name[10][EXPRESSION_LENGTH];
@@ -180,7 +183,6 @@ void determineDecisionType(node *head, int &y, bool &isWhile)
     }
 }
 
-
 void parseScheme(node *head, int &y)
 {
     if (head && !head->viz && strcmp(head->type, "STOP"))
@@ -222,13 +224,15 @@ void parseScheme(node *head, int &y)
     }
 }
 
-void generateCode()
+void generateCode(bool &isGenCode)
 {
-    if (START->wasCreated) // put isSchemeCorrect
+    restoreVariables();
+    bool isCorrect = 1;
+    isSchemeCorrect(START, isCorrect);
+    if (isCorrect)
     {
+        isGenCode = 1;
         int y = MENUY + sizeGenCodeY + 30;
-        int isFor = 0;
-        bool isWhile = 0;
         char varText[EXPRESSION_LENGTH * 2] = "int ";
         clearOutput();
         reinitializeVarArr();
@@ -237,14 +241,20 @@ void generateCode()
         reinitializeAllViz();
         declareUsedVars(START->next, varText);
         reinitializeAllViz();
-        strcat(varText, ";");
-        outtextxy(TEXT_X, y += LINE_SPACE, varText);
+        if (strlen(varText) != 4)
+        {
+            strcat(varText, ";");
+            outtextxy(TEXT_X, y += LINE_SPACE, varText);
+        }
 
         parseScheme(START, y);
         writeEnd(y);
     }
     else
+    {
+        isGenCode = 0;
         showerrorbox("The scheme isn't correct!");
+    }
 }
 
 #endif // GENERATECODE_H_INCLUDED

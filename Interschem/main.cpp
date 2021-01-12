@@ -23,8 +23,6 @@ int main()
     initwindow(WINDOWX, WINDOWY);
     drawPage();
     drawMenu();
-//    generateCode();
-
 
     int xx, yy;
     node * p = new node;
@@ -35,6 +33,7 @@ int main()
     //interface for the app//
     refresh();
     int ok=1;
+    bool isGenCode = 0;
     while(!isDone)
     {
         POINT CursorPosition;
@@ -79,7 +78,7 @@ int main()
             clearmouseclick(WM_LBUTTONDOWN);
 
             if (yy <= MENUY)
-                handleMenuClick(xx, yy);
+                handleMenuClick(xx, yy, isGenCode);
             else
             {
                 reinitializeAllViz();
@@ -98,8 +97,7 @@ int main()
                         dragNewBlock(xx, yy, newBlock);
                 }
                 else if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
-                    generateCode();
-//                refresh();
+                     generateCode(isGenCode);
             }
         }
         else if (ismouseclick(WM_RBUTTONDOWN))

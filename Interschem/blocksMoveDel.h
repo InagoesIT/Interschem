@@ -187,7 +187,6 @@ int partitionNodes(int low, int high)
     return (i + 1);
 }
 
-
 void sortArrayByTime(int low, int high)//quick sort
 {
     if (low < high)
@@ -271,6 +270,7 @@ void moveBlock(int x, int y, node *p, bool isNew, int difX, int difY)
         createBlock(p, false);
         deleteNode(p);
     }
+    drawAllBlocks();
     clearmouseclick(WM_LBUTTONUP);
     reinitializeAllViz();
 }

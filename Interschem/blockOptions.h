@@ -3,19 +3,7 @@
 
 #include <iostream>
 
-#define START_HEIGHT 70
-#define START_WIDTH 150
-#define STOP_HEIGHT 70
-#define STOP_WIDTH 150
-#define IN_HEIGHT 50
-#define IN_BIG_BASE 120
-#define IN_SMALL_BASE 60
-#define ASSIGN_HEIGHT 60
-#define ASSIGN_WIDTH 200
-#define DECISION_BASE 150
-#define DECISION_HEIGHT 80
 #define NEW_BLOCKS_SIZE 6
-#define ALL_NODES_TIME_SIZE 100
 
 #define DECISION_WIDTH 150+textwidth("T")+textwidth("F")+20
 

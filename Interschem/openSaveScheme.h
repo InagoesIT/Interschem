@@ -2,7 +2,6 @@
 #define OPENSAVESCHEME_H_INCLUDED
 
 #define SCHEME_SIZE 30
-
 #include "blocks.h"
 #include "blocksMoveDel.h"
 #include "menu.h"
@@ -11,6 +10,8 @@ void drawPage();
 void drawMenu();
 void isSchemeCorrect(node * k, bool & isCorrect);
 void popUpMessage(char a[200]);
+
+int VIZITED_NODES[SCHEME_SIZE];
 
 struct readNode
 {
@@ -100,10 +101,11 @@ void writeSchemeToFile(char path[500], node *head, bool &isFirstTime)
         File << head->timePriority << ",";
         File << head->coordX << ",";
         File << head->coordY << ",";
-        if (!strcmp(head->expression, "no expression"))
+        if (!strcmp(head->expression, "no expression") || !strlen(head->expression))
             File << "0,";
         else
             File << head->expression << ",";
+        cout << "exp of " << head->type << " with time prior:" << head->timePriority << " is:" << head->expression << endl;
         File << head->isDecision << ",";
         if (head->next)
             File << head->next->timePriority << ",";
@@ -265,7 +267,8 @@ void saveScheme()
         {
             bool isFirstTime = 1;
             reinitializeAllViz();
-            writeSchemeToFile(path, START);
+            writeSchemeToFile(path, START, isFirstTime);
+            reinitializeAllViz();
             popUpMessage("The scheme was saved succesfully!");
         }
         else
@@ -341,6 +344,44 @@ readNode findNodeInArr(int time, int &i)
     }
 }
 
+void rememberAllViz(node *head, int &i)
+{
+    if (head && head->viz != 2)
+    {
+        if (head->viz == 1)
+        {
+            VIZITED_NODES[i] = head->timePriority;
+            i++;
+        }
+
+        head->viz = 2;
+
+        if (head->next && head->viz != 2)
+            rememberAllViz(head->next, i);
+        if (head->nextElse && head->viz != 2)
+            rememberAllViz(head->nextElse, i);
+    }
+}
+
+bool wasViz(int nodeTime, int arrSize)
+{
+    for (int i = 0; i < arrSize; i++)
+        if (VIZITED_NODES[i] == nodeTime)
+            return 1;
+    return 0;
+}
+
+void recoverVizInScheme(node *head, int arrSize)
+{
+    if (head->viz != 2)
+    {
+        if (wasViz(head->timePriority, arrSize))
+            head->viz = 1;
+        else
+            head->viz = 0;
+    }
+}
+
 void addNextNodesToScheme(readNode headArr, node *head)
 {
     node *next;
@@ -349,12 +390,12 @@ void addNextNodesToScheme(readNode headArr, node *head)
     readNode nextElseArr;
     int i;
 
-        if (headArr.next && !head->next)
+    if (headArr.next && !head->next)
+    {
+        nextArr = findNodeInArr(headArr.next, i);
+        if (!nodesInfo[i].viz)
         {
-            nextArr = findNodeInArr(headArr.next, i);
-            if (!nodesInfo[i].viz)
-            {
-                next = createNode(nextArr.type, nextArr.isDecision, nextArr.coordX, nextArr.coordY, nextArr.timePriority);
+            next = createNode(nextArr.type, nextArr.isDecision, nextArr.coordX, nextArr.coordY, nextArr.timePriority);
                 strcpy(next->expression, nextArr.expression);
                 nodesInfo[i].viz = 1;
                 head->next = next;
@@ -362,10 +403,14 @@ void addNextNodesToScheme(readNode headArr, node *head)
             }
             else
             {
+                int arrSize = 0;
+                rememberAllViz(START, arrSize);
+                makeAllVizFrom2To0(START);
                 next = findNodeByTime(headArr.next);
+                makeAllVizEqualTo2(START);
+                recoverVizInScheme(START, arrSize);
                 head->next = next;
             }
-
         }
         if (headArr.isDecision && !head->nextElse && headArr.nextElse)
         {
@@ -380,10 +425,14 @@ void addNextNodesToScheme(readNode headArr, node *head)
             }
             else
             {
+                int arrSize = 0;
+                rememberAllViz(START, arrSize);
+                makeAllVizFrom2To0(START);
                 nextElse = findNodeByTime(headArr.nextElse);
+                reinitializeAllViz();
+                recoverVizInScheme(START, arrSize);
                 head->nextElse = nextElse;
             }
-
         }
 }
 
@@ -424,9 +473,11 @@ void openScheme()
     getPathName(path, 1);
     if (pathExists(path))
     {
+        reinitializeAllViz();
         writeNodesInfoInArr(path);
         makePriorityMax();
         convertArrToScheme();
+        reinitializeAllViz();
         cleardevice();
         drawPage();
         drawMenu();
@@ -434,7 +485,7 @@ void openScheme()
         popUpMessage("Scheme opened with succes!");
     }
     else
-        popUpMessage("There is no such path.");
+        showerrorbox("There is no such path.");
 }
 
 

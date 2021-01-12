@@ -26,6 +26,7 @@ void refresh();
 void moveBlock(int x, int y, node *p, bool isNew);
 void isSchemeCorrect(node * k, bool & isCorrect);
 void analyzeScheme(node * k);
+void generateCode(bool &isGenCode);
 
 const int tileX = WINDOWX / 3;
 const int smallTileX = 170;// textwidth("Background Color") + 50
@@ -51,8 +52,6 @@ const int lastOthersY = MENUY + smallTileY * 3;
 bool IS_INSIDE_SCHEME;
 bool IS_INSIDE_CUSTOMIZE;
 bool IS_INSIDE_OTHERS;
-
-
 
 bool m[630][950];
 
@@ -129,8 +128,8 @@ void drawPage()
     setbkcolor(THEME[CURRENT_THEME].bck_clr);
     //drag and drop blocks
     setlinestyle(0, 0, 3);
-    createStart(START_X, START_Y, true, true);
-    createStop(STOP_X, STOP_Y, true, true);
+    createStart(START_X, START_Y, true);
+    createStop(STOP_X, STOP_Y, true);
     createIn(IN_X, IN_Y, true, true, "no expression");
     createOut(OUT_X, OUT_Y, true, true, "no expression");
     createAssign(ASSIGN_X, ASSIGN_Y, true, true, "no expression");
@@ -631,7 +630,7 @@ void aboutUs()
     waitForClickToRefresh();
 }
 
-void handleMenuClick(int x, int y)
+void handleMenuClick(int x, int y, bool &isGenCode)
 {
     int xx, yy;
     bool isDone = false;
@@ -658,6 +657,8 @@ void handleMenuClick(int x, int y)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
+                        if (isGenCode)
+                            generateCode(isGenCode);
                         isDone=1;
                     }
                     else if (yy < MENUY + smallTileY * 2)
@@ -667,6 +668,8 @@ void handleMenuClick(int x, int y)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
+                        if (isGenCode)
+                            isGenCode = 0;
                         isDone=1;
                     }
                     else if (yy < MENUY + smallTileY * 3)
@@ -676,6 +679,8 @@ void handleMenuClick(int x, int y)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
+                        if (isGenCode)
+                            isGenCode = 0;
                         isDone=1;
                     }
                     else if (yy < MENUY + smallTileY * 4)
@@ -685,6 +690,8 @@ void handleMenuClick(int x, int y)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
+                        if (isGenCode)
+                            isGenCode = 0;
                         isDone=1;
                     }
                 }
@@ -694,6 +701,8 @@ void handleMenuClick(int x, int y)
                     drawPage();
                     drawMenu();
                     drawAllBlocks();
+                    if (isGenCode)
+                        generateCode(isGenCode);
                     clearmouseclick(WM_LBUTTONDOWN);
                     isDone = true;
                 }
@@ -720,32 +729,44 @@ void handleMenuClick(int x, int y)
                     {
                         CURRENT_THEME=0;
                         refresh();
+                        if (isGenCode)
+                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 2)
                     {
                         CURRENT_THEME=1;
                         refresh();
+                        if (isGenCode)
+                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 3)
                     {
                         CURRENT_THEME=2;
                         refresh();
+                        if (isGenCode)
+                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 4)
                     {
                         CURRENT_THEME=3;
                         refresh();
+                        if (isGenCode)
+                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 5)
                     {
                         CURRENT_THEME=4;
                         refresh();
+                        if (isGenCode)
+                            generateCode(isGenCode);
                     }
                 }
                 cleardevice();
                 drawPage();
                 drawMenu();
                 drawAllBlocks();
+                if (isGenCode)
+                    generateCode(isGenCode);
                 isDone = true;
             }
         }
@@ -781,6 +802,8 @@ void handleMenuClick(int x, int y)
                 drawPage();
                 drawMenu();
                 drawAllBlocks();
+                if (isGenCode)
+                    generateCode(isGenCode);
                 isDone = true;
             }
         }

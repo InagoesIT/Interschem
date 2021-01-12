@@ -2,9 +2,8 @@
 #define BLOCKS_H_INCLUDED
 
 #define AUX_COLOR YELLOW
-#define BLOCK_COLOR GREEN
 #define LINE_COLOR WHITE
-#define IN_SMALL_BASE_DIFF 30
+#define IN_SMALL_BASE_DIFF 20
 #define MATRIXX 700
 #define MATRIXY 1200
 
@@ -22,8 +21,6 @@ struct POINTXY
 int DX[4]= {0, -1, 0, 1}, DY[4]= {1, 0, -1, 0};
 
 int MATRIX[MATRIXX][MATRIXY];
-
-
 
 void setColors(bool isColored)
 {
@@ -55,7 +52,7 @@ void createRoundedRect(int x, int y, bool isColored)
     {
         X += RADIUS / NR_POINTS;
         Y = sqrt(RADIUS * RADIUS - X * X);
-        points[0][i] = X + x + START_WIDTH * coef - RADIUS;
+        points[0][i] = X + x + START_WIDTH - RADIUS;
         points[1][i] = y - Y + RADIUS;
     }
     Y=0;
@@ -63,8 +60,8 @@ void createRoundedRect(int x, int y, bool isColored)
     {
         Y += RADIUS/NR_POINTS;
         X = sqrt(RADIUS * RADIUS - Y * Y);
-        points[0][i] = x + START_WIDTH * coef + X - RADIUS;
-        points[1][i] = y + START_HEIGHT * coef - RADIUS + Y;
+        points[0][i] = x + START_WIDTH + X - RADIUS;
+        points[1][i] = y + START_HEIGHT - RADIUS + Y;
     }
     X=0;
     for(; i < NR_POINTS * 3; i++)
@@ -72,7 +69,7 @@ void createRoundedRect(int x, int y, bool isColored)
         X += RADIUS/NR_POINTS;
         Y = sqrt(RADIUS * RADIUS - X * X);
         points[0][i] = x + RADIUS - X;
-        points[1][i] = y + START_HEIGHT * coef - RADIUS + Y;
+        points[1][i] = y + START_HEIGHT - RADIUS + Y;
     }
     Y=0;
     for(; i < NR_POINTS * 4; i++)
@@ -89,7 +86,7 @@ void createRoundedRect(int x, int y, bool isColored)
 
     if (isColored)
     {
-        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, AUX_COLOR);
+        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
         for (i = 0; i < NR_POINTS * 4 - 1; i++)
             line(points[0][i], points[1][i], points[0][i+1], points[1][i + 1]);
@@ -97,17 +94,12 @@ void createRoundedRect(int x, int y, bool isColored)
     }
     else
     {
-        floodfill(x + START_WIDTH * coef / 2, y + START_HEIGHT * coef / 2, THEME[CURRENT_THEME].bck_clr);
+        floodfill(x + START_WIDTH / 2, y + START_HEIGHT / 2, THEME[CURRENT_THEME].bck_clr);
     }
 }
 
-void createStart(int x, int y, bool isSmall, bool isColored)
+void createStart(int x, int y, bool isColored)
 {
-    if (!isSmall)
-        coef = 1;
-    else
-        coef = 0.7;
-
     createRoundedRect(x, y, isColored);
 
     if (isColored)
@@ -115,18 +107,13 @@ void createStart(int x, int y, bool isSmall, bool isColored)
         int textWidth = textwidth("Start");
         int textHeight = textheight("Start");
         setbkcolor(THEME[CURRENT_THEME].block_clr);
-        outtextxy(x + (START_WIDTH * coef - textWidth) / 2, y + (START_HEIGHT * coef - textHeight) / 2, "Start");
+        outtextxy(x + (START_WIDTH - textWidth) / 2, y + (START_HEIGHT - textHeight) / 2, "Start");
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
 }
 
-void createStop(int x, int y, bool isSmall, bool isColored)
+void createStop(int x, int y, bool isColored)
 {
-    if (!isSmall)
-        coef = 1;
-    else
-        coef = 0.7;
-
     createRoundedRect(x, y, isColored);
 
     if (isColored)
@@ -135,35 +122,31 @@ void createStop(int x, int y, bool isSmall, bool isColored)
         int textHeight = textheight("Stop");
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
-        outtextxy(x + (STOP_WIDTH * coef - textWidth)/2, y + (STOP_HEIGHT * coef - textHeight)/2, "Stop");
+        outtextxy(x + (STOP_WIDTH - textWidth) / 2, y + (STOP_HEIGHT - textHeight) / 2, "Stop");
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
 }
 
-void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
+void createIn(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
 {
-    const int LATERAL_PART = 50;
-    char text[50];
-
-    if (!isSmall)
-        coef = 1;
+    char text[EXPRESSION_LENGTH];
 
     setColors(isColored);
 
-    line(x, y, x + IN_BIG_BASE * coef, y);
-    line(x + IN_BIG_BASE * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
-    line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
-    line(x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x, y);
+    line(x, y, x + IN_BIG_BASE, y);
+    line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+    line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+    line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
 
     if (isColored)
     {
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, AUX_COLOR);
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
 
-        line(x, y, x + IN_BIG_BASE * coef, y);
-        line(x + IN_BIG_BASE * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
-        line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef);
-        line(x + IN_SMALL_BASE_DIFF * coef, y + LATERAL_PART * coef, x, y);
+        line(x, y, x + IN_BIG_BASE, y);
+        line(x + IN_BIG_BASE, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+        line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
+        line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
 
         if (!isSmall)
         {
@@ -179,37 +162,33 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[50])
         int textHeight = textheight(text);
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
-        outtextxy(x + (IN_BIG_BASE * coef - textWidth) / 2, y + (LATERAL_PART * coef - textHeight) / 2, text);
+        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, text);
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
-void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
+void createOut(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
 {
-    const int LATERAL_PART = 50;
-    char text[50];
-
-    if (!isSmall)
-        coef = 1;
+    char text[EXPRESSION_LENGTH];
 
     setColors(isColored);
 
-    line(x + IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y);
-    line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef, y + LATERAL_PART * coef);
-    line(x + IN_BIG_BASE * coef, y + LATERAL_PART * coef, x, y + LATERAL_PART * coef);
-    line(x, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y);
+    line(x + IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y);
+    line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE, y + LATERAL_PART);
+    line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
+    line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
 
     if (isColored)
     {
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, AUX_COLOR);
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
 
         setcolor(LINE_COLOR);
-        line(x + IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y);
-        line(x + IN_BIG_BASE * coef - IN_SMALL_BASE_DIFF * coef, y, x + IN_BIG_BASE * coef, y + LATERAL_PART * coef);
-        line(x + IN_BIG_BASE * coef, y + LATERAL_PART * coef, x, y + LATERAL_PART * coef);
-        line(x, y + LATERAL_PART * coef, x + IN_SMALL_BASE_DIFF * coef, y);
+        line(x + IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y);
+        line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y, x + IN_BIG_BASE, y + LATERAL_PART);
+        line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
+        line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
 
         if (!isSmall)
         {
@@ -225,31 +204,26 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[50])
         int textHeight = textheight(text);
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
-        outtextxy(x + (IN_BIG_BASE * coef - textWidth) / 2, y + (LATERAL_PART * coef - textHeight) / 2, text);
+        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, text);
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + IN_BIG_BASE * coef / 2, y + LATERAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
+        floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
-void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50])
+void createAssign(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
 {
-    char text[50];
-
-    if (!isSmall)
-        coef = 1;
-    else
-        coef = 0.7;
+    char text[EXPRESSION_LENGTH];
 
     setColors(isColored);
 
-    rectangle(x, y, x + ASSIGN_WIDTH * coef, y + ASSIGN_HEIGHT * coef);
+    rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
 
     if (isColored)
     {
-        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, AUX_COLOR);
+        floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
-        rectangle(x, y, x + ASSIGN_WIDTH * coef, y + ASSIGN_HEIGHT * coef);
+        rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
 
         if (!isSmall)
         {
@@ -265,39 +239,34 @@ void createAssign(int x, int y, bool isSmall, bool isColored, char expression[50
         int textHeight = textheight(text);
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
-        outtextxy(x + (ASSIGN_WIDTH * coef - textWidth) / 2, y + (ASSIGN_HEIGHT * coef - textHeight) / 2, text);
+        outtextxy(x + (ASSIGN_WIDTH - textWidth) / 2, y + (ASSIGN_HEIGHT - textHeight) / 2, text);
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
-        floodfill(x + ASSIGN_WIDTH * coef / 2, y + ASSIGN_HEIGHT * coef / 2, THEME[CURRENT_THEME].bck_clr);
+        floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, THEME[CURRENT_THEME].bck_clr);
 }
 
-void createDecision(int x, int y, bool isSmall, bool isColored, char expression[50])
+void createDecision(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
 {
     int TWidth = textwidth("T");
     int FWidth = textwidth("F");
     const int EQUAL_PART = 80;
     const int X = x + TWidth + 10;
-    char text[50];
-
-    if (!isSmall)
-        coef = 1;
-    else
-        coef = 0.7;
+    char text[EXPRESSION_LENGTH];
 
     setColors(isColored);
 
-    line(X + DECISION_BASE * coef / 2, y, X + DECISION_BASE * coef, y + EQUAL_PART * coef);
-    line(X + DECISION_BASE * coef, y + EQUAL_PART * coef, X, y + EQUAL_PART * coef);
-    line(X, y + EQUAL_PART * coef, X + DECISION_BASE * coef / 2, y);
+    line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
+    line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
+    line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
 
     if (isColored)
     {
-        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, AUX_COLOR);
+        floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
-        line(X + DECISION_BASE * coef / 2, y, X + DECISION_BASE * coef, y + EQUAL_PART * coef);
-        line(X + DECISION_BASE * coef, y + EQUAL_PART * coef, X, y + EQUAL_PART * coef);
-        line(X, y + EQUAL_PART * coef, X + DECISION_BASE * coef / 2, y);
+        line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
+        line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
+        line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
 
 
         if (!isSmall)
@@ -315,22 +284,34 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
 
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
-        outtextxy(X + (DECISION_BASE * coef - textWidth) / 2, y + (EQUAL_PART * coef - textHeight) / 2 + 20 * coef, text);
+        outtextxy(X + (DECISION_BASE - textWidth) / 2, y + (EQUAL_PART - textHeight) / 2 + 20, text);
 
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
-        outtextxy(x + TWidth / 2, y + EQUAL_PART * coef - 10, "T");
-        outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
+        outtextxy(x + TWidth / 2, y + EQUAL_PART - 10, "T");
+        outtextxy(X + DECISION_BASE + 5 + FWidth / 2, y + EQUAL_PART - 10, "F");
     }
     else
     {
-        floodfill(X + DECISION_BASE * coef / 2, y + EQUAL_PART * coef / 2, THEME[CURRENT_THEME].bck_clr);
+        floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, THEME[CURRENT_THEME].bck_clr);
 
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
         setcolor(THEME[CURRENT_THEME].bck_clr);
-        outtextxy(x + TWidth / 2, y + EQUAL_PART * coef - 10, "T");
-        outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
+        outtextxy(x + TWidth / 2, y + EQUAL_PART - 10, "T");
+        outtextxy(X + DECISION_BASE + 5 + FWidth / 2, y + EQUAL_PART - 10, "F");
+        setbkcolor(THEME[CURRENT_THEME].bck_clr);
+        setcolor(THEME[CURRENT_THEME].bck_clr);
+
+        if (strcmp(expression, "no expression") && strlen(expression))
+            strcpy(text, expression);
+        else
+            strcpy(text, "<var> ? <var>");
+
+        int textWidth = textwidth(text);
+        int textHeight = textheight(text);
+        outtextxy(X + (DECISION_BASE - textWidth) / 2, y + (EQUAL_PART - textHeight) / 2 + 20, text);
     }
 }
+
 void getConnectionPointFromA(int & xa, int & ya, node * a, bool fromElse)
 {
     if(strcmp(a->type, "START")==0 or strcmp(a->type, "STOP")==0)
@@ -611,12 +592,13 @@ void createLineFromParents(node * k, int color)
             createLineFromList(k, RESTS->n[i], color);
     reinitializeAllViz();
 }
+
 void createBlock(node *p, bool isColored)
 {
     if (strcmp(p->type, "START") == 0)
-        createStart(p->coordX, p->coordY, false, isColored);
+        createStart(p->coordX, p->coordY, isColored);
     else if (strcmp(p->type, "STOP") == 0)
-        createStop(p->coordX, p->coordY, false, isColored);
+        createStop(p->coordX, p->coordY, isColored);
     else if (strcmp(p->type, "IN") == 0)
         createIn(p->coordX, p->coordY, false, isColored, p->expression);
     else if (strcmp(p->type, "OUT") == 0)
