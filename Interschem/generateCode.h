@@ -7,7 +7,6 @@
 #define OUTPUT_MIDDLE_X WINDOWX - OUTPUT_SIZE_X / 2
 #define OUTPUT_MIDDLE_Y (WINDOWY - MENUY) / 2 + MENUY
 #define LINE_SPACE 25
-#define TAB_SIZE textwidth("    ")
 
 void getVariableFromAssign(node *k, char var[EXPRESSION_LENGTH]);
 void drawGenCodeButton();
@@ -26,72 +25,57 @@ void clearOutput()
     drawGenCodeButton();
 }
 
-void writeWhile(char condition[EXPRESSION_LENGTH], int &y, int level)
+void writeWhile(char condition[EXPRESSION_LENGTH], int &y)
 {
     char text[EXPRESSION_LENGTH + 20] = "";
     strcat(text, "while (");
     strcat(text, condition);
     strcat(text, ")");
-    int x = TEXT_X;
-    if (level)
-        x = TEXT_X + TAB_SIZE * level;
-    outtextxy(x, y += LINE_SPACE, text);
-    outtextxy(x, y += LINE_SPACE, "{");
+    outtextxy(TEXT_X, y += LINE_SPACE, text);
+    outtextxy(TEXT_X, y += LINE_SPACE, "{");
 }
 
-void writeIf(char condition[EXPRESSION_LENGTH], int &y, int level)
+void writeIf(char condition[EXPRESSION_LENGTH], int &y)
 {
     char text[EXPRESSION_LENGTH + 20] = "";
     strcat(text, "if (");
     strcat(text, condition);
     strcat(text, ")");
-    int x = TEXT_X;
-    if (level)
-        x = TEXT_X + TAB_SIZE * level;
-    outtextxy(x, y += LINE_SPACE, text);
-    outtextxy(x, y += LINE_SPACE, "{");
+    outtextxy(TEXT_X, y += LINE_SPACE, text);
+    outtextxy(TEXT_X, y += LINE_SPACE, "{");
 }
 
-void writeElse(int &y, int level)
+void writeElse(int &y)
 {
-    int x = TEXT_X;
-    if (level)
-        x = TEXT_X + TAB_SIZE * level;
-    outtextxy(x, y += LINE_SPACE, "else");
-    outtextxy(x, y += LINE_SPACE, "{");
+    outtextxy(TEXT_X, y += LINE_SPACE, "else");
+    outtextxy(TEXT_X, y += LINE_SPACE, "{");
 }
 
 void writeEnd(int &y)
 {
-    outtextxy(TEXT_X + TAB_SIZE, y += LINE_SPACE, "return 0;");
+    outtextxy(TEXT_X, y += LINE_SPACE, "return 0;");
     outtextxy(TEXT_X, y += LINE_SPACE, "}");
 }
 
-void writeIn(char expression[EXPRESSION_LENGTH], int &y, int level)
+void writeIn(char expression[EXPRESSION_LENGTH], int &y)
 {
     char text[EXPRESSION_LENGTH + 1] = "";
     strcpy(text, "cin >> ");
     strcat(text, expression);
     text[strlen(text)] = ';';
-    int x = TEXT_X;
-    if (level)
-        x = TEXT_X + TAB_SIZE * level;
-    outtextxy(x, y += LINE_SPACE, text);
+    outtextxy(TEXT_X, y += LINE_SPACE, text);
 }
 
-void writeOut(char expression[EXPRESSION_LENGTH], int &y, int level)
+void writeOut(char expression[EXPRESSION_LENGTH], int &y)
 {
     char text[EXPRESSION_LENGTH + 1] = "";
     strcpy(text, "cout << ");
     strcat(text, expression);
     text[strlen(text)] = ';';
-    int x = TEXT_X;
-    if (level)
-        x = TEXT_X + TAB_SIZE * level;
-    outtextxy(x, y += LINE_SPACE, text);
+    outtextxy(TEXT_X, y += LINE_SPACE, text);
 }
 
-void writeAssign(char expression[EXPRESSION_LENGTH], int &y, int level)
+void writeAssign(char expression[EXPRESSION_LENGTH], int &y)
 {
     char text[EXPRESSION_LENGTH + 1] = "";
     char expAux[EXPRESSION_LENGTH] = "";
@@ -102,10 +86,7 @@ void writeAssign(char expression[EXPRESSION_LENGTH], int &y, int level)
     token = strtok(NULL, "=");
     strcat(text, token);
     text[strlen(text)] = ';';
-    int x = TEXT_X;
-    if (level)
-        x = TEXT_X + TAB_SIZE * level;
-    outtextxy(x, y += LINE_SPACE, text);
+    outtextxy(TEXT_X, y += LINE_SPACE, text);
 }
 
 void writeStart(int &y)
@@ -116,14 +97,14 @@ void writeStart(int &y)
     outtextxy(TEXT_X, y += LINE_SPACE, "{");
 }
 
-void writeInstruction(node *head, int &y, int level)
+void writeInstruction(node *head, int &y)
 {
     if (strcmp(head->type, "IN") == 0)
-        writeIn(head->expression, y, level);
+        writeIn(head->expression, y);
     else if (strcmp(head->type, "OUT") == 0)
-        writeOut(head->expression, y, level);
+        writeOut(head->expression, y);
     else if (strcmp(head->type, "ASSIGN") == 0)
-        writeAssign(head->expression, y, level);
+        writeAssign(head->expression, y);
 }
 
 void reinitializeVarArr()
@@ -202,15 +183,15 @@ void determineDecisionType(node *head, int &y, bool &isWhile)
     }
 }
 
-void parseScheme(node *head, int &y, int &level)
+void parseScheme(node *head, int &y)
 {
     if (head && !head->viz && strcmp(head->type, "STOP"))
     {
         head->viz = 1;
         if (!head->isDecision)
         {
-            writeInstruction(head, y, level);
-            parseScheme(head->next, y, level);
+            writeInstruction(head, y);
+            parseScheme(head->next, y);
         }
         else
         {
@@ -218,25 +199,25 @@ void parseScheme(node *head, int &y, int &level)
              determineDecisionType(head, y, isWhile);
 
              if (isWhile)
-                writeWhile(head->expression, y, level);
+                writeWhile(head->expression, y);
             else
-                writeIf(head->expression, y, level);
+                writeIf(head->expression, y);
 
              if (isWhile)
              {
-                 parseScheme(head->next, y, ++level);
-                 outtextxy(TEXT_X + TAB_SIZE * --level, y += LINE_SPACE, "}");
-                 parseScheme(head->nextElse, y, level);
+                 parseScheme(head->next, y);
+                 outtextxy(TEXT_X, y += LINE_SPACE, "}");
+                 parseScheme(head->nextElse, y);
              }
              else
              {
-                 parseScheme(head->next, y, ++level); // if
-                 outtextxy(TEXT_X + TAB_SIZE * --level, y += LINE_SPACE, "}");
+                 parseScheme(head->next, y);
+                 outtextxy(TEXT_X, y += LINE_SPACE, "}");
                  if (strcmp(head->nextElse->type, "STOP") || head->nextElse->viz)
                  {
-                    writeElse(y, level);
-                    parseScheme(head->nextElse, y, ++level);
-                    outtextxy(TEXT_X + TAB_SIZE * --level, y += LINE_SPACE, "}");
+                    writeElse(y);
+                    parseScheme(head->nextElse, y);
+                    outtextxy(TEXT_X, y += LINE_SPACE, "}");
                  }
              }
         }
@@ -250,7 +231,6 @@ void generateCode(bool &isGenCode)
     isSchemeCorrect(START, isCorrect);
     if (isCorrect)
     {
-        int level = 1;
         isGenCode = 1;
         int y = MENUY + sizeGenCodeY + 30;
         char varText[EXPRESSION_LENGTH * 2] = "int ";
@@ -264,10 +244,10 @@ void generateCode(bool &isGenCode)
         if (strlen(varText) != 4)
         {
             strcat(varText, ";");
-            outtextxy(TEXT_X + TAB_SIZE, y += LINE_SPACE, varText);
+            outtextxy(TEXT_X, y += LINE_SPACE, varText);
         }
 
-        parseScheme(START, y, level);
+        parseScheme(START, y);
         writeEnd(y);
     }
     else

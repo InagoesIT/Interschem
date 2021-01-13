@@ -6,14 +6,13 @@
 #include "list.h"
 
 #define DRAG_SIZE_X 250
-#define OUTPUT_SIZE_X 400
 #define MENUY 70
-#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
-#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
+#define WINDOWX 1200
+#define WINDOWY 700
 
 void drawPage();
 
-void makeAllVizEqualTo2(node *head)
+void makeAllVizEqualTo2(node *head) //viz has 1 and 0 values now so we make all of them 2 now so we can get it all the same
 {
     if (head && (head->viz==1 or head->viz==0))
     {
@@ -25,7 +24,7 @@ void makeAllVizEqualTo2(node *head)
     }
 }
 
-void makeAllVizFrom2To0(node * head)
+void makeAllVizFrom2To0(node * head) //viz is full of 2 values. we change them to 0 now
 {
     if (head)
     {
@@ -187,6 +186,7 @@ int partitionNodes(int low, int high)
     return (i + 1);
 }
 
+
 void sortArrayByTime(int low, int high)//quick sort
 {
     if (low < high)
@@ -243,7 +243,7 @@ void moveBlock(int x, int y, node *p, bool isNew, int difX, int difY)
                 isFirstTime = false;
             else
             {
-                if (isNew && cursorPos1.y > MENUY + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - OUTPUT_SIZE_X - 200)
+                if (isNew && cursorPos1.y > MENUY + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - 200)
                 {
                     createBlock(p, false);
                     drawPage();
@@ -251,7 +251,7 @@ void moveBlock(int x, int y, node *p, bool isNew, int difX, int difY)
                     p->coordY = cursorPos2.y;
                     createBlock(p, true);
                 }
-                else if (!isNew && cursorPos1.y > MENUY + 10 && cursorPos1.x > DRAG_SIZE_X + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - OUTPUT_SIZE_X - 200)
+                else if (!isNew && cursorPos1.y > MENUY + 10 && cursorPos1.x > DRAG_SIZE_X + 10 && cursorPos1.y < WINDOWY - 100 && cursorPos1.x < WINDOWX - 200)
                 {
                     createBlock(p, false);
                     p->coordX = cursorPos2.x;
@@ -265,12 +265,13 @@ void moveBlock(int x, int y, node *p, bool isNew, int difX, int difY)
     }
     if (!isNew)
         updateTimePriority(p);
-    if (isNew && p->coordX < DRAG_SIZE_X)
+    if ((isNew && strcmp(p->type, "START")) || !isNew)
     {
-        createBlock(p, false);
-        deleteNode(p);
+        setlinestyle(SOLID_LINE, 0, 1);
+        setcolor(THEME[CURRENT_THEME].button_clr);
+        line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY);
+        drawAllBlocks();
     }
-    drawAllBlocks();
     clearmouseclick(WM_LBUTTONUP);
     reinitializeAllViz();
 }
