@@ -12,7 +12,7 @@
 
 void drawPage();
 
-void makeAllVizEqualTo2(node *head)
+void makeAllVizEqualTo2(node *head) //viz has 1 and 0 values now so we make all of them 2 now so we can get it all the same
 {
     if (head && (head->viz==1 or head->viz==0))
     {
@@ -24,7 +24,7 @@ void makeAllVizEqualTo2(node *head)
     }
 }
 
-void makeAllVizFrom2To0(node * head)
+void makeAllVizFrom2To0(node * head) //viz is full of 2 values. we change them to 0 now
 {
     if (head)
     {

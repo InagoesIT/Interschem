@@ -267,7 +267,6 @@ void saveScheme()
     }
     else
         popUpMessage("The scheme is incorrect!");
-    waitForClickToRefresh();
 }
 
 void reinitializeArr()

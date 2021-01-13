@@ -111,8 +111,8 @@ void drawPage()
     createDecision(DECISION_X, DECISION_Y, true, true, "no expression");
 
     setcolor(THEME[CURRENT_THEME].button_clr);
-    line(0, MENUY, WINDOWX, MENUY); // orizontala
-    line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //verticala
+    line(0, MENUY, WINDOWX, MENUY); // horizontal line
+    line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //vertical line
 }
 
 void hoverEffect(int x, int y, char a[20], bool hoverOn)
@@ -277,6 +277,7 @@ void popUpMessage(char a[200])
     setcolor(WHITE);
     outtextxy(WINDOWX/2-textwidth(a)/2, WINDOWY/2-textheight(a)/2, a);
     setbkcolor(THEME[CURRENT_THEME].bck_clr);
+    waitForClickToRefresh();
 }
 
 void popUpCantUseRestore()
@@ -408,13 +409,11 @@ void emptyScheme()
 void popUpAnalyzedWithSucces()
 {
     popUpMessage("Your scheme was analysed with succes!");
-    waitForClickToRefresh();
 }
 
 void popUpIncorrectScheme()
 {
     popUpMessage("The scheme is incorrect!");
-    waitForClickToRefresh();
 }
 
 void run()

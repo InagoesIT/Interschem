@@ -5,7 +5,7 @@ void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1);
 void refresh();
 
 
-bool isInt(char x[EXPRESSION_LENGTH])
+bool isInt(char x[EXPRESSION_LENGTH]) //is this string an int?
 {
     if(x[0]=='0' and x[1]==NULL)
         return 1;
@@ -22,7 +22,7 @@ bool isInt(char x[EXPRESSION_LENGTH])
     return 1;
 }
 
-void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
+void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value) //popUp for input during "run"
 {
     strcpy(var, k->expression);
 
@@ -121,7 +121,7 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
     refresh();
 }
 
-void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH])
+void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH]) //gets variable before "=" from assign
 {
     char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
@@ -129,7 +129,7 @@ void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH])
     strcpy(var, p);
 }
 
-void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & isNull)
+void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & isNull) //for assign or decision
 {
     char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
@@ -143,7 +143,7 @@ void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & i
     strcpy(exp, p);
 }
 
-void getInfix(char s[EXPRESSION_LENGTH], char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)
+void getInfix(char s[EXPRESSION_LENGTH], char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements) //conerts a text expression to an infixated form
 {
     int i=0, j=0, poz=0;
     while(s[i])
@@ -185,7 +185,7 @@ int operatorPriority(char x, char y) // 0 for equal priority, 1 for first argume
 }
 
 void infixToPostfix(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements, int & postfixElements)
-{
+{//convert infix form to postfix form
     char stackS[EXPRESSION_LENGTH]= {' '};
     int i=0, poz=0, j=-1;
     while(infixElements>i)
@@ -231,7 +231,7 @@ void infixToPostfix(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], char postf
     postfixElements=poz;
 }
 
-void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1)
+void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1) //get int value of the number memorized as string
 {
     int negative=1, i=0;
     value1=0;
@@ -245,7 +245,7 @@ void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1)
     value1=value1*negative;
 }
 
-int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on pozition poz
+int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on position "poz"
 {
     int sum=0;
     for(int i=0; i<NR_OF_VARIABLES; ++i)
@@ -284,7 +284,7 @@ int calculateResult(int a, int b, char operand)
         return b/a;
 }
 
-void convertIntToString(int a, char s[EXPRESSION_LENGTH])
+void convertIntToString(int a, char s[EXPRESSION_LENGTH]) //convert an int to a string form
 {
     int i=0, nrDigits=0;
     char aux[EXPRESSION_LENGTH];
@@ -305,7 +305,7 @@ void convertIntToString(int a, char s[EXPRESSION_LENGTH])
         s[nrDigits]=NULL;
 }
 
-void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixElements, int & value)
+void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixElements, int & value) // evaluates expression in postfixed form
 {
     char stackS[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int j=0;
@@ -329,7 +329,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz1=getVariablePosition(op1, state1);
                 if(state1==0 or state1==2)
-                    cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
+                    cout<<"There are variables in this expression that are not defined!";
                 else
                     value1=VARIABLES[poz1].value;
             }
@@ -339,7 +339,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz2=getVariablePosition(op2, state2);
                 if(state2==0 or state2==2)
-                    cout<<"There are variables in this expression that are not defined!!!!!!!!!"; // continue code for menu
+                    cout<<"There are variables in this expression that are not defined!";
                 value2=VARIABLES[poz2].value;
             }
             result=calculateResult(value1, value2, postfix[i][0]);
@@ -361,7 +361,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
     }
 }
 
-void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)
+void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)//if expression starts with + or - put 0 as first element as in "0+..."
 {
     for(int i=infixElements-1; i>=0; --i)
     {
@@ -372,7 +372,7 @@ void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infix
     ++infixElements;
 }
 
-void getExpressionValue(char exp[EXPRESSION_LENGTH], int & value)
+void getExpressionValue(char exp[EXPRESSION_LENGTH], int & value) //gets the value of an expression in "value"
 {
     char s[EXPRESSION_LENGTH], infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH],  postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int infixElements=0, postfixElements=0;
@@ -409,7 +409,7 @@ void getSecondExpressionFromCondition(node * k, char exp2[EXPRESSION_LENGTH], bo
         notCorrect=1;
 }
 
-void getRelationOperator(node * k, char oper[3])
+void getRelationOperator(node * k, char oper[3]) // from a decision expression
 {
     char s[EXPRESSION_LENGTH], c[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
@@ -461,7 +461,7 @@ void getRelationOperator(node * k, char oper[3])
     }
 }
 
-bool conditionIsMet(int a, int b, char oper[3])
+bool conditionIsMet(int a, int b, char oper[3]) //comparison is true
 {
     if(oper[0]=='!')
     {
@@ -501,7 +501,7 @@ bool conditionIsMet(int a, int b, char oper[3])
     }
 }
 
-bool isText(char a[EXPRESSION_LENGTH])
+bool isText(char a[EXPRESSION_LENGTH]) //if the out expression is text and not a variable name
 {
     if(a[0]==NULL)
         return 0;
@@ -595,7 +595,7 @@ bool isLetterOrDigit(char x)
     return 0;
 }
 
-bool variableNameCorrect(char exp[EXPRESSION_LENGTH])
+bool variableNameCorrect(char exp[EXPRESSION_LENGTH]) //is a variable name that is correct in this syntax
 {
     if(exp[0]==NULL)
         return 0;
@@ -614,7 +614,7 @@ bool isADigit(char x)
     return 0;
 }
 
-bool numberCorrect(char exp[EXPRESSION_LENGTH])
+bool numberCorrect(char exp[EXPRESSION_LENGTH])//is a number (int)
 {
     for(int i=0; exp[i]; ++i)
         if(!isADigit(exp[i]))
@@ -629,7 +629,7 @@ bool isSymbol(char x)
     return 0;
 }
 
-bool variablePlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int lgInfix)
+bool variablePlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int lgInfix) //is correct if its not places after a number
 {
     if(i==0)
         return 1;

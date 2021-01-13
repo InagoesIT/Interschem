@@ -18,11 +18,10 @@ bool MOVE_IS_ON=0;
 struct POINTXY
 {
     int x,y;
-} CURRENT_POINT, NEXT_POINT, LAST_GOOD_POINT, P, POINTS_ARRAY[300], CLICK_SIMULATION; //Q[630000];
+} CURRENT_POINT, NEXT_POINT, LAST_GOOD_POINT, P, POINTS_ARRAY[300];
 
-//int DX[8]= {0, -1, -1, -1, 0, 1, 1, 1}, DY[8]= {1, 1, 0, -1, -1, -1, 1};
 int DX[4]= {0, -1, 0, 1}, DY[4]= {1, 0, -1, 0};
-int FOLLOWING_DIR[300], sesesese;
+int FOLLOWING_DIR[300];
 
 void setColors(bool isColored)
 {
@@ -330,7 +329,7 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
         outtextxy(X + DECISION_BASE * coef + 5 + FWidth / 2, y + EQUAL_PART * coef - 10, "F");
     }
 }
-void getConnectionPointFromA(int & xa, int & ya, node * a, bool fromElse)
+void getConnectionPointFromA(int & xa, int & ya, node * a, bool fromElse) //get connection point from father block
 {
     if(strcmp(a->type, "START")==0 or strcmp(a->type, "STOP")==0)
     {
@@ -357,7 +356,7 @@ void getConnectionPointFromA(int & xa, int & ya, node * a, bool fromElse)
     }
 }
 
-void getConnectionPointFromB(int & xb, int & yb, node * b)
+void getConnectionPointFromB(int & xb, int & yb, node * b) //get connection point from son block
 {
     if(strcmp(b->type, "START")==0 or strcmp(b->type, "STOP")==0)
     {
@@ -381,7 +380,7 @@ void getConnectionPointFromB(int & xb, int & yb, node * b)
     }
 }
 
-void createLineFromAToB(int xa, int ya, int xb, int yb, int color)
+void createLineFromAToB(int xa, int ya, int xb, int yb, int color) //create simple line even if it goes over blocks
 {
     setlinestyle(SOLID_LINE, 0, 3);
     setcolor(color);
@@ -399,21 +398,21 @@ bool spaceIsEmpty(int x, int y)//empty AND inside scheme zone
     return 0;
 }
 
-int calculateWantedDirectionX(int xa, int xb)
+int calculateWantedDirectionX(int xa, int xb) //you are in xa and want to go xb
 {
     if(xa<=xb)
         return 3;
     return 1;
 }
 
-int calculateWantedDirectionY(int ya, int yb)
+int calculateWantedDirectionY(int ya, int yb) //you are in ya and want to go yb
 {
     if(ya<=yb)
         return 0;
     return 2;
 }
 
-bool allignedWithBOrFurther(int x, int y, int xb, int yb, int dir)
+bool allignedWithBOrFurther(int x, int y, int xb, int yb, int dir) //is curent point alligned with the destination?
 {
     if(dir==0)
     {
@@ -441,7 +440,7 @@ bool allignedWithBOrFurther(int x, int y, int xb, int yb, int dir)
     }
 }
 
-bool dir2CanBeUsed(int x, int y, int dir)
+bool dir2CanBeUsed(int x, int y, int dir) //we can now use dir
 {
     if(dir==0)
     {
@@ -469,14 +468,14 @@ bool dir2CanBeUsed(int x, int y, int dir)
     }
 }
 
-bool isAEqualToB(int x, int y, int xb, int yb)
+bool isAEqualToB(int x, int y, int xb, int yb) //are points equal
 {
     if(x==xb and y==yb)
         return 1;
     return 0;
 }
 
-void drawLinesFromArray(int nrPoints, int color)
+void drawLinesFromArray(int nrPoints, int color) //draw lines from the points memorised
 {
     for(int i=1; i<nrPoints; ++i)
     {
@@ -485,7 +484,7 @@ void drawLinesFromArray(int nrPoints, int color)
     }
 }
 
-bool repeatingContext(int x, int y, int dir1, int nrPoints)
+bool repeatingContext(int x, int y, int dir1, int nrPoints) //are we in an infinite loop?
 {
     for(int i=0; i<nrPoints; ++i)
         if(POINTS_ARRAY[i].x==x and POINTS_ARRAY[i].y==y and dir1==FOLLOWING_DIR[i])
@@ -493,7 +492,7 @@ bool repeatingContext(int x, int y, int dir1, int nrPoints)
     return 0;
 }
 
-void connectBlocks(node * a, node * b, bool fromElse, int color) //gotta add padding and verify if its possible //this actually works wtf XD
+void connectBlocks(node * a, node * b, bool fromElse, int color) //create graphic line for binding
 {
     int xa, ya, xb, yb;
     bool finished=0, forcedFinish=0;
@@ -626,7 +625,7 @@ void connectBlocks(node * a, node * b, bool fromElse, int color) //gotta add pad
         createLineFromAToB(xa, ya, xb, yb, color);
 }
 
-void createLineFromList(node * k, node * currentNode, int color)
+void createLineFromList(node * k, node * currentNode, int color) //create graphic lines from all the blocks that have k as son from this list
 {
     if(START->wasCreated)
     {
@@ -642,7 +641,7 @@ void createLineFromList(node * k, node * currentNode, int color)
     }
 }
 
-void createLineFromParents(node * k, int color)
+void createLineFromParents(node * k, int color) //create graphic lines from all the blocks that have k as son
 {
     reinitializeAllViz();
     createLineFromList(k, START, color);
@@ -652,7 +651,7 @@ void createLineFromParents(node * k, int color)
             createLineFromList(k, RESTS->n[i], color);
     reinitializeAllViz();
 }
-void createBlock(node *p, bool isColored)
+void createBlock(node *p, bool isColored) //creates block and his lines
 {
     if (strcmp(p->type, "START") == 0)
         createStart(p->coordX, p->coordY, false, isColored);

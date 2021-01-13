@@ -32,7 +32,7 @@
 
 
 
-void getOptionsXY(node * p, int & opx, int & opy)
+void getOptionsXY(node * p, int & opx, int & opy) //get coordinates for upper left corner of the option rectangle
 {
     opy=p->coordY;
     if(p==START or strcmp(p->type, "START")==0)
@@ -469,7 +469,7 @@ void getVariableName(node * & p)
     refresh();
 }
 
-void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, bool fromElse)
+void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, bool fromElse) //click on the son block and the binding is created
 {
     int newBinding=0;
     int secondNodeSelected=0;
