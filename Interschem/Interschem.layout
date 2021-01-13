@@ -12,14 +12,19 @@
 			<Cursor1 position="19782" topLine="618" />
 		</Cursor>
 	</File>
+	<File name="blockOptions.h" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="21585" topLine="24" />
+		</Cursor>
+	</File>
 	<File name="menu.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="28686" topLine="584" />
 		</Cursor>
 	</File>
-	<File name="blockOptions.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="openSaveScheme.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="21585" topLine="651" />
+			<Cursor1 position="9756" topLine="355" />
 		</Cursor>
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -27,14 +32,9 @@
 			<Cursor1 position="2278" topLine="133" />
 		</Cursor>
 	</File>
-	<File name="openSaveScheme.h" open="1" top="1" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9756" topLine="391" />
-		</Cursor>
-	</File>
 	<File name="interpretation.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="20680" topLine="963" />
+			<Cursor1 position="20680" topLine="21" />
 		</Cursor>
 	</File>
 	<File name="blocksMoveDel.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
