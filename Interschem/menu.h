@@ -5,13 +5,13 @@
 #include "blocksMoveDel.h"
 #include "openSaveScheme.h"
 
-#define START_X 70
+#define START_X 50
 #define START_Y 110
-#define STOP_X 70
+#define STOP_X 50
 #define STOP_Y 200
-#define IN_X 80
+#define IN_X 50
 #define IN_Y 300
-#define OUT_X 80
+#define OUT_X 50
 #define OUT_Y 380
 #define ASSIGN_X 50
 #define ASSIGN_Y 480
@@ -19,17 +19,16 @@
 #define DECISION_Y 570
 
 #define MENUY 70
-#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
-#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
+#define WINDOWX 1200
+#define WINDOWY 700
 
 void refresh();
 void moveBlock(int x, int y, node *p, bool isNew);
 void isSchemeCorrect(node * k, bool & isCorrect);
 void analyzeScheme(node * k);
-void generateCode(bool &isGenCode);
 
 const int tileX = WINDOWX / 3;
-const int smallTileX = 170;// textwidth("Background Color") + 50
+const int smallTileX = 170;//width Background Color + 50 ?? textwidth("Background Color") + 50 won't work))))
 const int smallTileY = MENUY * 0.8;
 const int firstSchemeX = (tileX - smallTileX) / 2;
 const int lastSchemeX = smallTileX + firstSchemeX;
@@ -37,14 +36,6 @@ const int lastSchemeY = MENUY + smallTileY * 4;
 const int firstCustomizeX = tileX + (tileX - smallTileX) / 2;
 const int lastCustomizeX = smallTileX + firstCustomizeX;
 const int lastCustomizeY = MENUY + smallTileY * 5;
-const int spaceGenCodeY = 10;
-const int sizeGenCodeY = MENUY * 0.6;
-const int sizeGenCodeX = 146; // textwidth("Generate Code")-96 + 50
-const int spaceGenCodeX = (OUTPUT_SIZE_X  - sizeGenCodeX) / 2;
-const int firstGenCodeX = WINDOWX - OUTPUT_SIZE_X + spaceGenCodeX;
-const int lastGenCodeX = WINDOWX - spaceGenCodeX;
-const int textGenCodeX = firstGenCodeX + 25; // 50/2
-const int textGenCodeY = (sizeGenCodeY - 16)/2 + MENUY + spaceGenCodeY; // 16-- textheight
 const int firstOthersX = tileX*2 + (tileX - smallTileX) / 2;
 const int lastOthersX = smallTileX + firstOthersX;
 const int lastOthersY = MENUY + smallTileY * 3;
@@ -52,6 +43,8 @@ const int lastOthersY = MENUY + smallTileY * 3;
 bool IS_INSIDE_SCHEME;
 bool IS_INSIDE_CUSTOMIZE;
 bool IS_INSIDE_OTHERS;
+
+
 
 bool m[630][950];
 
@@ -106,40 +99,20 @@ void dragNewBlock(int x, int y, char *blockType)
     moveBlock(x, y, v, true, difX, difY);
 }
 
-void drawGenCodeButton()
-{
-    setcolor(DARKGRAY);
-    line(firstGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY, firstGenCodeX, MENUY + spaceGenCodeY); // |
-    line(firstGenCodeX, MENUY + spaceGenCodeY, lastGenCodeX, MENUY + spaceGenCodeY); // --
-    line(lastGenCodeX, MENUY + spaceGenCodeY, lastGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY); // |
-    line(lastGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY, firstGenCodeX, MENUY + spaceGenCodeY + sizeGenCodeY); // --
-
-    setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
-    floodfill(firstGenCodeX + sizeGenCodeX / 2, MENUY + spaceGenCodeY + sizeGenCodeY / 2, DARKGRAY);
-
-    setcolor(WHITE);
-    setbkcolor(THEME[CURRENT_THEME].option_clr);
-    outtextxy(textGenCodeX, textGenCodeY, "Generate Code");
-    setbkcolor(THEME[CURRENT_THEME].bck_clr);
-}
-
 void drawPage()
 {
-    setbkcolor(THEME[CURRENT_THEME].bck_clr);
     //drag and drop blocks
     setlinestyle(0, 0, 3);
-    createStart(START_X, START_Y, true);
-    createStop(STOP_X, STOP_Y, true);
+    createStart(START_X, START_Y, true, true);
+    createStop(STOP_X, STOP_Y, true, true);
     createIn(IN_X, IN_Y, true, true, "no expression");
     createOut(OUT_X, OUT_Y, true, true, "no expression");
     createAssign(ASSIGN_X, ASSIGN_Y, true, true, "no expression");
     createDecision(DECISION_X, DECISION_Y, true, true, "no expression");
 
     setcolor(THEME[CURRENT_THEME].button_clr);
-    line(0, MENUY, WINDOWX, MENUY); // menu
-    line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //drag
-    line(WINDOWX - OUTPUT_SIZE_X, MENUY, WINDOWX - OUTPUT_SIZE_X, WINDOWY); //output
-    drawGenCodeButton();
+    line(0, MENUY, WINDOWX, MENUY); // horizontal line
+    line(DRAG_SIZE_X, MENUY, DRAG_SIZE_X, WINDOWY); //vertical line
 }
 
 void hoverEffect(int x, int y, char a[20], bool hoverOn)
@@ -196,28 +169,31 @@ void drawSubmenuScheme(bool isColored)
     if (isColored)
     {
         setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
-        setcolor(THEME[CURRENT_THEME].option_clr);
+        setcolor(WHITE);
     }
+
     else
     {
-        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
-        setcolor(THEME[CURRENT_THEME].bck_clr);
+        setfillstyle(SOLID_FILL, BLACK);
+        setcolor(BLACK);
     }
 
+    setcolor(THEME[CURRENT_THEME].option_clr);
     floodfill(firstSchemeX + smallTileX / 2, lastSchemeY / 2, DARKGRAY);
 
+    setcolor(THEME[CURRENT_THEME].option_clr);
     line(firstSchemeX, MENUY, firstSchemeX, lastSchemeY); // |
     line(firstSchemeX, lastSchemeY, lastSchemeX, lastSchemeY); // -
     line(lastSchemeX, MENUY, lastSchemeX, lastSchemeY); // |
     line(firstSchemeX, MENUY, lastSchemeX, MENUY); // -
 
+    setcolor(THEME[CURRENT_THEME].bck_clr);
+    line(firstSchemeX, MENUY + smallTileY, lastSchemeX, MENUY + smallTileY);
+    line(firstSchemeX, MENUY + smallTileY * 2, lastSchemeX, MENUY + smallTileY * 2);
+    line(firstSchemeX, MENUY + smallTileY * 3, lastSchemeX, MENUY + smallTileY * 3);
+
     if (isColored)
     {
-        setcolor(THEME[CURRENT_THEME].bck_clr);
-        line(firstSchemeX, MENUY + smallTileY, lastSchemeX, MENUY + smallTileY);
-        line(firstSchemeX, MENUY + smallTileY * 2, lastSchemeX, MENUY + smallTileY * 2);
-        line(firstSchemeX, MENUY + smallTileY * 3, lastSchemeX, MENUY + smallTileY * 3);
-
         setbkcolor(THEME[CURRENT_THEME].option_clr);
         setcolor(WHITE);
         outtextxy(firstSchemeX + (smallTileX - textwidth("Save")) / 2, MENUY + (smallTileY - textheight("Save")) / 2, "Save");
@@ -241,16 +217,19 @@ void drawSubmenuCustomize(bool isColored)
     if (isColored)
     {
         setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
-        setcolor(THEME[CURRENT_THEME].option_clr);
+        setcolor(WHITE);
     }
+
     else
     {
-        setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
-        setcolor(THEME[CURRENT_THEME].bck_clr);
+        setfillstyle(LTSLASH_FILL, BLACK);
+        setcolor(BLACK);
     }
 
+    setcolor(THEME[CURRENT_THEME].option_clr);
     floodfill(firstCustomizeX + smallTileX / 2, lastCustomizeY / 2, DARKGRAY);
 
+    setcolor(THEME[CURRENT_THEME].option_clr);
     line(firstCustomizeX, MENUY, firstCustomizeX, lastCustomizeY); // |
     line(firstCustomizeX, lastCustomizeY, lastCustomizeX, lastCustomizeY); // -
     line(lastCustomizeX, MENUY, lastCustomizeX, lastCustomizeY); // |
@@ -264,9 +243,6 @@ void drawSubmenuCustomize(bool isColored)
 
     if (isColored)
     {
-        setcolor(THEME[CURRENT_THEME].bck_clr);
-        line(firstCustomizeX, MENUY + smallTileY, lastCustomizeX, MENUY + smallTileY);
-
         setbkcolor(THEME[CURRENT_THEME].option_clr);
         setcolor(WHITE);
         outtextxy(firstCustomizeX + (smallTileX - textwidth("Basic")) / 2, MENUY + (smallTileY - textheight("Basic")) / 2, "Basic");
@@ -301,6 +277,7 @@ void popUpMessage(char a[200])
     setcolor(WHITE);
     outtextxy(WINDOWX/2-textwidth(a)/2, WINDOWY/2-textheight(a)/2, a);
     setbkcolor(THEME[CURRENT_THEME].bck_clr);
+    waitForClickToRefresh();
 }
 
 void popUpCantUseRestore()
@@ -432,13 +409,11 @@ void emptyScheme()
 void popUpAnalyzedWithSucces()
 {
     popUpMessage("Your scheme was analysed with succes!");
-    waitForClickToRefresh();
 }
 
 void popUpIncorrectScheme()
 {
     popUpMessage("The scheme is incorrect!");
-    waitForClickToRefresh();
 }
 
 void run()
@@ -630,7 +605,7 @@ void aboutUs()
     waitForClickToRefresh();
 }
 
-void handleMenuClick(int x, int y, bool &isGenCode)
+void handleMenuClick(int x, int y)
 {
     int xx, yy;
     bool isDone = false;
@@ -657,8 +632,6 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
-                        if (isGenCode)
-                            generateCode(isGenCode);
                         isDone=1;
                     }
                     else if (yy < MENUY + smallTileY * 2)
@@ -668,8 +641,6 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
-                        if (isGenCode)
-                            isGenCode = 0;
                         isDone=1;
                     }
                     else if (yy < MENUY + smallTileY * 3)
@@ -679,8 +650,6 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
-                        if (isGenCode)
-                            isGenCode = 0;
                         isDone=1;
                     }
                     else if (yy < MENUY + smallTileY * 4)
@@ -690,8 +659,6 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                         drawPage();
                         drawMenu();
                         drawAllBlocks();
-                        if (isGenCode)
-                            isGenCode = 0;
                         isDone=1;
                     }
                 }
@@ -701,8 +668,6 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                     drawPage();
                     drawMenu();
                     drawAllBlocks();
-                    if (isGenCode)
-                        generateCode(isGenCode);
                     clearmouseclick(WM_LBUTTONDOWN);
                     isDone = true;
                 }
@@ -729,44 +694,32 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                     {
                         CURRENT_THEME=0;
                         refresh();
-                        if (isGenCode)
-                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 2)
                     {
                         CURRENT_THEME=1;
                         refresh();
-                        if (isGenCode)
-                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 3)
                     {
                         CURRENT_THEME=2;
                         refresh();
-                        if (isGenCode)
-                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 4)
                     {
                         CURRENT_THEME=3;
                         refresh();
-                        if (isGenCode)
-                            generateCode(isGenCode);
                     }
                     else if (yy < MENUY + smallTileY * 5)
                     {
                         CURRENT_THEME=4;
                         refresh();
-                        if (isGenCode)
-                            generateCode(isGenCode);
                     }
                 }
                 cleardevice();
                 drawPage();
                 drawMenu();
                 drawAllBlocks();
-                if (isGenCode)
-                    generateCode(isGenCode);
                 isDone = true;
             }
         }
@@ -802,8 +755,6 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                 drawPage();
                 drawMenu();
                 drawAllBlocks();
-                if (isGenCode)
-                    generateCode(isGenCode);
                 isDone = true;
             }
         }

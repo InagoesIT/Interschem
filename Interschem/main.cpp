@@ -1,7 +1,6 @@
 #include <iostream>
 #include <graphics.h>
 #include <winbgim.h>
-#include <conio.h>
 #include <cmath>
 #include <fstream>
 
@@ -9,10 +8,9 @@
 #include "blocks.h"
 #include "interpretation.h"
 #include "blockOptions.h"
-#include "generateCode.h"
 
-#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
-#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
+#define WINDOWX 1200
+#define WINDOWY 700
 #define MENUY 70
 #define DRAG_SIZE_X 250
 
@@ -33,7 +31,6 @@ int main()
     //interface for the app//
     refresh();
     int ok=1;
-    bool isGenCode = 0;
     while(!isDone)
     {
         POINT CursorPosition;
@@ -78,7 +75,7 @@ int main()
             clearmouseclick(WM_LBUTTONDOWN);
 
             if (yy <= MENUY)
-                handleMenuClick(xx, yy, isGenCode);
+                handleMenuClick(xx, yy);
             else
             {
                 reinitializeAllViz();
@@ -96,8 +93,7 @@ int main()
                     if (strcmp(newBlock, "NO") && ((strcmp(newBlock, "START") && START->wasCreated) || (!strcmp(newBlock, "START") && !START->wasCreated)))
                         dragNewBlock(xx, yy, newBlock);
                 }
-                else if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
-                     generateCode(isGenCode);
+                refresh();
             }
         }
         else if (ismouseclick(WM_RBUTTONDOWN))

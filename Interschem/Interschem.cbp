@@ -27,9 +27,6 @@
 		<Unit filename="blocksMoveDel.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="generateCode.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
 		<Unit filename="interpretation.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
@@ -43,6 +40,9 @@
 		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
+			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

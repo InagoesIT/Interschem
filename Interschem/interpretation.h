@@ -1,10 +1,9 @@
 #ifndef INTERPRETATION_H_INCLUDED
 #define INTERPRETATION_H_INCLUDED
 
-void waitForClickToRefresh();
 void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1);
 void refresh();
-void popUpAnalyzedWithSucces();
+
 
 bool isInt(char x[EXPRESSION_LENGTH]) //is this string an int?
 {
