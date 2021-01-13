@@ -3,36 +3,20 @@
 
 #include <iostream>
 
-#define START_HEIGHT 70
-#define START_WIDTH 150
-#define STOP_HEIGHT 70
-#define STOP_WIDTH 150
-#define IN_HEIGHT 50
-#define IN_BIG_BASE 120
-#define IN_SMALL_BASE 60
-#define ASSIGN_HEIGHT 60
-#define ASSIGN_WIDTH 200
-#define DECISION_BASE 150
-#define DECISION_HEIGHT 80
-#define FREE_NODES_SIZE 10
 #define NEW_BLOCKS_SIZE 6
-#define ALL_NODES_TIME_SIZE 100
 
 #define DECISION_WIDTH 150+textwidth("T")+textwidth("F")+20
 
 #define OPTIONS_WIDTH 150
 #define ONE_OPTION_HEIGHT 30
 
-#define WINDOWX 1200
-#define WINDOWY 700
+#define WINDOWX GetSystemMetrics(SM_CXSCREEN)
+#define WINDOWY GetSystemMetrics(SM_CYSCREEN)
 #define MENUY 70
 #define DRAG_SIZE_X 250
 
 
-
-
-
-void getOptionsXY(node * p, int & opx, int & opy) //get coordinates for upper left corner of the option rectangle
+void getOptionsXY(node * p, int & opx, int & opy)
 {
     opy=p->coordY;
     if(p==START or strcmp(p->type, "START")==0)
@@ -469,7 +453,7 @@ void getVariableName(node * & p)
     refresh();
 }
 
-void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, bool fromElse) //click on the son block and the binding is created
+void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, bool fromElse)
 {
     int newBinding=0;
     int secondNodeSelected=0;

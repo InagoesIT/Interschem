@@ -1,11 +1,12 @@
 #ifndef INTERPRETATION_H_INCLUDED
 #define INTERPRETATION_H_INCLUDED
 
+void waitForClickToRefresh();
 void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1);
 void refresh();
+void popUpAnalyzedWithSucces();
 
-
-bool isInt(char x[EXPRESSION_LENGTH]) //is this string an int?
+bool isInt(char x[EXPRESSION_LENGTH])
 {
     if(x[0]=='0' and x[1]==NULL)
         return 1;
@@ -22,7 +23,7 @@ bool isInt(char x[EXPRESSION_LENGTH]) //is this string an int?
     return 1;
 }
 
-void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value) //popUp for input during "run"
+void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value)
 {
     strcpy(var, k->expression);
 
@@ -121,7 +122,7 @@ void getVariableFromIn(node * k, char var[EXPRESSION_LENGTH], int & value) //pop
     refresh();
 }
 
-void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH]) //gets variable before "=" from assign
+void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH])
 {
     char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
@@ -129,7 +130,7 @@ void getVariableFromAssign(node * k, char var[EXPRESSION_LENGTH]) //gets variabl
     strcpy(var, p);
 }
 
-void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & isNull) //for assign or decision
+void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & isNull)
 {
     char s[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
@@ -143,7 +144,7 @@ void getExpressionAfterEqualSign(node * k, char exp[EXPRESSION_LENGTH], bool & i
     strcpy(exp, p);
 }
 
-void getInfix(char s[EXPRESSION_LENGTH], char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements) //conerts a text expression to an infixated form
+void getInfix(char s[EXPRESSION_LENGTH], char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)
 {
     int i=0, j=0, poz=0;
     while(s[i])
@@ -185,7 +186,7 @@ int operatorPriority(char x, char y) // 0 for equal priority, 1 for first argume
 }
 
 void infixToPostfix(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements, int & postfixElements)
-{//convert infix form to postfix form
+{
     char stackS[EXPRESSION_LENGTH]= {' '};
     int i=0, poz=0, j=-1;
     while(infixElements>i)
@@ -231,7 +232,7 @@ void infixToPostfix(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], char postf
     postfixElements=poz;
 }
 
-void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1) //get int value of the number memorized as string
+void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1)
 {
     int negative=1, i=0;
     value1=0;
@@ -245,12 +246,12 @@ void convertStringToInt(char op1[EXPRESSION_LENGTH], int & value1) //get int val
     value1=value1*negative;
 }
 
-int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on position "poz"
+int getVariablePosition(char var[EXPRESSION_LENGTH], int & state)//state=0 no more places, state=1 found, state=2  not found but can be put on pozition poz
 {
     int sum=0;
     for(int i=0; i<NR_OF_VARIABLES; ++i)
     {
-        if(VARIABLES[i].isUsed==1 and strcmp(VARIABLES[i].name, var)==0)
+        if(strcmp(VARIABLES[i].name, var)==0)
         {
             state=1;
             return i;
@@ -284,7 +285,7 @@ int calculateResult(int a, int b, char operand)
         return b/a;
 }
 
-void convertIntToString(int a, char s[EXPRESSION_LENGTH]) //convert an int to a string form
+void convertIntToString(int a, char s[EXPRESSION_LENGTH])
 {
     int i=0, nrDigits=0;
     char aux[EXPRESSION_LENGTH];
@@ -305,7 +306,7 @@ void convertIntToString(int a, char s[EXPRESSION_LENGTH]) //convert an int to a 
         s[nrDigits]=NULL;
 }
 
-void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixElements, int & value) // evaluates expression in postfixed form
+void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixElements, int & value)
 {
     char stackS[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int j=0;
@@ -329,7 +330,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz1=getVariablePosition(op1, state1);
                 if(state1==0 or state1==2)
-                    cout<<"There are variables in this expression that are not defined!";
+                    cout<<"There are variables in this expression that are not defined!!!!!!!!"; // continue code for menu
                 else
                     value1=VARIABLES[poz1].value;
             }
@@ -339,7 +340,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
             {
                 poz2=getVariablePosition(op2, state2);
                 if(state2==0 or state2==2)
-                    cout<<"There are variables in this expression that are not defined!";
+                    cout<<"There are variables in this expression that are not defined!!!!!!!!!"; // continue code for menu
                 value2=VARIABLES[poz2].value;
             }
             result=calculateResult(value1, value2, postfix[i][0]);
@@ -361,7 +362,7 @@ void evaluate(char postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & postfixE
     }
 }
 
-void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)//if expression starts with + or - put 0 as first element as in "0+..."
+void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infixElements)
 {
     for(int i=infixElements-1; i>=0; --i)
     {
@@ -372,7 +373,7 @@ void makeZeroFirst(char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int & infix
     ++infixElements;
 }
 
-void getExpressionValue(char exp[EXPRESSION_LENGTH], int & value) //gets the value of an expression in "value"
+void getExpressionValue(char exp[EXPRESSION_LENGTH], int & value)
 {
     char s[EXPRESSION_LENGTH], infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH],  postfix[EXPRESSION_LENGTH][EXPRESSION_LENGTH];
     int infixElements=0, postfixElements=0;
@@ -409,7 +410,7 @@ void getSecondExpressionFromCondition(node * k, char exp2[EXPRESSION_LENGTH], bo
         notCorrect=1;
 }
 
-void getRelationOperator(node * k, char oper[3]) // from a decision expression
+void getRelationOperator(node * k, char oper[3])
 {
     char s[EXPRESSION_LENGTH], c[EXPRESSION_LENGTH];
     strcpy(s, k->expression);
@@ -461,7 +462,7 @@ void getRelationOperator(node * k, char oper[3]) // from a decision expression
     }
 }
 
-bool conditionIsMet(int a, int b, char oper[3]) //comparison is true
+bool conditionIsMet(int a, int b, char oper[3])
 {
     if(oper[0]=='!')
     {
@@ -501,7 +502,7 @@ bool conditionIsMet(int a, int b, char oper[3]) //comparison is true
     }
 }
 
-bool isText(char a[EXPRESSION_LENGTH]) //if the out expression is text and not a variable name
+bool isText(char a[EXPRESSION_LENGTH])
 {
     if(a[0]==NULL)
         return 0;
@@ -595,7 +596,7 @@ bool isLetterOrDigit(char x)
     return 0;
 }
 
-bool variableNameCorrect(char exp[EXPRESSION_LENGTH]) //is a variable name that is correct in this syntax
+bool variableNameCorrect(char exp[EXPRESSION_LENGTH])
 {
     if(exp[0]==NULL)
         return 0;
@@ -614,7 +615,7 @@ bool isADigit(char x)
     return 0;
 }
 
-bool numberCorrect(char exp[EXPRESSION_LENGTH])//is a number (int)
+bool numberCorrect(char exp[EXPRESSION_LENGTH])
 {
     for(int i=0; exp[i]; ++i)
         if(!isADigit(exp[i]))
@@ -629,7 +630,7 @@ bool isSymbol(char x)
     return 0;
 }
 
-bool variablePlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int lgInfix) //is correct if its not places after a number
+bool variablePlacedCorrect(int i, char infix[EXPRESSION_LENGTH][EXPRESSION_LENGTH], int lgInfix)
 {
     if(i==0)
         return 1;
@@ -860,13 +861,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
         {
             if(k->expression[0]==NULL)
             {
-                //cout<<"In is empty!";
+                cout<<"In is empty!";
                 isCorrect=0;
                 return;
             }
             if(!variableNameCorrect(k->expression))
             {
-                //cout<<"In variable name incorrect!";
+                cout<<"In variable name incorrect!";
                 isCorrect=0;
                 return;
             }
@@ -879,7 +880,7 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 poz=getVariablePosition(var, state);
                 if(state==0)
                 {
-                    //cout<<"No more places for new variables!";
+                    cout<<"No more places for new variables!";
                     isCorrect=0;
                     return;
                 }
@@ -902,14 +903,14 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 getVariableFromOut(k, var);
                 if(k->expression[0]==NULL)
                 {
-                    //cout<<"Out is empty!";
+                    cout<<"Out is empty!";
                     isCorrect=0;
                     return;
                 }
                 poz=getVariablePosition(var, state);
                 if(state==0 or state==2)
                 {
-                    //cout<<"Variable not known!";
+                    cout<<"Variable not known!";
                     isCorrect=0;
                     return;
                 }
@@ -921,27 +922,27 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             int state=0, poz=0;
             if(k->expression[0]=='=')
             {
-                //cout<<"Assign has no 1st expression!";
+                cout<<"Assign has no 1st expression!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]==NULL)
             {
-                //cout<<"Assign empty!";
+                cout<<"Assign empty!";
                 isCorrect=0;
                 return;
             }
             getVariableFromAssign(k, var);
             if(!variableNameCorrect(var))
             {
-                //cout<<"Assign variable incorrect!";
+                cout<<"Assign variable incorrect!";
                 isCorrect=0;
                 return;
             }
             poz=getVariablePosition(var, state);
             if(state==0)
             {
-                //cout<<"No more places for this new variable!";
+                cout<<"No more places for this new variable!";
                 isCorrect=0;
                 return;
             }
@@ -952,13 +953,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 strcpy(s, k->expression);
                 if(!stringHasEqualSign(s))
                 {
-                    //cout<<"Assign expression has no =";
+                    cout<<"Assign expression has no =";
                     isCorrect=0;
                     return;
                 }
                 if(tooManyEqalSigns(s))
                 {
-                    //cout<<"Too many =";
+                    cout<<"Too many =";
                     isCorrect=0;
                     return;
                 }
@@ -966,13 +967,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
                 getExpressionAfterEqualSign(k, exp, isNull);
                 if(isNull==1)
                 {
-                    //cout<<"Assign expression is null!";
+                    cout<<"Assign expression is null!";
                     isCorrect=0;
                     return;
                 }
                 if(!isExpressionCorrect(exp))
                 {
-                    //cout<<"Assign expression is incorrect!";
+                    cout<<"Assign expression is incorrect!";
                     isCorrect=0;
                     return;
                 }
@@ -989,19 +990,19 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             int value1=0, value2=0;
             if(!k->next or !k->nextElse)
             {
-                //cout<<"Decision does not have 2 bindings!";
+                cout<<"Decision does not have 2 bindings!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]==NULL)
             {
-                //cout<<"Decision empty!";
+                cout<<"Decision empty!";
                 isCorrect=0;
                 return;
             }
             if(k->expression[0]=='=' or k->expression[0]=='<' or k->expression[0]=='>' or k->expression[0]=='!')
             {
-                //cout<<"Decision has no 1st expression!";
+                cout<<"Decision has no 1st expression!";
                 isCorrect=0;
                 return;
             }
@@ -1010,13 +1011,13 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             strcpy(s, k->expression);
             if(strchr(s, '!')==NULL and strchr(s, '=')==NULL and strchr(s, '<')==NULL and strchr(s, '>')==NULL)
             {
-                //cout<<"Decision expression has no operator!";
+                cout<<"Decision expression has no operator!";
                 isCorrect=0;
                 return;
             }
             if(!isOperatorCorrect(k->expression))
             {
-                //cout<<"Decision expression has wrong operator!";
+                cout<<"Decision expression has wrong operator!";
                 isCorrect=0;
                 return;
             }
@@ -1024,19 +1025,19 @@ void isSchemeCorrect(node * k, bool & isCorrect) //has to be called like this: r
             getSecondExpressionFromCondition(k, exp2, notCorrect);
             if(notCorrect==1)
             {
-                //cout<<"Decision expression 2 is empty!!!";
+                cout<<"Decision expression 2 is empty!!!";
                 isCorrect=0;
                 return;
             }
             if(!isExpressionCorrect(exp1))
             {
-                //cout<<"Decision expression 1 is not correct!";
+                cout<<"Decision expression 1 is not correct!";
                 isCorrect=0;
                 return;
             }
             else if(!isExpressionCorrect(exp2))
             {
-                //cout<<"Decision expression 2 is not correct!";
+                cout<<"Decision expression 2 is not correct!";
                 isCorrect=0;
                 return;
             }
