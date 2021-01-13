@@ -483,113 +483,114 @@ void connectBlocks(node * a, node * b, bool fromElse, int color) //gotta add pad
     getConnectionPointFromA(xa, ya, a, fromElse);
     getConnectionPointFromB(xb, yb, b);
 
-    int dir2=calculateWantedDirectionX(xa, xb);
-    int dir1=calculateWantedDirectionY(ya+1, yb-2);
-
-    if(!spaceIsEmpty(xa, ya+1) or !spaceIsEmpty(xb, yb-2))
-    {
-        createLineFromAToB(xa, ya, xb, yb, color);
-        finished=1;
-        forcedFinish=1;
-    }
-
-    CURRENT_POINT.x=xa;
-    CURRENT_POINT.y=ya+1;
-    LAST_GOOD_POINT.x=xa;
-    LAST_GOOD_POINT.y=ya+1;
-    NEXT_POINT.x=CURRENT_POINT.x+DX[dir1];
-    NEXT_POINT.y=CURRENT_POINT.y+DY[dir1];
-    P.x=xa;
-    P.y=ya+1;
-    POINTS_ARRAY[0]=P;
-    FOLLOWING_DIR[0]=dir1;
-    int nrPoints=1;
-    int sasa=0;
-    while(!finished)
-    {
-        if(CURRENT_POINT.x==b->coordX and CURRENT_POINT.y==b->coordY-2)
-        {
-            finished=0;
-        }
-        while(spaceIsEmpty(NEXT_POINT.x, NEXT_POINT.y) and
-                !(allignedWithBOrFurther(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb, dir1) and
-                  (dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2) or isAEqualToB(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb-2))))
-        {
-            if(dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2))
-            {
-                LAST_GOOD_POINT.x=CURRENT_POINT.x;
-                LAST_GOOD_POINT.y=CURRENT_POINT.y;
-            }
-            CURRENT_POINT.x=NEXT_POINT.x;
-            CURRENT_POINT.y=NEXT_POINT.y;
-            NEXT_POINT.x=CURRENT_POINT.x+DX[dir1];
-            NEXT_POINT.y=CURRENT_POINT.y+DY[dir1];
-        }
-        if(!spaceIsEmpty(NEXT_POINT.x,NEXT_POINT.y))
-        {
-                if(!dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2))
-                {
-                    if(dir2==0 or dir2==1)
-                        dir2+=2;
-                    else
-                        dir2-=2;
-                }
-                dir1=dir2;
-                if(dir2==0 or dir2==2)//on y axis
-                    dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
-                else
-                    dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
-        }
-        else if((allignedWithBOrFurther(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb, dir1) and dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2)))
-        {
-            dir1=dir2;
-            if(dir2==0 or dir2==2)//on y axis
-                dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
-            else
-                dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
-        }
-        if(isAEqualToB(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb-2) or isAEqualToB(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb-3))
-            finished=1;
-        int dir1Copy=dir1;
-        if((CURRENT_POINT.x!=POINTS_ARRAY[nrPoints-1].x or CURRENT_POINT.y!=POINTS_ARRAY[nrPoints-1].y) and repeatingContext(CURRENT_POINT.x, CURRENT_POINT.y, dir1, nrPoints))
-        {
-            if(dir1==0)
-            {
-                dir1+=2;
-                dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
-            }
-            else if(dir1==1)
-            {
-                dir1+=2;
-                dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
-            }
-            else if(dir1==2)
-            {
-                dir1-=2;
-                dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
-            }
-            else
-            {
-                dir1-=2;
-                dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
-            }
-        }
-        NEXT_POINT.x=CURRENT_POINT.x+DX[dir1];
-        NEXT_POINT.y=CURRENT_POINT.y+DY[dir1];
-        if(CURRENT_POINT.x!=POINTS_ARRAY[nrPoints-1].x or CURRENT_POINT.y!=POINTS_ARRAY[nrPoints-1].y)
-        {
-            P.x=CURRENT_POINT.x;
-            P.y=CURRENT_POINT.y;
-
-            POINTS_ARRAY[nrPoints]=P;
-            FOLLOWING_DIR[nrPoints]=dir1Copy;
-            ++nrPoints;
-        }
-    }
-    if(forcedFinish==0)
-        drawLinesFromArray(nrPoints, color);
-    else
-        createLineFromAToB(xa, ya, xb, yb, color);
+    createLineFromAToB(xa, ya, xb, yb, color);
+//    int dir2=calculateWantedDirectionX(xa, xb);
+//    int dir1=calculateWantedDirectionY(ya+1, yb-2);
+//
+//    if(!spaceIsEmpty(xa, ya+1) or !spaceIsEmpty(xb, yb-2))
+//    {
+//        createLineFromAToB(xa, ya, xb, yb, color);
+//        finished=1;
+//        forcedFinish=1;
+//    }
+//
+//    CURRENT_POINT.x=xa;
+//    CURRENT_POINT.y=ya+1;
+//    LAST_GOOD_POINT.x=xa;
+//    LAST_GOOD_POINT.y=ya+1;
+//    NEXT_POINT.x=CURRENT_POINT.x+DX[dir1];
+//    NEXT_POINT.y=CURRENT_POINT.y+DY[dir1];
+//    P.x=xa;
+//    P.y=ya+1;
+//    POINTS_ARRAY[0]=P;
+//    FOLLOWING_DIR[0]=dir1;
+//    int nrPoints=1;
+//    int sasa=0;
+//    while(!finished)
+//    {
+//        if(CURRENT_POINT.x==b->coordX and CURRENT_POINT.y==b->coordY-2)
+//        {
+//            finished=0;
+//        }
+//        while(spaceIsEmpty(NEXT_POINT.x, NEXT_POINT.y) and
+//                !(allignedWithBOrFurther(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb, dir1) and
+//                  (dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2) or isAEqualToB(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb-2))))
+//        {
+//            if(dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2))
+//            {
+//                LAST_GOOD_POINT.x=CURRENT_POINT.x;
+//                LAST_GOOD_POINT.y=CURRENT_POINT.y;
+//            }
+//            CURRENT_POINT.x=NEXT_POINT.x;
+//            CURRENT_POINT.y=NEXT_POINT.y;
+//            NEXT_POINT.x=CURRENT_POINT.x+DX[dir1];
+//            NEXT_POINT.y=CURRENT_POINT.y+DY[dir1];
+//        }
+//        if(!spaceIsEmpty(NEXT_POINT.x,NEXT_POINT.y))
+//        {
+//                if(!dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2))
+//                {
+//                    if(dir2==0 or dir2==1)
+//                        dir2+=2;
+//                    else
+//                        dir2-=2;
+//                }
+//                dir1=dir2;
+//                if(dir2==0 or dir2==2)//on y axis
+//                    dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
+//                else
+//                    dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
+//        }
+//        else if((allignedWithBOrFurther(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb, dir1) and dir2CanBeUsed(CURRENT_POINT.x, CURRENT_POINT.y, dir2)))
+//        {
+//            dir1=dir2;
+//            if(dir2==0 or dir2==2)//on y axis
+//                dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
+//            else
+//                dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
+//        }
+//        if(isAEqualToB(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb-2) or isAEqualToB(CURRENT_POINT.x, CURRENT_POINT.y, xb, yb-3))
+//            finished=1;
+//        int dir1Copy=dir1;
+//        if((CURRENT_POINT.x!=POINTS_ARRAY[nrPoints-1].x or CURRENT_POINT.y!=POINTS_ARRAY[nrPoints-1].y) and repeatingContext(CURRENT_POINT.x, CURRENT_POINT.y, dir1, nrPoints))
+//        {
+//            if(dir1==0)
+//            {
+//                dir1+=2;
+//                dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
+//            }
+//            else if(dir1==1)
+//            {
+//                dir1+=2;
+//                dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
+//            }
+//            else if(dir1==2)
+//            {
+//                dir1-=2;
+//                dir2=calculateWantedDirectionX(CURRENT_POINT.x, xb);
+//            }
+//            else
+//            {
+//                dir1-=2;
+//                dir2=calculateWantedDirectionY(CURRENT_POINT.y, yb-2);
+//            }
+//        }
+//        NEXT_POINT.x=CURRENT_POINT.x+DX[dir1];
+//        NEXT_POINT.y=CURRENT_POINT.y+DY[dir1];
+//        if(CURRENT_POINT.x!=POINTS_ARRAY[nrPoints-1].x or CURRENT_POINT.y!=POINTS_ARRAY[nrPoints-1].y)
+//        {
+//            P.x=CURRENT_POINT.x;
+//            P.y=CURRENT_POINT.y;
+//
+//            POINTS_ARRAY[nrPoints]=P;
+//            FOLLOWING_DIR[nrPoints]=dir1Copy;
+//            ++nrPoints;
+//        }
+//    }
+//    if(forcedFinish==0)
+//        drawLinesFromArray(nrPoints, color);
+//    else
+//        createLineFromAToB(xa, ya, xb, yb, color);
 }
 
 void createLineFromList(node * k, node * currentNode, int color)
