@@ -3,20 +3,21 @@
 
 #include <iostream>
 
-#define START_HEIGHT 70
-#define START_WIDTH 150
-#define STOP_HEIGHT 70
-#define STOP_WIDTH 150
-#define IN_HEIGHT 50
-#define IN_BIG_BASE 120
-#define IN_SMALL_BASE 60
-#define ASSIGN_HEIGHT 60
-#define ASSIGN_WIDTH 200
-#define DECISION_BASE 150
-#define DECISION_HEIGHT 80
+#define START_HEIGHT 49
+#define START_WIDTH 105
+#define STOP_HEIGHT 49
+#define STOP_WIDTH 105
+#define IN_HEIGHT 35
+#define IN_BIG_BASE 84
+#define IN_SMALL_BASE 64
+#define LATERAL_PART 35
+#define ASSIGN_HEIGHT 42
+#define ASSIGN_WIDTH 140
+#define DECISION_BASE 105
+#define DECISION_HEIGHT 56
 #define FREE_NODES_SIZE 20
 #define NEW_BLOCKS_SIZE 6
-#define ALL_NODES_TIME_SIZE 100
+#define ALL_NODES_TIME_SIZE 80
 #define EXPRESSION_LENGTH 50
 #define NR_OF_THEMES 5
 #define NR_OF_VARIABLES 20
@@ -32,7 +33,6 @@ struct Theme_Color_Struct
     int option_clr;
 } THEME[NR_OF_THEMES]; //1 for dark 0 for colorful
 int CURRENT_THEME=0;
-
 
 struct VarSub
 {
@@ -433,7 +433,7 @@ void writeNode(node * n)
         cout<<'\n';
     }
     else
-        cout<<"There is no selected node";
+        cout<<"There is no selected node" << endl;
 }
 
 void copyNodeInLastDeleted(node * k)
