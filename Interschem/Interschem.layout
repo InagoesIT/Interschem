@@ -2,69 +2,49 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="openSaveScheme.h" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11694" topLine="383" />
-		</Cursor>
-	</File>
-	<File name="list.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="403" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="generateCode.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9278" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="15" />
-			<Collapse line="22" />
-			<Collapse line="33" />
-			<Collapse line="40" />
-			<Collapse line="65" />
-			<Collapse line="90" />
-			<Collapse line="111" />
-			<Collapse line="122" />
-			<Collapse line="142" />
-			<Collapse line="162" />
-			<Collapse line="187" />
-			<Collapse line="200" />
-			<Collapse line="210" />
-			<Collapse line="218" />
-			<Collapse line="226" />
-			<Collapse line="232" />
-			<Collapse line="259" />
-			<Collapse line="286" />
-		</Folding>
-	</File>
-	<File name="interpretation.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="20881" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="blocksMoveDel.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="322" topLine="142" />
-		</Cursor>
-	</File>
-	<File name="menu.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="26370" topLine="641" />
-		</Cursor>
-	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2258" topLine="30" />
+			<Cursor1 position="405" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="blocks.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="blockOptions.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7027" topLine="185" />
+			<Cursor1 position="11855" topLine="251" />
 		</Cursor>
 	</File>
-	<File name="blockOptions.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="blocks.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11727" topLine="0" />
+			<Cursor1 position="18548" topLine="601" />
+		</Cursor>
+	</File>
+	<File name="blocksMoveDel.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5670" topLine="202" />
+		</Cursor>
+	</File>
+	<File name="generateCode.h" open="1" top="1" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="201" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="interpretation.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="98" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="openSaveScheme.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11296" topLine="366" />
+		</Cursor>
+	</File>
+	<File name="list.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="320" topLine="90" />
+		</Cursor>
+	</File>
+	<File name="menu.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3242" topLine="95" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

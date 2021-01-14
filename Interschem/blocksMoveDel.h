@@ -13,6 +13,7 @@
 
 void drawPage();
 
+
 void makeAllVizEqualTo2(node *head)
 {
     if (head && (head->viz==1 or head->viz==0))

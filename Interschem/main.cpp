@@ -84,11 +84,11 @@ int main()
                 selectCorrectNode(xx, yy, p, behind);
 
                 if(p)
-                    {
-                        int difX=xx-p->coordX;
-                        int difY=yy-p->coordY;
-                        moveBlock(xx, yy, p, false, difX, difY);
-                    }
+                {
+                    int difX=xx-p->coordX;
+                    int difY=yy-p->coordY;
+                    moveBlock(xx, yy, p, false, difX, difY);
+                }
                 else if (xx < DRAG_SIZE_X && yy > MENUY)
                 {
                     strcpy(newBlock, selectedNewBlock(xx, yy));
@@ -96,10 +96,13 @@ int main()
                         dragNewBlock(xx, yy, newBlock);
                 }
                 else if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
-                    generateCode(isGenCode);
+                {
+                    isGenCode=1;
+                    IS_OUTPUT_ON=0;
+                }
                 refresh();
-                if (isGenCode)
-                    generateCode(isGenCode);
+                if(isGenCode==1) generateCode(isGenCode);
+                else if(IS_OUTPUT_ON) outputNow(IS_OUTPUT_ON);
             }
         }
         else if (ismouseclick(WM_RBUTTONDOWN))

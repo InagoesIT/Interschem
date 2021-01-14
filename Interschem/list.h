@@ -22,6 +22,7 @@
 #define NR_OF_THEMES 5
 #define NR_OF_VARIABLES 20
 
+int bibibi=0;
 void reinitializeAllViz();
 void refresh();
 
@@ -31,7 +32,7 @@ struct Theme_Color_Struct
     int block_clr;
     int button_clr;
     int option_clr;
-} THEME[NR_OF_THEMES]; //1 for dark 0 for colorful
+} THEME[NR_OF_THEMES];
 int CURRENT_THEME=0;
 
 struct VarSub
@@ -521,14 +522,27 @@ void deleteNode(node * & k)
     LAST_DELELED_NODE.canBeUsed=1;
 }
 
+void makeLocationUniform(node * currentNode, int loc)
+{
+    currentNode->location=loc;
+    currentNode->viz=1;
+    if(currentNode->next and currentNode->next->viz==0)
+        makeLocationUniform(currentNode->next, loc);
+    if(currentNode->nextElse and currentNode->nextElse->viz==0)
+        makeLocationUniform(currentNode->nextElse, loc);
+}
+
 void makeBindingAB(node * & a, node * & b, bool fromElse)
 {
+    ++bibibi;
     if(fromElse==0 and a->next and a->next!=b)
     {
         for(int i=0; i<FREE_NODES_SIZE; ++i)
             if(RESTS->n[i]==NULL)
             {
                 RESTS->n[i]=a->next;
+                reinitializeAllViz();
+                makeLocationUniform(RESTS->n[i], 2);
                 i=FREE_NODES_SIZE+1;
             }
     }
@@ -538,6 +552,8 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
             if(RESTS->n[i]==NULL)
             {
                 RESTS->n[i]=a->nextElse;
+                reinitializeAllViz();
+                makeLocationUniform(RESTS->n[i], 2);
                 i=FREE_NODES_SIZE+1;
             }
     }
@@ -555,7 +571,7 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
         if(RESTS->n[i] and RESTS->n[i]==b)
             RESTS->n[i]=NULL;
     }
-    if(a->location==1)
+    if(a->location==1 and b->location!=0)
     {
         for(int i=0; i<FREE_NODES_SIZE; ++i)
         {
@@ -566,20 +582,44 @@ void makeBindingAB(node * & a, node * & b, bool fromElse)
                     if(RESTS->n[j]==NULL)
                     {
                         RESTS->n[j]=a;
-                        a->location=3;
+                        a->location=2;
                         j=FREE_NODES_SIZE+1;
                         i=FREE_NODES_SIZE+1;
+                        reinitializeAllViz();
+                        makeLocationUniform(a, a->location);
                     }
             }
         }
     }
-
-    b->location=a->location;
+    else if(a->location==2 and b->location!=0)
+    {
+        for(int i=0; i<FREE_NODES_SIZE; ++i)
+            if(RESTS->n[i]==NULL)
+            {
+                RESTS->n[i]=a;
+                a->location=2;
+                i=FREE_NODES_SIZE+1;
+                reinitializeAllViz();
+                makeLocationUniform(a, a->location);
+            }
+    }
+    else //they are part of the main scheme now
+    {
+        for(int j=0; j<FREE_NODES_SIZE; ++j)
+            if(RESTS->n[j]==a)
+            {
+                RESTS->n[j]=NULL;
+                a->location=0;
+            }
+        reinitializeAllViz();
+        makeLocationUniform(START, 0);
+    }
+    reinitializeAllViz();
 }
 
 void restoreVariables()
 {
-    for(int i=0;i<NR_OF_VARIABLES;++i)
+    for(int i=0; i<NR_OF_VARIABLES; ++i)
         VARIABLES[i].isUsed=0;
 }
 #endif // LIST_H_INCLUDED
