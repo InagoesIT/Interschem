@@ -1,7 +1,7 @@
 #ifndef BLOCKS_H_INCLUDED
 #define BLOCKS_H_INCLUDED
 
-#define AUX_COLOR YELLOW
+#define AUX_COLOR LIGHTGRAY
 #define LINE_COLOR WHITE
 #define IN_SMALL_BASE_DIFF 20
 #define MATRIXX 700
@@ -139,6 +139,19 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[EXPRES
     line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
     line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
 
+    if (!isSmall)
+    {
+        if (strcmp(expression, "no expression") && strlen(expression))
+            strcpy(text, expression);
+        else
+            strcpy(text, "<var>");
+    }
+    else
+        strcpy(text, "Input");
+
+    int textWidth = textwidth(text);
+    int textHeight = textheight(text);
+
     if (isColored)
     {
         floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
@@ -149,25 +162,16 @@ void createIn(int x, int y, bool isSmall, bool isColored, char expression[EXPRES
         line(x + IN_BIG_BASE - IN_SMALL_BASE_DIFF, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y + LATERAL_PART);
         line(x + IN_SMALL_BASE_DIFF, y + LATERAL_PART, x, y);
 
-        if (!isSmall)
-        {
-            if (strcmp(expression, "no expression") && strlen(expression))
-                strcpy(text, expression);
-            else
-                strcpy(text, "<var>");
-        }
-        else
-            strcpy(text, "Input");
-
-        int textWidth = textwidth(text);
-        int textHeight = textheight(text);
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
         outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, text);
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
+    {
         floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, THEME[CURRENT_THEME].bck_clr);
+        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, text);
+    }
 }
 
 void createOut(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
@@ -181,6 +185,19 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[EXPRE
     line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
     line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
 
+    if (!isSmall)
+    {
+        if (strcmp(expression, "no expression") && strlen(expression))
+            strcpy(text, expression);
+        else
+            strcpy(text, "<var>");
+    }
+    else
+        strcpy(text, "Output");
+
+    int textWidth = textwidth(text);
+    int textHeight = textheight(text);
+
     if (isColored)
     {
         floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, AUX_COLOR);
@@ -191,25 +208,16 @@ void createOut(int x, int y, bool isSmall, bool isColored, char expression[EXPRE
         line(x + IN_BIG_BASE, y + LATERAL_PART, x, y + LATERAL_PART);
         line(x, y + LATERAL_PART, x + IN_SMALL_BASE_DIFF, y);
 
-        if (!isSmall)
-        {
-            if (strcmp(expression, "no expression") && strlen(expression))
-                strcpy(text, expression);
-            else
-                strcpy(text, "<var>");
-        }
-        else
-            strcpy(text, "Output");
-
-        int textWidth = textwidth(text);
-        int textHeight = textheight(text);
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
         outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, text);
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
+    {
         floodfill(x + IN_BIG_BASE / 2, y + LATERAL_PART / 2, THEME[CURRENT_THEME].bck_clr);
+        outtextxy(x + (IN_BIG_BASE - textWidth) / 2, y + (LATERAL_PART - textHeight) / 2, text);
+    }
 }
 
 void createAssign(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
@@ -220,31 +228,35 @@ void createAssign(int x, int y, bool isSmall, bool isColored, char expression[EX
 
     rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
 
+    if (!isSmall)
+    {
+        if (strcmp(expression, "no expression") && strlen(expression))
+            strcpy(text, expression);
+        else
+            strcpy(text, "<var> <- exp");
+    }
+    else
+        strcpy(text, "Assign");
+
+    int textWidth = textwidth(text);
+    int textHeight = textheight(text);
+
     if (isColored)
     {
         floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, AUX_COLOR);
         setcolor(LINE_COLOR);
         rectangle(x, y, x + ASSIGN_WIDTH, y + ASSIGN_HEIGHT);
 
-        if (!isSmall)
-        {
-            if (strcmp(expression, "no expression") && strlen(expression))
-                strcpy(text, expression);
-            else
-                strcpy(text, "<var> <- exp");
-        }
-        else
-            strcpy(text, "Assign");
-
-        int textWidth = textwidth(text);
-        int textHeight = textheight(text);
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
         outtextxy(x + (ASSIGN_WIDTH - textWidth) / 2, y + (ASSIGN_HEIGHT - textHeight) / 2, text);
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
     else
+    {
         floodfill(x + ASSIGN_WIDTH / 2, y + ASSIGN_HEIGHT / 2, THEME[CURRENT_THEME].bck_clr);
+        outtextxy(x + (ASSIGN_WIDTH - textWidth) / 2, y + (ASSIGN_HEIGHT - textHeight) / 2, text);
+    }
 }
 
 void createDecision(int x, int y, bool isSmall, bool isColored, char expression[EXPRESSION_LENGTH])
@@ -261,6 +273,19 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
     line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
     line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
 
+    if (!isSmall)
+    {
+        if (strcmp(expression, "no expression") && strlen(expression))
+            strcpy(text, expression);
+        else
+            strcpy(text, "<var> ? <var>");
+    }
+    else
+        strcpy(text, "Decision");
+
+    int textWidth = textwidth(text);
+    int textHeight = textheight(text);
+
     if (isColored)
     {
         floodfill(X + DECISION_BASE / 2, y + EQUAL_PART / 2, AUX_COLOR);
@@ -268,20 +293,6 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
         line(X + DECISION_BASE / 2, y, X + DECISION_BASE, y + EQUAL_PART);
         line(X + DECISION_BASE, y + EQUAL_PART, X, y + EQUAL_PART);
         line(X, y + EQUAL_PART, X + DECISION_BASE / 2, y);
-
-
-        if (!isSmall)
-        {
-            if (strcmp(expression, "no expression") && strlen(expression))
-                strcpy(text, expression);
-            else
-                strcpy(text, "<var> ? <var>");
-        }
-        else
-            strcpy(text, "Decision");
-
-        int textWidth = textwidth(text);
-        int textHeight = textheight(text);
 
         setbkcolor(THEME[CURRENT_THEME].block_clr);
         setcolor(LINE_COLOR);
@@ -302,13 +313,6 @@ void createDecision(int x, int y, bool isSmall, bool isColored, char expression[
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
         setcolor(THEME[CURRENT_THEME].bck_clr);
 
-        if (strcmp(expression, "no expression") && strlen(expression))
-            strcpy(text, expression);
-        else
-            strcpy(text, "<var> ? <var>");
-
-        int textWidth = textwidth(text);
-        int textHeight = textheight(text);
         outtextxy(X + (DECISION_BASE - textWidth) / 2, y + (EQUAL_PART - textHeight) / 2 + 20, text);
     }
 }

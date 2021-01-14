@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1610522829 source:e:\uni\ip\project\interschem\main.cpp
+1610647080 source:e:\uni\ip\project\interschem\main.cpp
 	<iostream>
 	<graphics.h>
 	<winbgim.h>
@@ -12,7 +12,7 @@
 	"blockOptions.h"
 	"generateCode.h"
 
-1610523184 e:\uni\ip\project\interschem\blocks.h
+1610651906 e:\uni\ip\project\interschem\blocks.h
 
 1610273250 source:e:\ip\final project\interschem\interschem\main.cpp
 	<iostream>
@@ -30,22 +30,22 @@
 1610224595 e:\ip\final project\interschem\interschem\list.h
 	<iostream>
 
-1610522829 e:\uni\ip\project\interschem\list.h
+1610649367 e:\uni\ip\project\interschem\list.h
 	<iostream>
 
-1610522829 e:\uni\ip\project\interschem\blocksmovedel.h
+1610572006 e:\uni\ip\project\interschem\blocksmovedel.h
 	"blocks.h"
 	"menu.h"
 	"list.h"
 
-1610522829 e:\uni\ip\project\interschem\menu.h
+1610654486 e:\uni\ip\project\interschem\menu.h
 	"list.h"
 	"blocksMoveDel.h"
 	"openSaveScheme.h"
 
-1610522829 e:\uni\ip\project\interschem\interpretation.h
+1610647280 e:\uni\ip\project\interschem\interpretation.h
 
-1610522829 e:\uni\ip\project\interschem\opensavescheme.h
+1610655177 e:\uni\ip\project\interschem\opensavescheme.h
 	"blocks.h"
 	"blocksMoveDel.h"
 	"menu.h"
@@ -65,7 +65,7 @@
 1610230541 e:\ip\final project\interschem\interschem\blockoptions.h
 	<iostream>
 
-1610522829 e:\uni\ip\project\interschem\blockoptions.h
+1610572006 e:\uni\ip\project\interschem\blockoptions.h
 	<iostream>
 
 1610274365 e:\ip\final project\interschem\interschem\opensavescheme.h
@@ -73,6 +73,6 @@
 	"blocksMoveDel.h"
 	"menu.h"
 
-1610522829 e:\uni\ip\project\interschem\generatecode.h
+1610653730 e:\uni\ip\project\interschem\generatecode.h
 	"menu.h"
 

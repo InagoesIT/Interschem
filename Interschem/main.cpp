@@ -32,11 +32,9 @@ int main()
 
     //interface for the app//
     refresh();
-    int ok=1;
     bool isGenCode = 0;
     while(!isDone)
     {
-        bool ok = 0;
         POINT CursorPosition;
         CursorPosition.x=mousex();
         CursorPosition.y=mousey();
@@ -98,9 +96,9 @@ int main()
                         dragNewBlock(xx, yy, newBlock);
                 }
                 else if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
-                    ok = 1;
+                    generateCode(isGenCode);
                 refresh();
-                if (ok)
+                if (isGenCode)
                     generateCode(isGenCode);
             }
         }

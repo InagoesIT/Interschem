@@ -5,18 +5,13 @@
 #include "blocksMoveDel.h"
 #include "openSaveScheme.h"
 
+#define SPACE_BETWEEN 55
 #define START_X 70
-#define START_Y 110
 #define STOP_X 70
-#define STOP_Y 200
 #define IN_X 80
-#define IN_Y 300
 #define OUT_X 80
-#define OUT_Y 380
 #define ASSIGN_X 50
-#define ASSIGN_Y 480
 #define DECISION_X 50
-#define DECISION_Y 570
 
 #define MENUY 70
 #define WINDOWX GetSystemMetrics(SM_CXSCREEN)
@@ -27,6 +22,13 @@ void moveBlock(int x, int y, node *p, bool isNew);
 void isSchemeCorrect(node * k, bool & isCorrect);
 void analyzeScheme(node * k);
 void generateCode(bool &isGenCode);
+
+const int START_Y = (WINDOWY - MENUY - SPACE_BETWEEN * 5 - 290) / 2 + MENUY - 15;
+const int STOP_Y = START_Y + SPACE_BETWEEN + START_HEIGHT;
+const int IN_Y = STOP_Y + SPACE_BETWEEN + STOP_HEIGHT;
+const int OUT_Y = IN_Y + SPACE_BETWEEN + IN_HEIGHT;
+const int ASSIGN_Y = OUT_Y + SPACE_BETWEEN + IN_HEIGHT;
+const int DECISION_Y = ASSIGN_Y + SPACE_BETWEEN + ASSIGN_HEIGHT;
 
 const int tileX = WINDOWX / 3;
 const int smallTileX = 170;// textwidth("Background Color") + 50
@@ -462,7 +464,7 @@ void run()
 void drawSubmenuOthers(bool isColored)
 {
     setlinestyle(0, 0, 1);
-    setcolor(DARKGRAY);
+    setcolor(LIGHTGRAY);
 
     line(firstOthersX, MENUY, firstOthersX, lastOthersY); // |
     line(firstOthersX, lastOthersY, lastOthersX, lastOthersY); // -
@@ -470,21 +472,14 @@ void drawSubmenuOthers(bool isColored)
     line(firstOthersX, MENUY, lastOthersX, MENUY); // -
 
     if (isColored)
-    {
         setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].option_clr);
-        setcolor(WHITE);
-    }
 
     else
-    {
         setfillstyle(LTSLASH_FILL, BLACK);
-        setcolor(BLACK);
-    }
 
     setcolor(THEME[CURRENT_THEME].option_clr);
-    floodfill(firstOthersX + smallTileX / 2, lastOthersY / 2, DARKGRAY);
+    floodfill(firstOthersX + smallTileX / 2, lastOthersY / 2, LIGHTGRAY);
 
-    setcolor(THEME[CURRENT_THEME].option_clr);
     line(firstOthersX, MENUY, firstOthersX, lastOthersY); // |
     line(firstOthersX, lastOthersY, lastOthersX, lastOthersY); // -
     line(lastOthersX, MENUY, lastOthersX, lastOthersY); // |
@@ -652,7 +647,7 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                     Beep(400, 100);
                     if (yy < MENUY + smallTileY)
                     {
-                        saveScheme();
+                        saveScheme(isGenCode);
                         cleardevice();
                         drawPage();
                         drawMenu();

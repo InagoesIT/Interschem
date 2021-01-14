@@ -19,6 +19,17 @@ struct declaredVars
 
 }DECLARED_VARS;
 
+void closeParantesisInFile(int nr)
+{
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (int i = 0; i < nr; i++)
+        codeFile << "   ";
+    codeFile << "}";
+    codeFile.close();
+}
+
 void clearOutput()
 {
     setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
@@ -28,6 +39,7 @@ void clearOutput()
 
 void writeWhile(char condition[EXPRESSION_LENGTH], int &y, int level)
 {
+    int i;
     char text[EXPRESSION_LENGTH + 20] = "";
     strcat(text, "while (");
     strcat(text, condition);
@@ -37,10 +49,22 @@ void writeWhile(char condition[EXPRESSION_LENGTH], int &y, int level)
         x = TEXT_X + TAB_SIZE * level;
     outtextxy(x, y += LINE_SPACE, text);
     outtextxy(x, y += LINE_SPACE, "{");
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << text << endl;
+    for (i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << "{";
+    codeFile.close();
 }
 
 void writeIf(char condition[EXPRESSION_LENGTH], int &y, int level)
 {
+    int i;
     char text[EXPRESSION_LENGTH + 20] = "";
     strcat(text, "if (");
     strcat(text, condition);
@@ -50,21 +74,49 @@ void writeIf(char condition[EXPRESSION_LENGTH], int &y, int level)
         x = TEXT_X + TAB_SIZE * level;
     outtextxy(x, y += LINE_SPACE, text);
     outtextxy(x, y += LINE_SPACE, "{");
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << text << endl;
+    for (i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << "{";
+    codeFile.close();
 }
 
 void writeElse(int &y, int level)
 {
+    int i;
     int x = TEXT_X;
     if (level)
         x = TEXT_X + TAB_SIZE * level;
     outtextxy(x, y += LINE_SPACE, "else");
     outtextxy(x, y += LINE_SPACE, "{");
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << "else" << endl;
+    for (i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << "{";
+    codeFile.close();
 }
 
 void writeEnd(int &y)
 {
     outtextxy(TEXT_X + TAB_SIZE, y += LINE_SPACE, "return 0;");
     outtextxy(TEXT_X, y += LINE_SPACE, "}");
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl << "   return 0;" << endl << "}";
+    codeFile.close();
 }
 
 void writeIn(char expression[EXPRESSION_LENGTH], int &y, int level)
@@ -77,6 +129,14 @@ void writeIn(char expression[EXPRESSION_LENGTH], int &y, int level)
     if (level)
         x = TEXT_X + TAB_SIZE * level;
     outtextxy(x, y += LINE_SPACE, text);
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (int i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << text;
+    codeFile.close();
 }
 
 void writeOut(char expression[EXPRESSION_LENGTH], int &y, int level)
@@ -89,6 +149,14 @@ void writeOut(char expression[EXPRESSION_LENGTH], int &y, int level)
     if (level)
         x = TEXT_X + TAB_SIZE * level;
     outtextxy(x, y += LINE_SPACE, text);
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (int i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << text;
+    codeFile.close();
 }
 
 void writeAssign(char expression[EXPRESSION_LENGTH], int &y, int level)
@@ -106,6 +174,14 @@ void writeAssign(char expression[EXPRESSION_LENGTH], int &y, int level)
     if (level)
         x = TEXT_X + TAB_SIZE * level;
     outtextxy(x, y += LINE_SPACE, text);
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::app);
+    codeFile << endl;
+    for (int i = 0; i < level; i++)
+        codeFile << "   ";
+    codeFile << text;
+    codeFile.close();
 }
 
 void writeStart(int &y)
@@ -114,6 +190,11 @@ void writeStart(int &y)
     outtextxy(TEXT_X, y += LINE_SPACE, "using namespace std;");
     outtextxy(TEXT_X, y += LINE_SPACE, "int main( )"); // ( )
     outtextxy(TEXT_X, y += LINE_SPACE, "{");
+
+    ofstream codeFile;
+    codeFile.open("Generated Code.txt", ios::trunc);
+    codeFile << "#include <iostream>" << endl << "using namespace std;" << endl << "int main()" << endl << "{";
+    codeFile.close();
 }
 
 void writeInstruction(node *head, int &y, int level)
@@ -226,54 +307,84 @@ void parseScheme(node *head, int &y, int &level)
              {
                  parseScheme(head->next, y, ++level);
                  outtextxy(TEXT_X + TAB_SIZE * --level, y += LINE_SPACE, "}");
+                 closeParantesisInFile(level);
                  parseScheme(head->nextElse, y, level);
              }
              else
              {
                  parseScheme(head->next, y, ++level); // if
                  outtextxy(TEXT_X + TAB_SIZE * --level, y += LINE_SPACE, "}");
+                 closeParantesisInFile(level);
                  if (strcmp(head->nextElse->type, "STOP") || head->nextElse->viz)
                  {
                     writeElse(y, level);
                     parseScheme(head->nextElse, y, ++level);
                     outtextxy(TEXT_X + TAB_SIZE * --level, y += LINE_SPACE, "}");
+                    closeParantesisInFile(level);
                  }
              }
         }
     }
 }
 
+void readAndWriteFromFile()
+{
+    int y = MENUY + sizeGenCodeY + 30;
+    int SIZE = 300;
+    char line[SIZE];
+    ifstream codeIn("Generated Code.txt", ios::in);
+    if(!codeIn)
+         popUpMessage("Could not open the file!");
+    else
+        while (codeIn)
+        {
+            codeIn.getline(line, SIZE);
+            outtextxy(TEXT_X, y += LINE_SPACE, line);
+        }
+    codeIn.close();
+}
+
 void generateCode(bool &isGenCode)
 {
-    restoreVariables();
     bool isCorrect = 1;
     isSchemeCorrect(START, isCorrect);
     if (isCorrect)
     {
-        int level = 1;
-        isGenCode = 1;
-        int y = MENUY + sizeGenCodeY + 30;
-        char varText[EXPRESSION_LENGTH * 2] = "int ";
-        clearOutput();
-        reinitializeVarArr();
-        writeStart(y);
-
-        reinitializeAllViz();
-        declareUsedVars(START->next, varText);
-        reinitializeAllViz();
-        if (strlen(varText) != 4)
+        if (isGenCode)
+            readAndWriteFromFile();
+        else
         {
-            strcat(varText, ";");
-            outtextxy(TEXT_X + TAB_SIZE, y += LINE_SPACE, varText);
-        }
+            int level = 1;
+            int y = MENUY + sizeGenCodeY + 30;
+            char varText[EXPRESSION_LENGTH * 2] = "int ";
+            restoreVariables();
+            isGenCode = 1;
+            clearOutput();
+            reinitializeVarArr();
+            writeStart(y);
 
-        parseScheme(START, y, level);
-        writeEnd(y);
+            reinitializeAllViz();
+            declareUsedVars(START->next, varText);
+            reinitializeAllViz();
+            if (strlen(varText) != 4)
+            {
+                strcat(varText, ";");
+                outtextxy(TEXT_X + TAB_SIZE, y += LINE_SPACE, varText);
+
+                ofstream codeFile;
+                codeFile.open("Generated Code.txt", ios::app);
+                codeFile << endl << "   " << varText;
+                codeFile.close();
+            }
+
+            parseScheme(START, y, level);
+            writeEnd(y);
+        }
     }
     else
     {
         isGenCode = 0;
-        showerrorbox("The scheme isn't correct!");
+        popUpMessage("The scheme isn't correct!");
     }
 }
 

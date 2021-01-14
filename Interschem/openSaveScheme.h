@@ -10,6 +10,8 @@ void drawPage();
 void drawMenu();
 void isSchemeCorrect(node * k, bool & isCorrect);
 void popUpMessage(char a[200]);
+void waitForClickToRefresh();
+void generateCode(bool &isGenCode);
 
 int VIZITED_NODES[SCHEME_SIZE];
 
@@ -105,7 +107,6 @@ void writeSchemeToFile(char path[500], node *head, bool &isFirstTime)
             File << "0,";
         else
             File << head->expression << ",";
-        cout << "exp of " << head->type << " with time prior:" << head->timePriority << " is:" << head->expression << endl;
         File << head->isDecision << ",";
         if (head->next)
             File << head->next->timePriority << ",";
@@ -253,7 +254,7 @@ void getPathName(char path[500], bool fromOpen)
     refresh();
 }
 
-void saveScheme()
+void saveScheme(bool isGenCode)
 {
     char path[500];
     bool isCorrect=1;
@@ -265,17 +266,28 @@ void saveScheme()
         getPathName(path, 0);
         if (ispathForOut(path))
         {
-            bool isFirstTime = 1;
-            reinitializeAllViz();
-            writeSchemeToFile(path, START, isFirstTime);
-            reinitializeAllViz();
-            popUpMessage("The scheme was saved succesfully!");
+            if (strcmp(path, "Generated Code.txt") || strcmp(path, "Generated Code"))
+            {
+                bool isFirstTime = 1;
+                reinitializeAllViz();
+                writeSchemeToFile(path, START, isFirstTime);
+                reinitializeAllViz();
+                popUpMessage("The scheme was saved succesfully!");
+            }
+            else
+            {
+                popUpMessage("Can't save the scheme in the file destined for generated code!");
+            }
         }
         else
+        {
             popUpMessage("The path choosen doesn't permit creating a new file.");
+        }
     }
     else
+    {
         popUpMessage("The scheme is incorrect!");
+    }
 }
 
 void reinitializeArr()
@@ -356,9 +368,9 @@ void rememberAllViz(node *head, int &i)
 
         head->viz = 2;
 
-        if (head->next && head->viz != 2)
+        if (head->next)
             rememberAllViz(head->next, i);
-        if (head->nextElse && head->viz != 2)
+        if (head->nextElse)
             rememberAllViz(head->nextElse, i);
     }
 }
@@ -373,7 +385,7 @@ bool wasViz(int nodeTime, int arrSize)
 
 void recoverVizInScheme(node *head, int arrSize)
 {
-    if (head->viz != 2)
+    if (head->viz == 2)
     {
         if (wasViz(head->timePriority, arrSize))
             head->viz = 1;
@@ -429,7 +441,7 @@ void addNextNodesToScheme(readNode headArr, node *head)
                 rememberAllViz(START, arrSize);
                 makeAllVizFrom2To0(START);
                 nextElse = findNodeByTime(headArr.nextElse);
-                reinitializeAllViz();
+                makeAllVizEqualTo2(START);
                 recoverVizInScheme(START, arrSize);
                 head->nextElse = nextElse;
             }
@@ -473,19 +485,28 @@ void openScheme()
     getPathName(path, 1);
     if (pathExists(path))
     {
-        reinitializeAllViz();
-        writeNodesInfoInArr(path);
-        makePriorityMax();
-        convertArrToScheme();
-        reinitializeAllViz();
-        cleardevice();
-        drawPage();
-        drawMenu();
-        drawAllBlocks();
-        popUpMessage("Scheme opened with succes!");
+        if (strcmp(path, "Generated Code.txt") || strcmp(path, "Generated Code"))
+        {
+            reinitializeAllViz();
+            writeNodesInfoInArr(path);
+            makePriorityMax();
+            convertArrToScheme();
+            reinitializeAllViz();
+            cleardevice();
+            drawPage();
+            drawMenu();
+            drawAllBlocks();
+            popUpMessage("Scheme opened with succes!");
+        }
+        else
+        {
+            popUpMessage("Can't open the the file destined for generated code, because it's not a scheme!");
+        }
     }
     else
-        showerrorbox("There is no such path.");
+    {
+        popUpMessage("There is no such path.");
+    }
 }
 
 
