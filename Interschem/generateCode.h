@@ -4,7 +4,7 @@
 #include "menu.h"
 
 #define TEXT_X WINDOWX - OUTPUT_SIZE_X + 30
-#define OUTPUT_MIDDLE_X WINDOWX - OUTPUT_SIZE_X / 2
+#define OUTPUT_MIDDLE_X OUTPUT_SIZE_X/2 + (WINDOWX - OUTPUT_SIZE_X)
 #define OUTPUT_MIDDLE_Y (WINDOWY - MENUY) / 2 + MENUY
 #define LINE_SPACE 25
 #define TAB_SIZE textwidth("    ")
@@ -21,8 +21,12 @@ struct declaredVars
 
 void clearOutput()
 {
+    if(babab==1)
+        babab=1;
+    setcolor(THEME[CURRENT_THEME].button_clr);
+    line(WINDOWX-tileX, MENUY, WINDOWX, MENUY);
     setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);
-    floodfill(OUTPUT_MIDDLE_X, OUTPUT_MIDDLE_Y, THEME[CURRENT_THEME].button_clr);
+    floodfill(WINDOWX-5, WINDOWY-5, THEME[CURRENT_THEME].button_clr);
     drawGenCodeButton();
 }
 
@@ -248,7 +252,7 @@ void generateCode(bool &isGenCode)
     restoreVariables();
     bool isCorrect = 1;
     isSchemeCorrect(START, isCorrect);
-    if (isCorrect)
+    if (isCorrect and isFreeNull() and isRestsNull())
     {
         int level = 1;
         isGenCode = 1;
@@ -269,11 +273,12 @@ void generateCode(bool &isGenCode)
 
         parseScheme(START, y, level);
         writeEnd(y);
+        babab=1;
     }
     else
     {
         isGenCode = 0;
-        showerrorbox("The scheme isn't correct!");
+        popUpMessage("The scheme isn't correct and cannot be generated!");
     }
 }
 

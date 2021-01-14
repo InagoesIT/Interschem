@@ -517,6 +517,7 @@ void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, b
         outtextxy(opx + OPTIONS_WIDTH/2 - textwidth("Select second node")/2, opy + ONE_OPTION_HEIGHT+ONE_OPTION_HEIGHT/2 - textheight("Select second node")/2, "Select second node");
         setbkcolor(THEME[CURRENT_THEME].bck_clr);
     }
+
     while(!secondNodeSelected)
     {
         if (ismouseclick(WM_LBUTTONDOWN))
@@ -528,8 +529,10 @@ void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, b
                 selectCorrectNode(xx, yy, q, otherNode);
                 if(q and q!=p and q!=START)
                 {
-                    if(strcmp(q->type, "IN")==0)
-                        newBinding=1;
+//                    if(strcmp(q->type, "IN")==0)
+//                        newBinding=1;
+                    if(strcmp(p->type, "IN")==0)
+                        bool fafa=0;
                     makeBindingAB(p, q, fromElse);
                     secondNodeSelected=1;
                     finished=true;
@@ -563,6 +566,8 @@ void makeBinding(int xx, int yy, int opx, int opy, node * & p, int & finished, b
             setbkcolor(THEME[CURRENT_THEME].bck_clr);
         }
     }
+    if(strcmp(p->type, "IN")==0)
+        bool fafa=0;
 }
 
 void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p, int &finished)

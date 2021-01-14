@@ -373,12 +373,17 @@ bool wasViz(int nodeTime, int arrSize)
 
 void recoverVizInScheme(node *head, int arrSize)
 {
-    if (head->viz != 2)
+    if (head->viz == 2)
     {
         if (wasViz(head->timePriority, arrSize))
             head->viz = 1;
         else
             head->viz = 0;
+
+        if(head->next and head->next->viz==2)
+            recoverVizInScheme(head->next, arrSize);
+        if(head->nextElse and head->nextElse->viz==2)
+            recoverVizInScheme(head->nextElse, arrSize);
     }
 }
 

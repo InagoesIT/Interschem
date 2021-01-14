@@ -21,7 +21,10 @@
 #define MENUY 70
 #define WINDOWX GetSystemMetrics(SM_CXSCREEN)
 #define WINDOWY GetSystemMetrics(SM_CYSCREEN)
-
+int babab=0;
+void outputNow(bool &IS_OUTPUT_ON);
+void clearOutput();
+void waitForClickToRefresh();
 void refresh();
 void moveBlock(int x, int y, node *p, bool isNew);
 void isSchemeCorrect(node * k, bool & isCorrect);
@@ -49,11 +52,13 @@ const int firstOthersX = tileX*2 + (tileX - smallTileX) / 2;
 const int lastOthersX = smallTileX + firstOthersX;
 const int lastOthersY = MENUY + smallTileY * 3;
 
+int OUTPUT_Y=MENUY+50, OUTPUT_X=WINDOWX-370;
 bool IS_INSIDE_SCHEME;
 bool IS_INSIDE_CUSTOMIZE;
 bool IS_INSIDE_OTHERS;
+bool IS_OUTPUT_ON=0;
 
-bool m[630][950];
+char OUTPUT[500];
 
 char *selectedNewBlock(int x, int y)
 {
@@ -280,7 +285,7 @@ void drawSubmenuCustomize(bool isColored)
 
 void popUpMessage(char a[200])
 {
-    int textboxWidth=350, textboxHeight=50;
+    int textboxWidth=textwidth(a)+100, textboxHeight=50;
     setlinestyle(SOLID_LINE, 0, 1);
     setcolor(RED);
     line(WINDOWX/2-textboxWidth/2, WINDOWY/2-textboxHeight/2, WINDOWX/2-textboxWidth/2, WINDOWY/2+textboxHeight/2);
@@ -301,6 +306,7 @@ void popUpMessage(char a[200])
     setcolor(WHITE);
     outtextxy(WINDOWX/2-textwidth(a)/2, WINDOWY/2-textheight(a)/2, a);
     setbkcolor(THEME[CURRENT_THEME].bck_clr);
+    waitForClickToRefresh();
 }
 
 void popUpCantUseRestore()
@@ -319,6 +325,8 @@ void waitForClickToRefresh()
             done=1;
         }
     }
+    if(babab==1)
+        babab=1;
     refresh();
 }
 
@@ -432,13 +440,18 @@ void emptyScheme()
 void popUpAnalyzedWithSucces()
 {
     popUpMessage("Your scheme was analysed with succes!");
-    waitForClickToRefresh();
 }
 
 void popUpIncorrectScheme()
 {
     popUpMessage("The scheme is incorrect!");
-    waitForClickToRefresh();
+}
+
+void clearOutputString()
+{
+    strcpy(OUTPUT, "");
+    OUTPUT_Y=MENUY+100;
+    OUTPUT_X=WINDOWX-370;
 }
 
 void run()
@@ -447,22 +460,29 @@ void run()
     restoreVariables();
     isSchemeCorrect(START, isCorrect);
     restoreVariables();
-    if(!isCorrect)
+
+    if(!isCorrect or !isFreeNull() or !isRestsNull())
     {
         popUpIncorrectScheme();
+        IS_OUTPUT_ON=0;
     }
-    if(isCorrect)
+    else
     {
         restoreVariables();
+        clearOutput();
+        clearOutputString();
         analyzeScheme(START);
         restoreVariables();
+        outputNow(IS_OUTPUT_ON);
+        IS_OUTPUT_ON=1;
     }
+
 }
 
 void drawSubmenuOthers(bool isColored)
 {
     setlinestyle(0, 0, 1);
-    setcolor(DARKGRAY);
+    setcolor(RED);
 
     line(firstOthersX, MENUY, firstOthersX, lastOthersY); // |
     line(firstOthersX, lastOthersY, lastOthersX, lastOthersY); // -
@@ -482,7 +502,7 @@ void drawSubmenuOthers(bool isColored)
     }
 
     setcolor(THEME[CURRENT_THEME].option_clr);
-    floodfill(firstOthersX + smallTileX / 2, lastOthersY / 2, DARKGRAY);
+    floodfill(firstOthersX + smallTileX / 2, lastOthersY / 2, RED);
 
     setcolor(THEME[CURRENT_THEME].option_clr);
     line(firstOthersX, MENUY, firstOthersX, lastOthersY); // |
@@ -692,6 +712,8 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                         drawAllBlocks();
                         if (isGenCode)
                             isGenCode = 0;
+                        if(IS_OUTPUT_ON)
+                            outputNow(IS_OUTPUT_ON);
                         isDone=1;
                     }
                 }
@@ -703,9 +725,12 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                     drawAllBlocks();
                     if (isGenCode)
                         generateCode(isGenCode);
+                    if(IS_OUTPUT_ON)
+                        outputNow(IS_OUTPUT_ON);
                     clearmouseclick(WM_LBUTTONDOWN);
                     isDone = true;
                 }
+
             }
         }
     }
@@ -760,6 +785,8 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                         if (isGenCode)
                             generateCode(isGenCode);
                     }
+                    if(IS_OUTPUT_ON)
+                        outputNow(IS_OUTPUT_ON);
                 }
                 cleardevice();
                 drawPage();
@@ -767,6 +794,8 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                 drawAllBlocks();
                 if (isGenCode)
                     generateCode(isGenCode);
+                if(IS_OUTPUT_ON)
+                    outputNow(IS_OUTPUT_ON);
                 isDone = true;
             }
         }
@@ -804,6 +833,8 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                 drawAllBlocks();
                 if (isGenCode)
                     generateCode(isGenCode);
+                if(IS_OUTPUT_ON)
+                    outputNow(IS_OUTPUT_ON);
                 isDone = true;
             }
         }
