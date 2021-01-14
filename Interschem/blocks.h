@@ -23,7 +23,6 @@ struct POINTXY
     int x,y;
 } CURRENT_POINT, NEXT_POINT, LAST_GOOD_POINT, P, POINTS_ARRAY[100], CLICK_SIMULATION;
 int DX[4]= {0, -1, 0, 1}, DY[4]= {1, 0, -1, 0};
-int FOLLOWING_DIR[300];
 
 void setColors(bool isColored)
 {
