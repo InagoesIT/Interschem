@@ -32,8 +32,6 @@ void closeParantesisInFile(int nr)
 
 void clearOutput()
 {
-    if(babab==1)
-        babab=1;
     setcolor(THEME[CURRENT_THEME].button_clr);
     line(WINDOWX-tileX, MENUY, WINDOWX, MENUY);
     setfillstyle(SOLID_FILL, THEME[CURRENT_THEME].bck_clr);

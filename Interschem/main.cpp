@@ -101,7 +101,6 @@ int main()
                     generateCode(isGenCode);
                     IS_OUTPUT_ON=0;
                 }
-
                 if(IS_OUTPUT_ON) outputNow(IS_OUTPUT_ON);
             }
         }

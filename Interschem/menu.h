@@ -16,7 +16,7 @@
 #define MENUY 70
 #define WINDOWX GetSystemMetrics(SM_CXSCREEN)
 #define WINDOWY GetSystemMetrics(SM_CYSCREEN)
-int babab=0;
+int bebe=0;
 void outputNow(bool &IS_OUTPUT_ON);
 void clearOutput();
 void waitForClickToRefresh();
@@ -25,6 +25,7 @@ void moveBlock(int x, int y, node *p, bool isNew);
 void isSchemeCorrect(node * k, bool & isCorrect);
 void analyzeScheme(node * k);
 void generateCode(bool &isGenCode);
+void restoreOutput();
 
 const int START_Y = (WINDOWY - MENUY - SPACE_BETWEEN * 5 - 290) / 2 + MENUY - 15;
 const int STOP_Y = START_Y + SPACE_BETWEEN + START_HEIGHT;
@@ -327,8 +328,6 @@ void waitForClickToRefresh()
             done=1;
         }
     }
-    if(babab==1)
-        babab=1;
     refresh();
 }
 
@@ -458,6 +457,14 @@ void clearOutputString()
 
 void run()
 {
+
+    if(bebe==1)
+        {
+            bebe==1;
+            bebe=1;
+        }
+    ++bebe;
+    clearOutput();
     bool isCorrect=1;
     restoreVariables();
     isSchemeCorrect(START, isCorrect);
@@ -700,6 +707,7 @@ void handleMenuClick(int x, int y, bool &isGenCode)
                     }
                     else if (yy < MENUY + smallTileY * 4)
                     {
+                        restoreOutput();
                         run();
                         cleardevice();
                         drawPage();
