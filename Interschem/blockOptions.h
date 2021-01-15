@@ -577,6 +577,7 @@ void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p
     {
         makeBinding(xx, yy, opx, opy, p, finished, 0);
         refresh();
+        restoreOutput();
 
     }
     else if(strcmp(p->type, "ASSIGN")==0)
@@ -584,17 +585,20 @@ void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p
         if(yy<=opy+ONE_OPTION_HEIGHT)
         {
             makeBinding(xx, yy, opx, opy, p, finished, 0);
+            restoreOutput();
         }
         else
         {
             if(yy<=opy+ONE_OPTION_HEIGHT*2)
             {
                 getAssignOrDecisionExpression(p);
+                restoreOutput();
             }
             else
             {
                 deleteWasPressed(p);
                 finished=true;
+                restoreOutput();
             }
         }
         refresh();
@@ -603,6 +607,7 @@ void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p
     {
         deleteWasPressed(p);
         finished=true;
+        restoreOutput();
         refresh();
     }
     else if(strcmp(p->type, "IN")==0)
@@ -610,15 +615,18 @@ void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p
         if(yy<opy+ONE_OPTION_HEIGHT)
         {
             makeBinding(xx, yy, opx, opy, p, finished, 0);
+            restoreOutput();
         }
         else if(yy>=opy+ONE_OPTION_HEIGHT and yy<opy+2*ONE_OPTION_HEIGHT)
         {
             getVariableName(p);
+            restoreOutput();
             finished=true;
         }
         else
         {
             deleteWasPressed(p);
+            restoreOutput();
             finished=true;
         }
         refresh();
@@ -628,16 +636,19 @@ void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p
         if(yy<opy+ONE_OPTION_HEIGHT)
         {
             makeBinding(xx, yy, opx, opy, p, finished, 0);
+            restoreOutput();
         }
         else if(yy>=opy+ONE_OPTION_HEIGHT and yy<opy+2*ONE_OPTION_HEIGHT)
         {
             getVariableName(p);
             finished=true;
+            restoreOutput();
         }
         else
         {
             deleteWasPressed(p);
             finished=true;
+            restoreOutput();
         }
         refresh();
     }
@@ -646,23 +657,27 @@ void triggerOption(int xx, int yy, int opx, int opy, int nrOfOptions, node * & p
         if(yy<=opy+ONE_OPTION_HEIGHT)
         {
             makeBinding(xx, yy, opx, opy, p, finished, 0);
+            restoreOutput();
         }
         else
         {
             if(yy<=opy+ONE_OPTION_HEIGHT*2)
             {
                 makeBinding(xx, yy, opx, opy, p, finished, 1);
+                restoreOutput();
             }
             else
             {
                 if(yy<=opy+ONE_OPTION_HEIGHT*3)
                 {
                     getAssignOrDecisionExpression(p);
+                    restoreOutput();
                 }
                 else
                 {
                     deleteWasPressed(p);
                     finished=true;
+                    restoreOutput();
                 }
             }
         }

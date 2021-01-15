@@ -312,15 +312,14 @@ void writeNodesInfoInArr(char path[500])
 {
     fstream File;
     File.open(path, ios::in);
-    char info[200];
+    char info[300];
     char *token;
     int i = 0;
     if (nodesInfo[0].timePriority)
         reinitializeArr();
-    while (!File.eof())
+    while(File.get(info,300))
     {
-        File >> info;
-
+//        File.getline(info, 300);
         token = strtok(info, ",");
         strcpy(nodesInfo[i].type, token);
         token = strtok(NULL, ",");
@@ -340,6 +339,7 @@ void writeNodesInfoInArr(char path[500])
         nodesInfo[i].nextElse = atoi(token);
 
         i++;
+        File.ignore();
     }
     File.close();
 }
@@ -490,7 +490,7 @@ void openScheme()
     getPathName(path, 1);
     if (pathExists(path))
     {
-        if (strcmp(path, "Generated Code.txt") || strcmp(path, "Generated Code"))
+        if (strcmp(path, "Generated Code.txt") and strcmp(path, "Generated Code"))
         {
             reinitializeAllViz();
             writeNodesInfoInArr(path);

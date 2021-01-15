@@ -514,6 +514,13 @@ bool isText(char a[EXPRESSION_LENGTH])
     return 0;
 }
 
+void restoreOutput()
+{
+    OUTPUT_Y=MENUY+100;
+    OUTPUT_X=WINDOWX-370;
+    strcpy(OUTPUT, "");
+}
+
 void outputThis(char outputText[EXPRESSION_LENGTH])
 {
     strcat(OUTPUT, outputText);
@@ -532,7 +539,7 @@ void outputNow(bool &IS_OUTPUT_ON)
         int i=0;
         while(OUTPUT[i])
         {
-            while(OUTPUT_X<WINDOWX-20)
+            while(OUTPUT_X<WINDOWX-20 and OUTPUT[i])
             {
                 char s[2];
                 s[0]=OUTPUT[i];

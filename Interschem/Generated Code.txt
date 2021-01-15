@@ -2,17 +2,17 @@
 using namespace std;
 int main()
 {
-   int i, j;
-   cin >> i;
-   while (i<5)
+   int nr, a;
+   cin >> nr;
+   a = 0;
+   cout << nr;
+   cout << " cifrele: ";
+   while (nr>0)
    {
-      j = 0;
-      i = i+1;
-      while (j<4)
-      {
-         j = j+1;
-      }
+      a = nr-(nr/10*10);
+      cout << a;
+      cout << " ";
+      nr = nr/10;
    }
-   cout << j;
    return 0;
 }
