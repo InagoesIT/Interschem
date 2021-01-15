@@ -266,7 +266,7 @@ void saveScheme(bool isGenCode)
         getPathName(path, 0);
         if (ispathForOut(path))
         {
-            if (strcmp(path, "Generated Code.txt") || strcmp(path, "Generated Code"))
+            if (strcmp(path, "Generated Code.txt") && strcmp(path, "Generated Code"))
             {
                 bool isFirstTime = 1;
                 reinitializeAllViz();
@@ -332,6 +332,8 @@ void writeNodesInfoInArr(char path[500])
         token = strtok(NULL, ",");
         if (strcmp(token, "0") != 0)
             strcpy(nodesInfo[i].expression, token);
+        else
+            strcpy(nodesInfo[i].expression, "no expression");
         token = strtok(NULL, ",");
         nodesInfo[i].isDecision = !strcmp(token, "1");
         token = strtok(NULL, ",");
@@ -490,7 +492,7 @@ void openScheme()
     getPathName(path, 1);
     if (pathExists(path))
     {
-        if (strcmp(path, "Generated Code.txt") || strcmp(path, "Generated Code"))
+        if (strcmp(path, "Generated Code.txt") && strcmp(path, "Generated Code"))
         {
             reinitializeAllViz();
             writeNodesInfoInArr(path);
@@ -513,6 +515,5 @@ void openScheme()
         popUpMessage("There is no such path.");
     }
 }
-
 
 #endif // OPENSAVESCHEME_H_INCLUDED

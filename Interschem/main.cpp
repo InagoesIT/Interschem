@@ -95,14 +95,14 @@ int main()
                     if (strcmp(newBlock, "NO") && ((strcmp(newBlock, "START") && START->wasCreated) || (!strcmp(newBlock, "START") && !START->wasCreated)))
                         dragNewBlock(xx, yy, newBlock);
                 }
-                else if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
+                refresh();
+                if (xx > firstGenCodeX && xx < lastGenCodeX && yy > MENUY + spaceGenCodeY && yy <  MENUY + spaceGenCodeY + smallTileY)
                 {
-                    isGenCode=1;
+                    generateCode(isGenCode);
                     IS_OUTPUT_ON=0;
                 }
-                refresh();
-                if(isGenCode==1) generateCode(isGenCode);
-                else if(IS_OUTPUT_ON) outputNow(IS_OUTPUT_ON);
+
+                if(IS_OUTPUT_ON) outputNow(IS_OUTPUT_ON);
             }
         }
         else if (ismouseclick(WM_RBUTTONDOWN))

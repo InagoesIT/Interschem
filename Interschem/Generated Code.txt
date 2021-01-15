@@ -2,17 +2,5 @@
 using namespace std;
 int main()
 {
-   int i, j;
-   cin >> i;
-   while (i<5)
-   {
-      j = 0;
-      i = i+1;
-      while (j<4)
-      {
-         j = j+1;
-      }
-   }
-   cout << j;
    return 0;
 }
