@@ -16,7 +16,7 @@
 #define MENUY 70
 #define WINDOWX GetSystemMetrics(SM_CXSCREEN)
 #define WINDOWY GetSystemMetrics(SM_CYSCREEN)
-int bebe=0;
+
 void outputNow(bool &IS_OUTPUT_ON);
 void clearOutput();
 void waitForClickToRefresh();
@@ -457,13 +457,6 @@ void clearOutputString()
 
 void run()
 {
-
-    if(bebe==1)
-        {
-            bebe==1;
-            bebe=1;
-        }
-    ++bebe;
     clearOutput();
     bool isCorrect=1;
     restoreVariables();

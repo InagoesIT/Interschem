@@ -2,17 +2,5 @@
 using namespace std;
 int main()
 {
-   int nr, a;
-   cin >> nr;
-   a = 0;
-   cout << nr;
-   cout << " cifrele: ";
-   while (nr>0)
-   {
-      a = nr-(nr/10*10);
-      cout << a;
-      cout << " ";
-      nr = nr/10;
-   }
    return 0;
 }

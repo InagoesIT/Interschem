@@ -338,11 +338,21 @@ void readAndWriteFromFile()
     if(!codeIn)
          popUpMessage("Could not open the file!");
     else
-        while (codeIn)
+    {
+        bool isFirstLine = 1;
+        while (codeIn.get(line,SIZE))
         {
-            codeIn.getline(line, SIZE);
-            outtextxy(TEXT_X, y += LINE_SPACE, line);
+            if (isFirstLine)
+            {
+                isFirstLine = 0;
+                outtextxy(TEXT_X, y, line);
+            }
+            else
+                outtextxy(TEXT_X, y += LINE_SPACE, line);
+            codeIn.ignore();
         }
+    }
+
     codeIn.close();
 }
 

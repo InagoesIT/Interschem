@@ -312,14 +312,14 @@ void writeNodesInfoInArr(char path[500])
 {
     fstream File;
     File.open(path, ios::in);
-    char info[300];
+    int lineSize = 300;
+    char info[lineSize];
     char *token;
     int i = 0;
     if (nodesInfo[0].timePriority)
         reinitializeArr();
-    while(File.get(info,300))
+    while(File.get(info,lineSize))
     {
-//        File.getline(info, 300);
         token = strtok(info, ",");
         strcpy(nodesInfo[i].type, token);
         token = strtok(NULL, ",");
